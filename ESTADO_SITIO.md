@@ -581,16 +581,91 @@ Rama `prueba/i5-humo` (commit `bee950c`, 5 archivos): `@astrojs/cloudflare` 14.3
 
 `dist/` resultante: `client/` (index.html prerenderizado + `_headers`) y `server/` (worker para `/api/ping`). Es decir: el sitio sigue estático y solo la ruta de la prueba es bajo demanda — exactamente lo que I5 debe demostrar. Pendiente (requiere GitHub + Cloudflare): push de la rama, PR, verificación del preview con `curl`, y borrado de la rama. Un primer commit de esta rama arrastró `.wrangler/` (estado local de miniflare); se corrigió con amend antes de publicar y `.wrangler/` quedó en `.gitignore`.
 
+### E1-g — GitHub: push y CI verde (2026-09-05)
+
+`gh auth status` confirma el scope pendiente ya resuelto por Sebastián: `Token scopes: 'gist', 'read:org', 'repo', 'workflow'`.
+
+Rama `main` publicada en `https://github.com/sebashealy/calcinst-web` (privado). PR de la prueba de humo abierto: **`https://github.com/sebashealy/calcinst-web/pull/1`**.
+
+```
+> gh run list --limit 3
+completed  success  Prueba de humo I5: ruta bajo demanda con el adaptador de Cloudflare  CI  prueba/i5-humo  pull_request  33982901641  1m3s
+completed  success  Addendum A1: D2 pasa de Cloudflare Pages a Workers con activos estaticos  CI  main  push  33982883798  59s
+completed  success  Etapa 1: evidencia parcial y bloqueos actualizados  CI  main  push  33982868218  54s
+```
+
+```
+> gh pr checks 1
+verificar	pass	1m0s	https://github.com/sebashealy/calcinst-web/actions/runs/33982901641/job/101351195321
+```
+
+**CI verde en PR** — criterio de aceptación de la Etapa 1 cumplido. El job `verificar` ejecuta, en orden: `astro check`, `vitest`, `eslint`, `prettier --check`, `verificar-invariantes.mjs`, `astro build` y Lighthouse CI.
+
+### E1-h — Lighthouse CI: el hallazgo de E1-d queda resuelto en CI
+
+El fallo `EPERM` de E1-d era una limitación de Windows local, no del proyecto. En ubuntu corre completo. Extracto literal del run de `main` (33982883798):
+
+```
+✅  .lighthouseci/ directory writable
+✅  Configuration file found
+✅  Chrome installation found
+Healthcheck passed!
+Started a web server on port 42393...
+Running Lighthouse 1 time(s) on http://localhost:42393/index.html
+Run #1...done.
+Done running Lighthouse!
+Checking assertions against 1 URL(s), 1 total run(s)
+All results processed!
+Done running autorun.
+```
+
+En el run de la rama de humo, Lighthouse apuntó a `http://localhost:35801/client/index.html`: con el adaptador, `dist/` se divide en `client/` y `server/`, y `staticDistDir` encuentra el HTML prerenderizado dentro de `client/`. Coherente con lo documentado en E1-f.
+
+Advertencia registrada, no bloqueante: `⚠️ GitHub token not set` — `lhci` no publica estados en el PR; el informe se conserva como artefacto (`actions/upload-artifact`).
+
+### E1-i — Configuración de despliegue y normalización de finales de línea
+
+`wrangler.jsonc` creado conforme al addendum A1, con el formato verificado en `https://developers.cloudflare.com/workers/static-assets/binding/`:
+
+```jsonc
+{
+  "name": "calcinst-web",
+  "compatibility_date": "2026-09-05",
+  "assets": {
+    "directory": "./dist/",
+  },
+}
+```
+
+Sin campo `main`: el sitio de esta etapa es puramente estático y no tiene código de Worker (los ejemplos de la documentación para servir solo activos omiten `main`). La ruta bajo demanda de la fase 2 lo añadirá entonces.
+
+**Defecto encontrado y corregido: la verificación de formato daba veredictos distintos según la máquina.** Tras cambiar de rama, Git entregó el árbol con CRLF en Windows; `prettier --check` espera LF por omisión, así que fallaba en local (`astro.config.mjs`, `package.json`) mientras pasaba en CI sobre ubuntu. Los archivos no tenían ningún cambio de contenido: `git diff` estaba vacío y `git diff --ignore-cr-at-eol` lo confirmó tras reescribirlos. Corregido con `.gitattributes` (`* text=auto eol=lf` más binarios sin conversión), que además elimina los avisos `LF will be replaced by CRLF` que aparecían en cada `git add`.
+
+Batería local tras el cambio: `astro check` 0 errores / 0 avisos / 0 hints · `vitest` sin archivos de prueba (exit 0) · `eslint` exit 0 · `prettier --check` "All matched files use Prettier code style!" · `verificar-invariantes` 0 fallos · `astro build` 1 página.
+
+### E1-j — Conexión con Cloudflare: no ejecutable desde esta sesión
+
+Comprobado en el entorno: `wrangler` no está instalado globalmente; `CLOUDFLARE_API_TOKEN`, `CF_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` están ausentes; `%APPDATA%\xdg.config\.wrangler` contiene solo logs de la build local, sin `config/default.toml`, es decir **sin sesión OAuth de wrangler**.
+
+Conectar un repositorio a Workers Builds requiere instalar la app de GitHub de Cloudflare y autorizarla desde el dashboard; no existe una ruta por CLI para esa conexión. Los pasos 3, 4, 6 y 7 del encargo quedan en manos de Sebastián. El paso 5 (borrar `prueba/i5-humo`) depende del 4 y **no se ejecuta todavía**: la rama existe para demostrar que el camino funciona, y esa demostración aún no está hecha contra un preview real.
+
+## Decisión pendiente — D2 y "Cloudflare solo despliega lo que pasó CI"
+
+D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds **no satisface ese enunciado por sí sola**: Cloudflare observa el repositorio y construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado. Un commit roto en `main` se desplegaría antes de que CI lo reporte. Se registra aquí en vez de resolverse por cuenta propia, porque cambia la forma del despliegue y conviene decidirlo antes de conectar:
+
+- **Opción A (recomendada, barata):** conectar la integración Git y proteger `main` en GitHub (exigir que el check `verificar` pase antes de fusionar, y prohibir push directo). `main` solo recibe commits que pasaron CI, así que lo que Cloudflare despliega ya pasó CI. No requiere tokens ni secretos.
+- **Opción B:** no usar la integración Git; desplegar desde GitHub Actions con `wrangler deploy` en un job posterior a `verificar`. Cumple el enunciado de forma literal, pero exige guardar un token de API de Cloudflare como secreto del repositorio y fijar `wrangler` como dependencia (4.129.0 al 2026-09-05, **no instalada**: requiere tu aprobación conforme a la regla de dependencias).
+
 ## Bloqueos
 
-Para cerrar la Etapa 1 faltan estas acciones de Sebastián (nada más es bloqueante):
+Todo lo que puede hacerse sin el dashboard está hecho. Faltan estas acciones de Sebastián:
 
-1. **Scope `workflow` en gh:** ejecutar en una terminal `gh auth refresh -h github.com -s workflow` y completar el flujo del navegador. Sin esto no se puede hacer push del workflow de CI.
-2. **Registrar los dominios** `calcinst.mx` (canónico) y `calcinst.com` (redirección), con DNS en Cloudflare (D2). Verificados aún disponibles el 2026-09-05 por la mañana.
-3. **Conectar Cloudflare Pages** al repositorio `sebashealy/calcinst-web` (Workers & Pages → Create → Pages → Connect to Git), build command `npm run build`, output `dist`, rama de producción `main`; luego agregar el dominio personalizado `calcinst.mx` y la redirección de `www.` y `.com`.
-4. **H11** (corte en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite addendum A1.
+1. **Elegir entre la opción A y la B** de la sección anterior.
+2. **Conectar el repositorio** en Cloudflare (Workers & Pages → Create → Workers → Connect to Git), dando acceso **solo** a `calcinst-web`: build `npm run build`, directorio de salida `dist`, rama de producción `main`. Activar en Settings → Build → Branch control la casilla **"Builds for non-production branches"**, sin la cual el PR #1 no genera preview y la prueba de humo I5 no puede verificarse.
+3. **Registrar `calcinst.com`** en Cloudflare (el `.mx` ya está con zone activo). Verificado aún no registrado el 2026-09-05 por la tarde: RDAP de Verisign devuelve HTTP 404.
+4. **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum siguiente.
 
-Con 1–3 hechos, la sesión puede continuar: push de `main`, PR de la rama de humo, CI verde, verificación del preview de I5 con `curl`, borrado de la rama, `curl -I` de las cuatro URLs y cierre de la etapa con evidencia.
+Hecho 1–3, la sesión puede cerrar la etapa: `curl` al preview de `/api/ping`, borrado de `prueba/i5-humo`, dominio personalizado, Redirect Rules y `curl -I` de las cuatro URLs.
 
 ## Nota sobre E0-f
 
