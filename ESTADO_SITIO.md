@@ -496,14 +496,101 @@ Archivos base creados sin ejecutar npm:
 - `README.md` — tres líneas: "# CalcInst — sitio web" / (línea en blanco) / "Ver ESTADO_SITIO.md."
 - `.gitignore` — estándar de Node (dependencias, builds, logs, cobertura, cachés, `.env`, SO, editores).
 
+## Evidencia Etapa 1 (en curso, 2026-09-05)
+
+### E1-a — Aprobaciones de la puerta de la Etapa 1
+
+Sebastián autorizó el 2026-09-05: (1) **Astro 7.3.1** en lugar del 5.x que asumía D1 — esto resuelve la decisión pendiente de H12 (la hipótesis queda con la salvedad de verificación de APIs, ver E1-c: `astro check` y `astro build` pasan en 7.3.1); (2) la lista de dependencias con versiones exactas; (3) crear el repositorio **privado** `sebashealy/calcinst-web` en GitHub. Ruta de creación confirmada en la Etapa 0.
+
+### E1-b — Andamiaje e instalación
+
+- `npm create astro@5.2.4 -- scaffold --template minimal --no-install --no-git --yes` ejecutado en directorio temporal e integrado a mano al repositorio (create-astro no opera limpio sobre un directorio no vacío con los documentos de gobierno).
+- `npm install` con versiones exactas pineadas: `added 712 packages, and audited 713 packages`.
+- **Desviación registrada:** `eslint-plugin-jsx-a11y` 6.10.2 se retiró de la lista aprobada (un retiro, no una adición): su peer es `eslint ^3–^9` y el proyecto usa ESLint 10; para `eslint-plugin-astro` es peer **opcional** (`peerOptional` en el árbol de npm). El linting de accesibilidad llega vía axe en la Etapa 10.
+- Advertencias de instalación: deprecaciones (`inflight`, `glob@7`, `rimraf@2/3`, `uuid@8`) y `13 vulnerabilities (2 low, 4 moderate, 7 high)` — todas en el árbol de `@lhci/cli` (herramienta solo de CI, no llega al sitio). Se registra, no se resuelve en esta etapa.
+- `tsconfig.json`: `extends astro/tsconfigs/strict` + banderas de CalcInst leídas de `calcinst/tsconfig.app.json` (solo lectura): `strict`, `verbatimModuleSyntax`, `erasableSyntaxOnly`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`.
+
+### E1-c — Batería de verificación local (salidas literales)
+
+```
+> astro check
+Result (6 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+```
+
+```
+> vitest run
+No test files found, exiting with code 0
+```
+(`passWithNoTests: true` documentado en `vitest.config.ts`; los primeros tests llegan en la Etapa 3.)
+
+```
+> eslint .
+(sin salida; exit 0)
+```
+
+```
+> prettier --check .
+All matched files use Prettier code style!
+```
+(Los tres documentos de gobierno están en `.prettierignore`: contienen evidencia literal que no debe reformatearse.)
+
+```
+> node scripts/verificar-invariantes.mjs
+verificar-invariantes: 0 verificaciones activas, 0 fallos (esqueleto Etapa 1)
+```
+
+```
+> astro build
+[build] output: "static"
+[build] 1 page(s) built in 974ms
+```
+
+`dist/` contiene `index.html` (con `<title>CalcInst</title>` y `<meta name="robots" content="noindex">`), `_headers` con `X-Robots-Tag: noindex`, y el CSS de Tailwind compilado.
+
+### E1-d — Lighthouse CI local: dos hallazgos
+
+1. **NO_FCP con body vacío.** Con la página en blanco literal, Lighthouse aborta: "The page did not paint any content" (NO_FCP). El criterio "página en blanco" y el criterio "Lighthouse CI corre" son incompatibles al pie de la letra. **Desviación mínima aplicada:** el body pinta un único `<h1>CalcInst</h1>` sin estilo (comentado en `index.astro`); el diseño real llega en las Etapas 2–5.
+2. **EPERM local en Windows.** Tras corregir lo anterior, los audits corren pero `lhci` falla al limpiar el perfil temporal de Chrome (`taskkill` no encuentra el proceso; `EPERM` al borrar `%TEMP%\lighthouse.*`). Reproducido también sin sandbox. Es una limitación del entorno Windows local, no del proyecto; el veredicto de Lighthouse CI es el run de GitHub Actions en ubuntu (pendiente del push).
+
+### E1-e — GitHub
+
+```
+> gh repo create sebashealy/calcinst-web --private --source . --remote origin --push
+https://github.com/sebashealy/calcinst-web
+ ! [remote rejected] HEAD -> main (refusing to allow an OAuth App to create or update workflow
+   `.github/workflows/ci.yml` without `workflow` scope)
+error: failed to push some refs to 'https://github.com/sebashealy/calcinst-web.git'
+```
+
+El repositorio privado quedó **creado** y `origin` configurado; el **push está bloqueado** porque el token de `gh` (scopes: `gist`, `read:org`, `repo`) carece del scope `workflow`, requerido para subir `.github/workflows/ci.yml`. Corrección: `gh auth refresh -h github.com -s workflow` (interactivo, la ejecuta Sebastián).
+
+La rama `main` se renombró desde `master` antes del intento (el plan define `main` = producción).
+
+### E1-f — Rama de humo I5 (preparada localmente)
+
+Rama `prueba/i5-humo` (commit `bee950c`, 5 archivos): `@astrojs/cloudflare` 14.3.0 exacto, `adapter: cloudflare()` en `astro.config.mjs`, y `src/pages/api/ping.ts` con `export const prerender = false`. Build verificado:
+
+```
+[build] output: "static"
+[build] mode: "server"
+[build] Complete!
+```
+
+`dist/` resultante: `client/` (index.html prerenderizado + `_headers`) y `server/` (worker para `/api/ping`). Es decir: el sitio sigue estático y solo la ruta de la prueba es bajo demanda — exactamente lo que I5 debe demostrar. Pendiente (requiere GitHub + Cloudflare): push de la rama, PR, verificación del preview con `curl`, y borrado de la rama. Un primer commit de esta rama arrastró `.wrangler/` (estado local de miniflare); se corrigió con amend antes de publicar y `.wrangler/` quedó en `.gitignore`.
+
 ## Bloqueos
 
-Nada impide *preparar* la Etapa 1, pero estos puntos requieren acción o decisión humana antes de poder cumplir sus criterios de aceptación:
+Para cerrar la Etapa 1 faltan estas acciones de Sebastián (nada más es bloqueante):
 
-1. **Dominios sin registrar (acción de Sebastián).** `calcinst.mx` y `calcinst.com` están disponibles (E0-c) pero la Etapa 0 no compró nada. La Etapa 1 exige `https://calcinst.mx` respondiendo 200 con TLS, lo que requiere registrar ambos dominios y apuntar el DNS a Cloudflare.
-2. **H12 — versión de Astro (decisión en la puerta de la Etapa 1).** `astro@latest` es 7.3.1, no 5.x como asume D1 del plan. Antes de ejecutar `npm create astro`, el humano debe autorizar si se usa 7.x o se fija otra versión, y la Etapa 1 debe verificar que las APIs que el plan asume siguen vigentes en esa major (detalle en `HIPOTESIS_SITIO.md`, H12).
-3. **Cuentas y conexiones (acción de Sebastián).** La Etapa 1 requiere un repositorio en GitHub y una cuenta de Cloudflare Pages conectada a él; ninguna de las dos cosas la puede crear esta sesión.
-4. **H11 con corte en Etapa 0 (verificación de Sebastián).** La hipótesis de que D4/D5 coinciden con la memoria del proyecto (`DECISIONES.md` de CalcInst) tiene fecha de corte en esta etapa y solo puede cerrarla Sebastián; si resulta falsa, se emite el addendum A1 aquí.
+1. **Scope `workflow` en gh:** ejecutar en una terminal `gh auth refresh -h github.com -s workflow` y completar el flujo del navegador. Sin esto no se puede hacer push del workflow de CI.
+2. **Registrar los dominios** `calcinst.mx` (canónico) y `calcinst.com` (redirección), con DNS en Cloudflare (D2). Verificados aún disponibles el 2026-09-05 por la mañana.
+3. **Conectar Cloudflare Pages** al repositorio `sebashealy/calcinst-web` (Workers & Pages → Create → Pages → Connect to Git), build command `npm run build`, output `dist`, rama de producción `main`; luego agregar el dominio personalizado `calcinst.mx` y la redirección de `www.` y `.com`.
+4. **H11** (corte en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite addendum A1.
+
+Con 1–3 hechos, la sesión puede continuar: push de `main`, PR de la rama de humo, CI verde, verificación del preview de I5 con `curl`, borrado de la rama, `curl -I` de las cuatro URLs y cierre de la etapa con evidencia.
 
 ## Nota sobre E0-f
 

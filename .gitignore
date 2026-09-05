@@ -10,6 +10,9 @@ out/
 # Informes Lighthouse CI
 .lighthouseci/
 
+# Estado local de Wrangler/miniflare (adaptador Cloudflare)
+.wrangler/
+
 # Logs
 logs/
 *.log
