@@ -1,0 +1,10 @@
+dist/
+.astro/
+.lighthouseci/
+node_modules/
+package-lock.json
+
+# Documentos de gobierno con evidencia literal — no se reformatean
+ESTADO_SITIO.md
+DECISIONES_SITIO.md
+HIPOTESIS_SITIO.md
