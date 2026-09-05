@@ -1,0 +1,10 @@
+// Despliegue en Cloudflare Workers con activos estáticos (addendum A1 en ESTADO_SITIO.md).
+// El sitio de la Etapa 1 es puramente estático: no hay campo "main" porque no existe
+// código de Worker. La ruta bajo demanda de la fase 2 lo añadirá entonces, no antes.
+{
+  "name": "calcinst-web",
+  "compatibility_date": "2026-09-05",
+  "assets": {
+    "directory": "./dist/",
+  },
+}

@@ -1,0 +1,15 @@
+# Finales de línea LF en el árbol de trabajo, en todas las plataformas.
+# Sin esto, en Windows Git entrega CRLF y `prettier --check` falla en local
+# mientras pasa en CI (ubuntu, LF): la misma verificación daría veredictos
+# distintos según la máquina.
+* text=auto eol=lf
+
+# Binarios: sin conversión.
+*.png binary
+*.jpg binary
+*.avif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
