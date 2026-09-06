@@ -649,6 +649,58 @@ Comprobado en el entorno: `wrangler` no está instalado globalmente; `CLOUDFLARE
 
 Conectar un repositorio a Workers Builds requiere instalar la app de GitHub de Cloudflare y autorizarla desde el dashboard; no existe una ruta por CLI para esa conexión. Los pasos 3, 4, 6 y 7 del encargo quedan en manos de Sebastián. El paso 5 (borrar `prueba/i5-humo`) depende del 4 y **no se ejecuta todavía**: la rama existe para demostrar que el camino funciona, y esa demostración aún no está hecha contra un preview real.
 
+### E1-k — Despliegue en Cloudflare Workers y verificación de I5 (2026-09-05/06)
+
+Repositorio conectado por Sebastián con la casilla *Builds for non-production branches* activa. Producción en `https://calcinst-web.instcalc.workers.dev`:
+
+```
+> curl -sSI https://calcinst-web.instcalc.workers.dev
+HTTP/1.1 200 OK
+Content-Type: text/html
+CF-Cache-Status: HIT
+x-robots-tag: noindex
+Server: cloudflare
+```
+
+La cabecera `x-robots-tag: noindex` llegando en la respuesta real **verifica empíricamente el hallazgo 1 del addendum A1**: `public/_headers` funciona en Workers con activos estáticos exactamente igual que en Pages. El cuerpo sirve `<title>CalcInst</title>` y el `<h1>` mínimo documentado en E1-d.
+
+**Dos defectos encontrados al construir la rama de prueba, ambos corregidos:**
+
+1. **`main` no puede apuntar a la salida del build.** Con `"main": "./dist/server/entry.mjs"`, tanto `astro check` como el build de Cloudflare fallaron: *"The provided Wrangler config main field (…/dist/server/entry.mjs) doesn't point to an existing file"*. El plugin de Vite de Cloudflare valida ese campo **antes** de construir, así que la ruta a `dist/` todavía no existe. Corregido con `"main": "@astrojs/cloudflare/entrypoints/server"`, que es lo que documenta Astro y lo que el paquete exporta (`node_modules/@astrojs/cloudflare/package.json` → `"./entrypoints/server": "./dist/entrypoints/server.js"`).
+2. **La rama de prueba original quedó desfasada.** Se creó antes de `.gitattributes` y de `wrangler.jsonc`, y las compilaciones de ramas no de producción se activaron después de su último push, así que Workers Builds no la había construido nunca. Se recreó sobre el `main` vigente y se reemplazó con *force-push*, lo que actualizó el PR #1 en su sitio.
+
+Nota sobre el reparto de configuración entre ramas: el `wrangler.jsonc` de la raíz es distinto en cada rama —en `main` describe un sitio solo-estático (sin `main`), en `prueba/i5-humo` añade el Worker— y el comando de despliegue del proyecto, que es uno solo y compartido, funciona para ambas sin cambios.
+
+**Resultado de la prueba de humo I5.** PR [#1](https://github.com/sebashealy/calcinst-web/pull/1), commit `2e8d6eb`, ambos checks en verde:
+
+```
+> gh pr checks 1
+Workers Builds: calcinst-web	pass
+verificar	pass	41s
+```
+
+Workers Builds publicó en el PR dos URL de preview: `https://3a054c80-calcinst-web.instcalc.workers.dev` (por commit) y `https://prueba-i5-humo-calcinst-web.instcalc.workers.dev` (por rama, estable). **Esto verifica empíricamente el hallazgo 2 del addendum A1.**
+
+```
+> curl -sS -i https://prueba-i5-humo-calcinst-web.instcalc.workers.dev/api/ping
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 30
+X-Robots-Tag: noindex
+Server: cloudflare
+
+{"ok":true,"prueba":"i5-humo"}
+```
+
+```
+> curl -sSI https://prueba-i5-humo-calcinst-web.instcalc.workers.dev/
+HTTP/1.1 200 OK
+Content-Type: text/html
+x-robots-tag: noindex
+```
+
+Es decir: en el mismo despliegue, la ruta bajo demanda responde JSON generado por el Worker y la página sigue sirviéndose prerenderizada. **I5 queda satisfecha**: el camino a la fase 2 existe y está demostrado, no supuesto.
+
 ## Decisión pendiente — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds **no satisface ese enunciado por sí sola**: Cloudflare observa el repositorio y construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado. Un commit roto en `main` se desplegaría antes de que CI lo reporte. Se registra aquí en vez de resolverse por cuenta propia, porque cambia la forma del despliegue y conviene decidirlo antes de conectar:

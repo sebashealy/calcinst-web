@@ -7,4 +7,14 @@
   "assets": {
     "directory": "./dist/",
   },
+  // Dominio canónico (D2). Los Custom Domains crean su propio registro DNS y no
+  // requieren zone_id ni zone_name. Aquí solo va el canónico: `www.calcinst.mx`,
+  // `calcinst.com` y `www.calcinst.com` NO sirven el sitio, redirigen con 301
+  // mediante Redirect Rules a nivel de zone (ver ESTADO_SITIO.md, E1-l).
+  "routes": [
+    {
+      "pattern": "calcinst.mx",
+      "custom_domain": true,
+    },
+  ],
 }
