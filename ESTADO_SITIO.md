@@ -4,7 +4,7 @@
 
 ## Última etapa cerrada
 
-Etapa 1 — 2026-09-06. Evidencia presentada en E1-a … E1-m. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
+Etapa 1 — 2026-09-06. Evidencia presentada en E1-a … E1-o. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
 
 Cotejo criterio por criterio (plan §6, Etapa 1):
 
@@ -13,11 +13,11 @@ Cotejo criterio por criterio (plan §6, Etapa 1):
 | `npm run build` genera `dist/` estático | cumplido | E1-c, E1-m |
 | CI verde en PR | cumplido | E1-g (`gh pr checks 1` → `verificar pass`) |
 | `https://calcinst.mx` responde 200 con TLS | cumplido | E1-l (`curl -sSI` → `HTTP/1.1 200 OK`) |
-| `www.` y `.com` redirigen 301 | **pendiente** | E1-l: requiere DNS proxied + Redirect Rules a nivel de zone; pasos exactos documentados |
+| `www.` y `.com` redirigen 301 | cumplido en la raíz; **defectuoso con ruta** | E1-n: las tres URL no canónicas devuelven 301 al apex, pero una de las reglas rompe el hostname y la otra descarta la ruta |
 | Prueba de humo I5 documentada y rama borrada | cumplido | E1-k (`curl` a `/api/ping` en el preview) y E1-m (rama borrada) |
 | Lighthouse CI corre (presupuestos laxos) | cumplido | E1-h (`Run #1...done`, `All results processed!`) |
 
-Cinco de seis criterios cumplidos con evidencia literal. El sexto depende de una acción de dashboard que Sebastián eligió aplicar él mismo.
+Cinco criterios cumplidos con evidencia literal. El sexto está cumplido en su forma literal —las tres URL no canónicas responden 301 hacia `https://calcinst.mx`— pero con un defecto que el criterio, redactado antes de existir el sitio, no alcanzaba a expresar: las redirecciones no preservan correctamente la ruta (E1-n). No afecta al sitio de una sola página que existe hoy; sí lo haría desde la Etapa 4. Se documenta como pendiente con fecha de corte en vez de darse por bueno.
 
 ## Siguiente etapa
 
@@ -787,18 +787,111 @@ Conteo de pruebas: **0 antes, 0 después**. La Etapa 1 no introduce pruebas; las
 
 Estado del repositorio: rama única `main`; `prueba/i5-humo` borrada en local y en GitHub tras verificarse (`git branch -r` solo lista `origin/main`).
 
-## Decisión pendiente — D2 y "Cloudflare solo despliega lo que pasó CI"
+### E1-n — Verificación independiente de las redirecciones: defecto encontrado (2026-09-06)
 
-D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds **no satisface ese enunciado por sí sola**: Cloudflare observa el repositorio y construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado. Un commit roto en `main` se desplegaría antes de que CI lo reporte. Se registra aquí en vez de resolverse por cuenta propia, porque cambia la forma del despliegue y conviene decidirlo antes de conectar:
+Sebastián aplicó los cinco pasos de E1-l y verificó las cuatro URL raíz. Verificación propia: **las cuatro URL raíz son correctas**, pero **ambas reglas fallan en cuanto la petición lleva una ruta**. Probar solo los dominios pelados no lo revela.
 
-- **Opción A (recomendada, barata):** conectar la integración Git y proteger `main` en GitHub (exigir que el check `verificar` pase antes de fusionar, y prohibir push directo). `main` solo recibe commits que pasaron CI, así que lo que Cloudflare despliega ya pasó CI. No requiere tokens ni secretos.
-- **Opción B:** no usar la integración Git; desplegar desde GitHub Actions con `wrangler deploy` en un job posterior a `verificar`. Cumple el enunciado de forma literal, pero exige guardar un token de API de Cloudflare como secreto del repositorio y fijar `wrangler` como dependencia (4.129.0 al 2026-09-05, **no instalada**: requiere tu aprobación conforme a la regla de dependencias).
+Las cuatro URL raíz, correctas:
+
+```
+> curl -sSI https://calcinst.mx
+HTTP/1.1 200 OK
+Content-Type: text/html
+x-robots-tag: noindex
+
+> curl -sSI https://www.calcinst.mx
+HTTP/1.1 301 Moved Permanently
+Location: https://calcinst.mx/
+
+> curl -sSI https://calcinst.com
+HTTP/1.1 301 Moved Permanently
+Location: https://calcinst.mx/
+
+> curl -sSI https://www.calcinst.com
+HTTP/1.1 301 Moved Permanently
+Location: https://calcinst.mx/
+```
+
+**Defecto 1 — la regla de `calcinst.mx` produce un hostname inexistente.** El destino se concatena con la ruta sin separador, así que el punto de corte cae dentro del propio dominio:
+
+```
+> curl -sSI https://www.calcinst.mx/blog/algo?x=1&y=2
+Location: https://calcinst.mxblog/algo?x=1&y=2
+
+> curl -sSI https://www.calcinst.mx/blog/
+Location: https://calcinst.mxblog/
+
+> curl -sSI https://www.calcinst.mx/descarga
+Location: https://calcinst.mxdescarga/
+```
+
+`calcinst.mxblog` no es un subdominio mal formado: es un **hostname que no existe** y que nunca podrá resolverse.
+
+```
+> Resolve-DnsName calcinst.mxblog
+NO RESUELVE: calcinst.mxblog es un hostname inexistente
+```
+
+Causa: la URL de destino se guardó como `https://calcinst.mx`, sin barra final, y *Preserve path suffix* anexa la ruta con su barra inicial ya consumida.
+
+**Defecto 2 — la regla de `calcinst.com` descarta la ruta.** Conserva el query string pero pierde el path, es decir, *Preserve path suffix* no quedó activado:
+
+```
+> curl -sSI https://calcinst.com/descarga/?utm_source=prueba
+Location: https://calcinst.mx/?utm_source=prueba          ← se perdió /descarga/
+
+> curl -sSI https://www.calcinst.com/ruta/profunda/
+Location: https://calcinst.mx/                            ← se perdió /ruta/profunda/
+```
+
+**Por qué importa y hasta cuándo se puede esperar.** Hoy el sitio tiene una sola página, así que ninguna ruta profunda existe todavía y el daño real es nulo. Deja de serlo en cuanto haya blog: un enlace entrante a `www.calcinst.mx/blog/mi-post/` —el formato de URL que D8 cierra como permanente— terminaría en un hostname inexistente en vez de en el post. Un 301 a un destino roto es peor que no redirigir, porque los buscadores lo tratan como permanente. **Corte: antes de publicar el primer post (Etapa 4).**
+
+**Corrección exacta.** La documentación de Cloudflare resuelve el caso `www`→apex con comodín (`https://www.*` → `https://${1}`), pero eso no sirve entre dominios distintos, que es la mitad del problema aquí. La forma que cubre ambas reglas con la misma estructura es la redirección **dinámica** con expresión de destino:
+
+```
+concat("https://calcinst.mx", http.request.uri.path)
+```
+
+*Zone `calcinst.mx`*, regla `www a apex`: condición `http.host eq "www.calcinst.mx"`; tipo **Dynamic**; expresión de destino la de arriba; **301**; **Preserve query string** activado.
+
+*Zone `calcinst.com`*, regla `.com a .mx`: condición `http.host in {"calcinst.com" "www.calcinst.com"}`; tipo **Dynamic**; la misma expresión de destino; **301**; **Preserve query string** activado.
+
+(Alternativa mínima para el defecto 1 sin cambiar a dinámica: dejar la URL de destino como `https://calcinst.mx/`, **con** barra final. Corrige la concatenación, pero sigue dependiendo del comportamiento de *Preserve path suffix*; la expresión dinámica es explícita y se comporta igual en las dos zonas.)
+
+### E1-o — Protección de rama y visibilidad del repositorio (2026-09-06)
+
+**D2 queda cerrado en la opción A.** La protección está activa y es **clásica**, no un ruleset — por eso `gh api …/rulesets` devuelve `[]` mientras la rama sí está protegida:
+
+```
+> gh api repos/sebashealy/calcinst-web/branches/main --jq '{protected: .protected}'
+{"protected":true}
+
+> gh api repos/sebashealy/calcinst-web/branches/main/protection
+required_status_checks: { strict: true, contexts: ["verificar"] }
+allow_force_pushes: { enabled: false }
+allow_deletions:    { enabled: false }
+enforce_admins:     { enabled: false }
+```
+
+Con esto, `main` solo recibe commits cuyo check `verificar` pasó, así que lo que Cloudflare despliega ya pasó CI: el enunciado de D2 se cumple sin desplegar desde CI ni guardar tokens.
+
+**Matiz registrado, no bloqueante:** `enforce_admins` está en `false`, así que un administrador —Sebastián, y cualquier sesión autenticada con su cuenta— todavía puede empujar directo a `main` y saltarse la puerta. Activarlo cierra el hueco por completo; se deja a criterio de Sebastián, porque también le impediría a él corregir `main` de urgencia sin PR.
+
+**El repositorio pasó a público.** Revisión de lo versionado en busca de material sensible: sin claves, tokens ni identificadores de cuenta. Las únicas coincidencias de la búsqueda son prosa que **nombra** variables de entorno al documentar su ausencia (E1-j) y dependencias de Azure dentro de `package-lock.json`. Nada que retirar.
+
+## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
+
+D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
+
+**Resuelto el 2026-09-06 en la opción A:** integración Git más protección de rama en GitHub exigiendo el check `verificar`. `main` solo recibe commits que ya pasaron CI, de modo que lo que Cloudflare despliega también pasó CI. No requiere tokens, ni secretos en el repositorio, ni `wrangler` como dependencia. Evidencia en E1-o.
+
+La opción B descartada era desplegar desde GitHub Actions con `wrangler deploy` tras el job `verificar`: cumple el enunciado de forma más literal, pero exige guardar un token de API de Cloudflare como secreto y fijar `wrangler` como dependencia. Se descarta por coste y superficie de riesgo, no por incapacidad técnica.
 
 ## Bloqueos
 
-1. **Redirecciones de `www` y `.com`** (único criterio de la Etapa 1 sin cumplir): aplicar los cinco pasos de dashboard listados en E1-l. Después, `curl -I` de las cuatro URLs debe mostrar 301 hacia `https://calcinst.mx` en las tres no canónicas. **Fecha de corte: antes de la Etapa 9**, que es cuando las canónicas y el sitemap dependen de ello; no bloquea las Etapas 2–8.
-2. **Elegir entre la opción A y la B** de "Decisión pendiente — D2". Hoy el repositorio está en el escenario de la opción A pero **sin la protección de rama** que la hace válida: cualquier push directo a `main` se despliega sin esperar a CI. Mientras no se decida, conviene no hacer push directo a `main`.
-3. **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum A2.
+1. **Preservación de ruta en las dos Redirect Rules** (E1-n): cambiarlas a redirección dinámica con destino `concat("https://calcinst.mx", http.request.uri.path)` y *Preserve query string*. **Corte: antes de publicar el primer post (Etapa 4)**, porque desde ahí un 301 a `calcinst.mxblog` sería un enlace permanente roto. No bloquea las Etapas 2 y 3.
+2. **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum A2. Es el único punto de gobierno que sigue abierto desde la Etapa 0.
+3. **Opcional, a criterio de Sebastián:** activar `enforce_admins` en la protección de `main` (E1-o) para cerrar el hueco de push directo por administrador.
 
 Nada de lo anterior impide iniciar la Etapa 2.
 
