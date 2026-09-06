@@ -1,22 +1,16 @@
 // RAMA prueba/i5-humo — configuración exclusiva de la prueba de humo I5.
 // Difiere de la de `main` (sitio puramente estático) porque aquí el adaptador
-// de Astro produce además un Worker: `dist/server/entry.mjs` sirve la ruta bajo
-// demanda `/api/ping` y `dist/client/` queda como activos estáticos.
-// Campos replicados de la config que el propio adaptador genera en
-// dist/server/wrangler.json (no_bundle y rules son necesarios: el bundle ya lo
-// hizo Astro y los chunks se cargan como módulos ES).
+// de Astro añade un Worker que sirve la ruta bajo demanda `/api/ping`.
+// `main` apunta al entrypoint del paquete, no a la salida del build: el plugin
+// de Vite de Cloudflare valida este campo ANTES de construir, así que una ruta
+// a dist/ todavía no existe y la validación falla.
 // Esta rama se borra tras verificar el preview; `main` no lleva nada de esto.
 {
   "name": "calcinst-web",
   "compatibility_date": "2026-09-05",
-  "main": "./dist/server/entry.mjs",
-  "no_bundle": true,
-  "rules": [{ "type": "ESModule", "globs": ["**/*.js", "**/*.mjs"] }],
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "assets": {
     "binding": "ASSETS",
-    "directory": "./dist/client/",
-  },
-  "observability": {
-    "enabled": true,
+    "directory": "./dist/client",
   },
 }
