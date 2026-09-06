@@ -4,17 +4,34 @@
 
 ## Última etapa cerrada
 
-Etapa 0 — 2026-09-05. Evidencia presentada (E0-a … E0-e en este documento; E0-f en el mensaje de cierre de la sesión). El cierre queda sujeto a la verificación de los criterios de aceptación por el humano, conforme a la regla de puertas del plan.
+Etapa 1 — 2026-09-06. Evidencia presentada en E1-a … E1-m. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
+
+Cotejo criterio por criterio (plan §6, Etapa 1):
+
+| Criterio de aceptación | Estado | Evidencia |
+|---|---|---|
+| `npm run build` genera `dist/` estático | cumplido | E1-c, E1-m |
+| CI verde en PR | cumplido | E1-g (`gh pr checks 1` → `verificar pass`) |
+| `https://calcinst.mx` responde 200 con TLS | cumplido | E1-l (`curl -sSI` → `HTTP/1.1 200 OK`) |
+| `www.` y `.com` redirigen 301 | **pendiente** | E1-l: requiere DNS proxied + Redirect Rules a nivel de zone; pasos exactos documentados |
+| Prueba de humo I5 documentada y rama borrada | cumplido | E1-k (`curl` a `/api/ping` en el preview) y E1-m (rama borrada) |
+| Lighthouse CI corre (presupuestos laxos) | cumplido | E1-h (`Run #1...done`, `All results processed!`) |
+
+Cinco de seis criterios cumplidos con evidencia literal. El sexto depende de una acción de dashboard que Sebastián eligió aplicar él mismo.
 
 ## Siguiente etapa
 
-Etapa 1 — Andamiaje, tooling, página en blanco desplegada al dominio.
+Etapa 2 — Sistema de diseño y componentes base.
 
-Criterios de aceptación (copiados del plan, §6, Etapa 1):
+Criterios de aceptación (copiados del plan, §6, Etapa 2):
 
-> **Criterios de aceptación:** `npm run build` genera `dist/` estático; CI verde en PR; `https://calcinst.mx` responde 200 con TLS y `www.` y `.com` redirigen 301; prueba de humo I5 documentada y rama borrada; Lighthouse CI corre (presupuestos aún laxos).
+> **Criterios de aceptación:** contraste verificado con herramienta para **cada** par token/fondo de §3.2 en ambos temas (≥ 4.5:1 texto, ≥ 3:1 UI); navegación por teclado completa en `/_diseno/` con foco visible; `prefers-reduced-motion` respetado (comprobado con emulación en DevTools); fuentes autoalojadas y subconjuntadas (< 60 KB total WOFF2); cero JS salvo el conmutador de tema.
 
-> **Evidencia:** URL de producción; `curl -I` de las cuatro URLs (apex, www, .com, .com/www); captura del panel de Cloudflare Pages; enlace al run de CI; `git diff --stat`.
+> **Evidencia:** tabla de contrastes con valores medidos (salida de la herramienta, no la estimación de este plan); capturas de `/_diseno/` en 360 px y 1280 px, ambos temas; tamaño de `dist/_astro/*.woff2`; `git diff --stat`.
+
+> **Riesgos:** definir colores en componentes en lugar de tokens (regla de lint: prohibir hex en `.astro` y `.tsx`); `outline: none` sin reemplazo.
+
+Nota para quien ejecute la Etapa 2: la página `/_diseno/` debe quedar fuera del sitemap y con `noindex`. Hoy todo el sitio lleva `X-Robots-Tag: noindex` vía `public/_headers`, que se retira en la Etapa 9; a partir de entonces el `noindex` de `/_diseno/` tiene que ser propio y no depender de esa cabecera global.
 
 ## Evidencia Etapa 0
 
@@ -701,6 +718,75 @@ x-robots-tag: noindex
 
 Es decir: en el mismo despliegue, la ruta bajo demanda responde JSON generado por el Worker y la página sigue sirviéndose prerenderizada. **I5 queda satisfecha**: el camino a la fase 2 existe y está demostrado, no supuesto.
 
+### E1-l — Dominio canónico activo; redirecciones pendientes (2026-09-06)
+
+`calcinst.mx` se adjuntó **desde el repositorio**, no desde el dashboard: `wrangler.jsonc` declara `routes: [{ pattern: "calcinst.mx", custom_domain: true }]`, y el Custom Domain crea su propio registro DNS sin `zone_id` ni `zone_name` (`https://developers.cloudflare.com/workers/wrangler/configuration/`). Queda versionado y reproducible.
+
+```
+> Resolve-DnsName calcinst.mx -Type A
+Name        IPAddress
+calcinst.mx 104.21.31.146
+calcinst.mx 172.67.177.201
+
+> curl -sSI https://calcinst.mx
+HTTP/1.1 200 OK
+Content-Type: text/html
+x-robots-tag: noindex
+Server: cloudflare
+```
+
+**Criterio "`https://calcinst.mx` responde 200 con TLS": cumplido.**
+
+**Las redirecciones no se pueden resolver desde el repositorio.** Se verificó en la documentación (`https://developers.cloudflare.com/workers/static-assets/redirects/`) que `_redirects` marca explícitamente **"Domain-level redirects ❌"**: solo admite rutas relativas dentro del mismo proyecto. Sirve para lo que D8 necesita (301 internas al renombrar un `slug`), no para llevar `www` y `.com` al apex. Eso exige Redirect Rules a nivel de zone, que son operación de dashboard o de API con credenciales de Cloudflare; esta sesión no las tiene (E1-j). Sebastián optó por aplicarlas él.
+
+Estado al cierre: los tres hostnames no canónicos **no resuelven todavía**.
+
+```
+> curl -sSI https://www.calcinst.mx    → sin respuesta (el hostname no resuelve)
+> curl -sSI https://calcinst.com       → sin respuesta (el hostname no resuelve)
+> curl -sSI https://www.calcinst.com   → sin respuesta (el hostname no resuelve)
+```
+
+**Pasos exactos pendientes (dashboard de Cloudflare).** Cada hostname necesita dos cosas: un registro DNS *proxied* para que el tráfico llegue a Cloudflare, y una Redirect Rule que lo mande al apex. Sin el registro DNS la regla nunca se dispara, porque el nombre ni siquiera resuelve.
+
+*Zone `calcinst.mx`:*
+1. DNS → Add record: tipo `AAAA`, nombre `www`, dirección `100::`, **Proxied** (nube naranja). `100::` es el prefijo de descarte que Cloudflare documenta para registros que solo existen para ser proxeados.
+2. Rules → Redirect Rules → Create rule. Nombre `www a apex`. Condición: *Hostname* `equals` `www.calcinst.mx`. Acción: redirección **estática** a `https://calcinst.mx`, tipo **301**, con **Preserve path suffix** y **Preserve query string** activados.
+
+*Zone `calcinst.com`:*
+3. DNS → Add record: tipo `AAAA`, nombre `@`, dirección `100::`, **Proxied**.
+4. DNS → Add record: tipo `AAAA`, nombre `www`, dirección `100::`, **Proxied**.
+5. Rules → Redirect Rules → Create rule. Nombre `.com a .mx`. Condición: *Hostname* `is in` `calcinst.com` `www.calcinst.com`. Acción: 301 a `https://calcinst.mx`, con **Preserve path suffix** y **Preserve query string**.
+
+Nota de orden: las Redirect Rules se evalúan antes que los Workers, así que la redirección responde sin llegar al sitio.
+
+### E1-m — Batería de cierre de la Etapa 1 (2026-09-06)
+
+```
+> npx astro check
+Result (6 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+> npm test
+No test files found, exiting with code 0
+
+> node scripts/verificar-invariantes.mjs
+verificar-invariantes: 0 verificaciones activas, 0 fallos (esqueleto Etapa 1)
+
+> npm run build
+[build] 1 page(s) built in 804ms
+[build] Complete!
+
+> git diff --stat 8b2f8ee..HEAD
+18 files changed, 11856 insertions(+), 6 deletions(-)
+```
+
+Conteo de pruebas: **0 antes, 0 después**. La Etapa 1 no introduce pruebas; las primeras llegan en la Etapa 3 (`tests/lanzamiento.test.ts`), y `vitest.config.ts` declara `passWithNoTests: true` para que CI no afirme una cobertura inexistente.
+
+Estado del repositorio: rama única `main`; `prueba/i5-humo` borrada en local y en GitHub tras verificarse (`git branch -r` solo lista `origin/main`).
+
 ## Decisión pendiente — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds **no satisface ese enunciado por sí sola**: Cloudflare observa el repositorio y construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado. Un commit roto en `main` se desplegaría antes de que CI lo reporte. Se registra aquí en vez de resolverse por cuenta propia, porque cambia la forma del despliegue y conviene decidirlo antes de conectar:
@@ -710,14 +796,11 @@ D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git
 
 ## Bloqueos
 
-Todo lo que puede hacerse sin el dashboard está hecho. Faltan estas acciones de Sebastián:
+1. **Redirecciones de `www` y `.com`** (único criterio de la Etapa 1 sin cumplir): aplicar los cinco pasos de dashboard listados en E1-l. Después, `curl -I` de las cuatro URLs debe mostrar 301 hacia `https://calcinst.mx` en las tres no canónicas. **Fecha de corte: antes de la Etapa 9**, que es cuando las canónicas y el sitemap dependen de ello; no bloquea las Etapas 2–8.
+2. **Elegir entre la opción A y la B** de "Decisión pendiente — D2". Hoy el repositorio está en el escenario de la opción A pero **sin la protección de rama** que la hace válida: cualquier push directo a `main` se despliega sin esperar a CI. Mientras no se decida, conviene no hacer push directo a `main`.
+3. **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum A2.
 
-1. **Elegir entre la opción A y la B** de la sección anterior.
-2. **Conectar el repositorio** en Cloudflare (Workers & Pages → Create → Workers → Connect to Git), dando acceso **solo** a `calcinst-web`: build `npm run build`, directorio de salida `dist`, rama de producción `main`. Activar en Settings → Build → Branch control la casilla **"Builds for non-production branches"**, sin la cual el PR #1 no genera preview y la prueba de humo I5 no puede verificarse.
-3. **Registrar `calcinst.com`** en Cloudflare (el `.mx` ya está con zone activo). Verificado aún no registrado el 2026-09-05 por la tarde: RDAP de Verisign devuelve HTTP 404.
-4. **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum siguiente.
-
-Hecho 1–3, la sesión puede cerrar la etapa: `curl` al preview de `/api/ping`, borrado de `prueba/i5-humo`, dominio personalizado, Redirect Rules y `curl -I` de las cuatro URLs.
+Nada de lo anterior impide iniciar la Etapa 2.
 
 ## Nota sobre E0-f
 
