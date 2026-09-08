@@ -1,0 +1,127 @@
+---
+/**
+ * BloqueCodigo — código resaltado por Shiki en tiempo de build (§3.5).
+ * Cero JS de resaltado en el cliente; el único script es el botón de copiar.
+ */
+import { Code } from 'astro:components'
+
+interface Props {
+  codigo: string
+  lenguaje?: string
+  /** Título opcional (p. ej. la ruta del archivo). */
+  titulo?: string
+}
+
+const { codigo, lenguaje = 'text', titulo } = Astro.props
+---
+
+<figure class="bloque">
+  <figcaption class="barra">
+    <span class="titulo">{titulo ?? lenguaje}</span>
+    <button type="button" class="copiar" data-copiar aria-label="Copiar el código al portapapeles">
+      Copiar
+    </button>
+  </figcaption>
+  <div class="codigo">
+    <Code
+      code={codigo}
+      lang={lenguaje as never}
+      themes={{ light: 'github-light', dark: 'github-dark' }}
+      defaultColor={false}
+    />
+  </div>
+</figure>
+
+<script>
+  for (const boton of document.querySelectorAll<HTMLButtonElement>('[data-copiar]')) {
+    boton.addEventListener('click', async () => {
+      const texto = boton.closest('figure')?.querySelector('code')?.textContent ?? ''
+      const original = boton.textContent
+      try {
+        await navigator.clipboard.writeText(texto)
+        boton.textContent = 'Copiado'
+      } catch {
+        // I1 en pequeño: si falla, se dice, no se finge que funcionó.
+        boton.textContent = 'No se pudo copiar'
+      }
+      setTimeout(() => {
+        boton.textContent = original
+      }, 2000)
+    })
+  }
+</script>
+
+<style>
+  .bloque {
+    margin: var(--e-6) 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+
+  .barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    padding: var(--e-2) var(--e-3);
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .titulo {
+    font-family: var(--fuente-mono);
+    font-size: var(--text-xs);
+    color: var(--fg-2);
+  }
+
+  .copiar {
+    background: transparent;
+    border: 1px solid var(--color-line-ui);
+    border-radius: var(--r-sm);
+    color: var(--fg-1);
+    font-family: var(--fuente-texto);
+    font-size: var(--text-xs);
+    padding: var(--e-1) var(--e-2);
+    min-height: 28px;
+    cursor: pointer;
+  }
+
+  .copiar:hover {
+    color: var(--fg-0);
+    background: var(--bg-1);
+  }
+
+  .codigo {
+    overflow-x: auto;
+  }
+
+  .codigo :global(pre) {
+    margin: 0;
+    padding: var(--e-4);
+    font-size: var(--text-sm);
+  }
+
+  /* Shiki emite los dos temas como variables (defaultColor: false) y aquí se
+   * elige cuál se usa, de modo que el bloque sigue al tema del sitio en vez de
+   * quedarse oscuro sobre fondo claro. */
+  .codigo :global(.shiki),
+  .codigo :global(.shiki span) {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+  }
+
+  :global(:root[data-tema='claro']) .codigo :global(.shiki),
+  :global(:root[data-tema='claro']) .codigo :global(.shiki span) {
+    color: var(--shiki-light);
+    background-color: var(--shiki-light-bg);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-tema='oscuro'])) .codigo :global(.shiki),
+    :global(:root:not([data-tema='oscuro'])) .codigo :global(.shiki span) {
+      color: var(--shiki-light);
+      background-color: var(--shiki-light-bg);
+    }
+  }
+</style>

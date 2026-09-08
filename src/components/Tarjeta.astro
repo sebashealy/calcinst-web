@@ -1,0 +1,34 @@
+---
+/**
+ * Tarjeta — panel con borde, sin sombra (§3.1: bordes, no sombras).
+ * `reticula` pinta el motivo métrico de fondo, estático siempre.
+ */
+interface Props {
+  reticula?: boolean
+  etiquetaAria?: string
+}
+
+const { reticula = false, etiquetaAria } = Astro.props
+---
+
+<section class:list={['tarjeta', reticula && 'con-reticula']} aria-label={etiquetaAria}>
+  <slot />
+</section>
+
+<style>
+  .tarjeta {
+    background: var(--bg-1);
+    border: 1px solid var(--color-line);
+    border-radius: var(--r-lg);
+    padding: var(--e-6);
+  }
+
+  /* Retícula métrica: línea cada 24 px ("1 m") y línea mayor cada 5. */
+  .con-reticula {
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: var(--reticula) var(--reticula);
+    background-position: -1px -1px;
+  }
+</style>

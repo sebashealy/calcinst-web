@@ -1,0 +1,42 @@
+---
+/**
+ * Descargo — bloque fijo al pie de todo post técnico.
+ *
+ * El texto es el de PLAN_SITIO_WEB.md §9.1, literal y sin parametrizar: traslada
+ * la autoridad a las citas (I3) en lugar de atribuir credenciales que no existen.
+ * Cualquier cambio a este texto es una decisión editorial, no de maquetación.
+ */
+---
+
+<aside class="descargo" aria-labelledby="titulo-descargo">
+  <h2 id="titulo-descargo" class="titulo">Sobre quién escribe esto</h2>
+  <p>
+    Este artículo lo escribe un estudiante de ingeniería eléctrica, no un profesionista con cédula.
+    Su valor está en las referencias: cada afirmación técnica cita el artículo o la tabla de la
+    NOM-001-SEDE en que se apoya, para que puedas verificarla directamente en el texto publicado en
+    el Diario Oficial de la Federación. No sustituye el criterio del profesional responsable de
+    firmar un proyecto. Si encuentras un error, escríbeme: se corrige y se registra públicamente en
+    la sección de erratas.
+  </p>
+</aside>
+
+<style>
+  .descargo {
+    border-top: 1px solid var(--color-line);
+    margin-top: var(--e-12);
+    padding-top: var(--e-6);
+    color: var(--fg-1);
+    font-size: var(--text-sm);
+    max-width: var(--medida);
+  }
+
+  .titulo {
+    font-size: var(--text-base);
+    color: var(--fg-0);
+    margin-bottom: var(--e-2);
+  }
+
+  .descargo p {
+    margin: 0;
+  }
+</style>

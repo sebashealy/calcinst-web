@@ -45,3 +45,6 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# Evidencia generada (capturas pesadas); se adjunta al cerrar la etapa
+evidencia/

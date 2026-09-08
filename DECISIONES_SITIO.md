@@ -18,4 +18,12 @@
 
 ## Addenda
 
-(vacía)
+### AD1 — `enforce_admins` permanece desactivado en la protección de `main` (2026-09-06)
+
+**Contexto.** D2 quedó cerrado en la opción A: la integración Git de Cloudflare más protección de rama en GitHub exigiendo el check `verificar` (evidencia en `ESTADO_SITIO.md`, E1-o). Al verificar esa protección por API se detectó que `enforce_admins` está en `false`, es decir, una cuenta administradora todavía puede empujar directo a `main` y saltarse la puerta de CI.
+
+**Decisión de Sebastián:** se mantiene en `false`, de forma consciente y no por descuido. Razón: es el único desarrollador del proyecto, y el valor de conservar una salida de urgencia para corregir `main` sin pasar por un PR supera al del hueco que deja abierto.
+
+**Qué implica aceptar.** El enunciado de D2 ("Cloudflare solo despliega lo que pasó CI") se sostiene por convención, no por imposición técnica: un push directo de la cuenta administradora se desplegaría sin esperar a CI. La mitigación es de proceso — trabajar por PR salvo urgencia real.
+
+**Costo de revertir:** nulo. Es una casilla en la configuración de la rama; activarla en cualquier momento cierra el hueco sin tocar el repositorio.

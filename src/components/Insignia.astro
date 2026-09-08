@@ -1,0 +1,66 @@
+---
+/**
+ * Insignia — etiqueta corta de estado.
+ *
+ * Deliberadamente NO conoce los estados de lanzamiento: recibe `tono` y su
+ * texto por slot. El mapeo estado→insignia vive en `src/config/` (Etapa 3)
+ * porque I7 prohíbe los literales de estado fuera de esa carpeta.
+ */
+interface Props {
+  tono?: 'neutro' | 'info' | 'ok' | 'aviso' | 'peligro'
+  /** Texto leído por lector de pantalla antes del contenido, si hace falta contexto. */
+  etiqueta?: string
+}
+
+const { tono = 'neutro', etiqueta } = Astro.props
+---
+
+<span class:list={['insignia', `t-${tono}`]}>
+  {etiqueta && <span class="sr">{etiqueta}: </span>}
+  <slot />
+</span>
+
+<style>
+  .insignia {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--e-1);
+    padding: 0 var(--e-2);
+    border: 1px solid var(--color-line-ui);
+    border-radius: var(--r-sm);
+    background: var(--bg-2);
+    color: var(--fg-1);
+    font-family: var(--fuente-mono);
+    font-size: var(--text-xs);
+    line-height: 1.8;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .t-info {
+    color: var(--link);
+    border-color: var(--link);
+  }
+  .t-ok {
+    color: var(--ok);
+    border-color: var(--ok);
+  }
+  .t-aviso {
+    color: var(--warn);
+    border-color: var(--warn);
+  }
+  .t-peligro {
+    color: var(--danger);
+    border-color: var(--danger);
+  }
+
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

@@ -16,7 +16,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "verificar": "node scripts/verificar-invariantes.mjs"
+    "verificar": "node scripts/verificar-invariantes.mjs",
+    "fuentes": "node scripts/generar-fuentes.mjs",
+    "auditar": "node scripts/auditar-diseno.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "8.0.0",
@@ -27,10 +29,13 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "@lhci/cli": "0.15.1",
+    "axe-core": "4.13.0",
     "eslint": "10.10.0",
     "eslint-plugin-astro": "3.1.0",
     "prettier": "3.9.6",
     "prettier-plugin-astro": "0.14.1",
+    "puppeteer-core": "24.43.1",
+    "subset-font": "2.7.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.69.0",
     "vitest": "5.0.0"

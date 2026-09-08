@@ -1,0 +1,213 @@
+---
+/**
+ * BarraNav — navegación principal (§3.5).
+ *
+ * Presentacional: el texto del botón de acción llega por prop porque los
+ * literales de estado de lanzamiento solo pueden vivir en `src/config/` (I7).
+ * La Etapa 3 la cablea con `lanzamiento.ts`.
+ */
+import Boton from './Boton.astro'
+import ConmutadorTema from './ConmutadorTema.astro'
+
+interface Props {
+  /** Texto del botón de acción. Lo decide la config, nunca este componente. */
+  textoAccion?: string
+  hrefAccion?: string
+  rutaActual?: string
+}
+
+const { textoAccion, hrefAccion = '/descarga/', rutaActual = '' } = Astro.props
+
+const enlaces = [
+  { href: '/producto/', texto: 'Producto' },
+  { href: '/quienes-somos/', texto: 'Quiénes somos' },
+  { href: '/blog/', texto: 'Blog' },
+]
+
+const esActual = (href: string) => rutaActual === href || rutaActual.startsWith(href)
+---
+
+<header class="cabecera">
+  <nav class="nav" aria-label="Navegación principal">
+    <a href="/" class="logo">CalcInst</a>
+
+    <button
+      type="button"
+      class="hamburguesa"
+      data-menu-boton
+      aria-expanded="false"
+      aria-controls="menu-principal"
+      aria-label="Abrir menú"
+    >
+      <span class="barras" aria-hidden="true"></span>
+    </button>
+
+    <div class="menu" id="menu-principal" data-menu>
+      <ul class="enlaces">
+        {
+          enlaces.map((e) => (
+            <li>
+              <a href={e.href} aria-current={esActual(e.href) ? 'page' : undefined}>
+                {e.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="acciones">
+        <ConmutadorTema />
+        {
+          textoAccion && (
+            <Boton href={hrefAccion} tamano="sm">
+              {textoAccion}
+            </Boton>
+          )
+        }
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>('[data-menu-boton]')
+  const menu = document.querySelector<HTMLElement>('[data-menu]')
+
+  if (boton && menu) {
+    const abierto = () => boton.getAttribute('aria-expanded') === 'true'
+
+    const fijar = (abrir: boolean) => {
+      boton.setAttribute('aria-expanded', String(abrir))
+      boton.setAttribute('aria-label', abrir ? 'Cerrar menú' : 'Abrir menú')
+      menu.dataset.abierto = String(abrir)
+    }
+
+    boton.addEventListener('click', () => fijar(!abierto()))
+
+    // Escape cierra y devuelve el foco al botón: sin esto el menú es una trampa
+    // de teclado en móvil (criterio de aceptación de la Etapa 3).
+    document.addEventListener('keydown', (evento) => {
+      if (evento.key === 'Escape' && abierto()) {
+        fijar(false)
+        boton.focus()
+      }
+    })
+  }
+</script>
+
+<style>
+  .cabecera {
+    border-bottom: 1px solid var(--color-line);
+    background: var(--bg-0);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--e-4);
+    flex-wrap: wrap;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--e-3) var(--e-4);
+  }
+
+  .logo {
+    font-family: var(--fuente-mono);
+    font-weight: 500;
+    font-size: var(--text-lg);
+    color: var(--fg-0);
+    text-decoration: none;
+    margin-right: auto;
+  }
+
+  .enlaces {
+    display: flex;
+    gap: var(--e-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .enlaces a {
+    color: var(--fg-1);
+    text-decoration: none;
+    font-size: var(--text-sm);
+  }
+
+  .enlaces a:hover {
+    color: var(--fg-0);
+  }
+
+  .enlaces a[aria-current='page'] {
+    color: var(--fg-0);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .acciones {
+    display: flex;
+    align-items: center;
+    gap: var(--e-3);
+  }
+
+  .hamburguesa {
+    display: none;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--color-line-ui);
+    border-radius: var(--r-md);
+    cursor: pointer;
+  }
+
+  .barras,
+  .barras::before,
+  .barras::after {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--fg-0);
+  }
+
+  .barras::before,
+  .barras::after {
+    content: '';
+    position: relative;
+  }
+  .barras::before {
+    top: -6px;
+  }
+  .barras::after {
+    top: 4px;
+  }
+
+  .menu {
+    display: flex;
+    align-items: center;
+    gap: var(--e-6);
+  }
+
+  @media (max-width: 767px) {
+    .hamburguesa {
+      display: inline-flex;
+    }
+
+    .menu {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--e-4);
+      padding-top: var(--e-4);
+    }
+
+    .menu[data-abierto='true'] {
+      display: flex;
+    }
+
+    .enlaces {
+      flex-direction: column;
+      gap: var(--e-3);
+    }
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+/**
+ * AvisoErrata — erratas de un post, visibles AL INICIO (§9.1), nunca al final.
+ * Si alguna errata cambió un resultado numérico, el bloque va en --danger.
+ */
+export interface Errata {
+  fecha: string
+  descripcion: string
+  afectaResultado: boolean
+}
+
+interface Props {
+  erratas: Errata[]
+}
+
+const { erratas } = Astro.props
+const grave = erratas.some((e) => e.afectaResultado)
+const formato = new Intl.DateTimeFormat('es-MX', { dateStyle: 'long' })
+const fechaLegible = (iso: string) => formato.format(new Date(`${iso}T12:00:00Z`))
+---
+
+{
+  erratas.length > 0 && (
+    <aside class:list={['erratas', grave && 'grave']} aria-labelledby="titulo-erratas">
+      <h2 id="titulo-erratas" class="titulo">
+        {grave ? 'Erratas que afectan un resultado' : 'Erratas'}
+      </h2>
+      <ul class="lista">
+        {erratas.map((e) => (
+          <li>
+            <time datetime={e.fecha} class="fecha">
+              {fechaLegible(e.fecha)}
+            </time>
+            <span> — {e.descripcion}</span>
+            {e.afectaResultado && <strong class="marca"> Cambia un resultado numérico.</strong>}
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )
+}
+
+<style>
+  .erratas {
+    border: 1px solid var(--warn);
+    border-left-width: 3px;
+    background: var(--bg-1);
+    padding: var(--e-4);
+    margin: 0 0 var(--e-8);
+    border-radius: var(--r-md);
+  }
+
+  .grave {
+    border-color: var(--danger);
+  }
+
+  .titulo {
+    font-size: var(--text-base);
+    margin: 0 0 var(--e-2);
+    color: var(--warn);
+  }
+
+  .grave .titulo {
+    color: var(--danger);
+  }
+
+  .lista {
+    margin: 0;
+    padding-left: var(--e-4);
+    font-size: var(--text-sm);
+    color: var(--fg-1);
+  }
+
+  .lista li + li {
+    margin-top: var(--e-2);
+  }
+
+  .fecha {
+    font-family: var(--fuente-mono);
+    color: var(--fg-2);
+  }
+
+  .marca {
+    color: var(--danger);
+  }
+</style>

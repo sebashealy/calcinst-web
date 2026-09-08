@@ -1,0 +1,85 @@
+---
+/**
+ * ConmutadorTema — alterna claro/oscuro y recuerda la elección.
+ *
+ * En JS plano, no como isla React: el plan lo nombraba `ConmutadorTema.tsx`
+ * (§4.1), pero React + ReactDOM son ~45 KB y I4 limita el JS de páginas de
+ * contenido a 5 KB. El invariante manda sobre el nombre del archivo; queda
+ * registrado como addendum A2 en ESTADO_SITIO.md.
+ *
+ * Requiere <ScriptTema /> en <head> para que no haya parpadeo al cargar.
+ */
+---
+
+<button
+  type="button"
+  class="conmutador"
+  data-conmutador-tema
+  aria-pressed="false"
+  aria-label="Cambiar a tema claro"
+>
+  <span class="icono" aria-hidden="true"></span>
+  <span class="texto">Tema</span>
+</button>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>('[data-conmutador-tema]')
+
+  if (boton) {
+    const raiz = document.documentElement
+    const oscuroDelSistema = () => window.matchMedia('(prefers-color-scheme: dark)').matches
+    const temaActual = () => raiz.dataset.tema ?? (oscuroDelSistema() ? 'oscuro' : 'claro')
+
+    const sincronizar = () => {
+      const claro = temaActual() === 'claro'
+      // aria-pressed describe el estado del control, no la acción; la etiqueta sí
+      // anuncia lo que hará al pulsarlo.
+      boton.setAttribute('aria-pressed', String(claro))
+      boton.setAttribute('aria-label', claro ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro')
+    }
+
+    boton.addEventListener('click', () => {
+      const nuevo = temaActual() === 'claro' ? 'oscuro' : 'claro'
+      raiz.dataset.tema = nuevo
+      try {
+        localStorage.setItem('tema', nuevo)
+      } catch {
+        // Sin almacenamiento la elección dura lo que la página; no es un fallo.
+      }
+      sincronizar()
+    })
+
+    sincronizar()
+  }
+</script>
+
+<style>
+  .conmutador {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--e-2);
+    min-height: 40px;
+    padding: var(--e-2) var(--e-3);
+    background: transparent;
+    color: var(--fg-1);
+    border: 1px solid var(--color-line-ui);
+    border-radius: var(--r-md);
+    font-family: var(--fuente-texto);
+    font-size: var(--text-sm);
+    cursor: pointer;
+  }
+
+  .conmutador:hover {
+    color: var(--fg-0);
+    background: var(--bg-1);
+  }
+
+  /* Cuadrado mitad relleno: legible sin color y sin depender de un icono externo. */
+  .icono {
+    width: 0.85em;
+    height: 0.85em;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+  }
+</style>
