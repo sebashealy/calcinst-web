@@ -1,0 +1,268 @@
+/* tokens.css — sistema de diseño de CalcInst (PLAN_SITIO_WEB.md §3).
+ *
+ * Los valores de contraste anotados están medidos, no estimados: salida de
+ * scripts/verificar-contraste.mjs sobre estos mismos tokens. Dos difieren del
+ * plan porque los del plan no llegaban a 4.5:1 (ver ESTADO_SITIO.md, A3).
+ *
+ * Tema: oscuro por defecto. El claro entra por `prefers-color-scheme` o por
+ * `data-tema` en <html>, que fija la elección manual y gana sobre el sistema.
+ */
+
+/* ---------- Fuentes autoalojadas y subconjuntadas (scripts/generar-fuentes.mjs) ---------- */
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fuentes/ibm-plex-sans-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fuentes/ibm-plex-sans-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fuentes/ibm-plex-mono-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fuentes/ibm-plex-mono-500.woff2') format('woff2');
+}
+
+/* ---------- Tema oscuro (por defecto) ---------- */
+
+:root {
+  color-scheme: dark;
+
+  --bg-0: #0b0f14;
+  --bg-1: #11161d;
+  --bg-2: #182028;
+
+  /* Separadores y panel: decorativos, no transmiten información (WCAG 1.4.11
+   * no aplica). Los bordes de controles interactivos usan --color-line-ui. */
+  --color-line: #263140;
+  --color-line-ui: #636b75; /* 3.56 / 3.36 / 3.05 sobre bg-0 / bg-1 / bg-2 */
+  --color-grid: #1c2530;
+
+  --fg-0: #e6edf3; /* 16.27 / 15.37 / 13.93 */
+  --fg-1: #9aa7b4; /*  7.83 /  7.40 /  6.71 */
+  --fg-2: #7d8894; /*  5.33 /  5.03 /  4.56 — corregido, el plan daba 4.26 */
+
+  --accent: #f5b72b; /* 10.70 / 10.11 /  9.16 */
+  --accent-texto: #0b0f14; /* sobre --accent: 10.70 */
+  --link: #5cc8ff; /* 10.21 /  9.65 /  8.75 */
+  --ok: #3dd68c; /* 10.25 /  9.68 /  8.77 */
+  --warn: #f5b72b; /* comparte color con --accent; se distingue por icono y texto */
+  --danger: #f0716b; /*  6.66 /  6.30 /  5.70 */
+}
+
+/* ---------- Tema claro ---------- */
+
+:root[data-tema='claro'] {
+  color-scheme: light;
+
+  --bg-0: #f6f8fa;
+  --bg-1: #ffffff;
+  --bg-2: #eef1f4;
+
+  --color-line: #d0d7de;
+  --color-line-ui: #858a8e; /* 3.27 / 3.49 / 3.08 */
+  --color-grid: #e3e8ec;
+
+  --fg-0: #0b0f14; /* 18.05 / 19.20 / 16.94 */
+  --fg-1: #3d4753; /*  8.87 /  9.44 /  8.33 */
+  --fg-2: #5a6472; /*  5.64 /  6.00 /  5.29 */
+
+  --accent: #956400; /*  4.81 /  5.12 /  4.52 — corregido, el plan daba 4.30 sobre bg-2 */
+  --accent-texto: #ffffff; /* sobre --accent: 4.93 */
+  --link: #0969da; /*  4.88 /  5.19 /  4.58 */
+  --ok: #0f7b43; /*  5.01 /  5.34 /  4.71 */
+  --warn: #956400;
+  --danger: #c0342b; /*  5.24 /  5.57 /  4.92 */
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-tema='oscuro']) {
+    color-scheme: light;
+
+    --bg-0: #f6f8fa;
+    --bg-1: #ffffff;
+    --bg-2: #eef1f4;
+
+    --color-line: #d0d7de;
+    --color-line-ui: #858a8e;
+    --color-grid: #e3e8ec;
+
+    --fg-0: #0b0f14;
+    --fg-1: #3d4753;
+    --fg-2: #5a6472;
+
+    --accent: #956400;
+    --accent-texto: #ffffff;
+    --link: #0969da;
+    --ok: #0f7b43;
+    --warn: #956400;
+    --danger: #c0342b;
+  }
+}
+
+/* ---------- Tipografía, espaciado, radios (§3.3, §3.4) ---------- */
+
+:root {
+  --fuente-texto: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --fuente-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+
+  /* Escala 1.25 sobre base 16 px. */
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.875rem; /* 14 */
+  --text-base: 1rem; /* 16 */
+  --text-lg: 1.25rem; /* 20 */
+  --text-xl: 1.5625rem; /* 25 */
+  --text-2xl: 1.9375rem; /* 31 */
+  --text-3xl: 2.4375rem; /* 39 */
+  --text-4xl: 3.0625rem; /* 49 */
+
+  --interlineado-cuerpo: 1.6;
+  --interlineado-titulo: 1.2;
+  --medida: 68ch;
+
+  /* Base 4 px. La retícula de 24 px alinea las secciones. */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-6: 1.5rem;
+  --e-8: 2rem;
+  --e-12: 3rem;
+  --e-16: 4rem;
+  --e-24: 6rem;
+  --e-32: 8rem;
+  --reticula: 24px;
+
+  --r-sm: 2px;
+  --r-md: 4px;
+  --r-lg: 6px;
+
+  --transicion: 150ms;
+}
+
+/* ---------- Base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg-0);
+  /* Evita que el tema del sistema pinte otro fondo detrás del documento. */
+  color: var(--fg-0);
+}
+
+body {
+  margin: 0;
+  background: var(--bg-0);
+  color: var(--fg-0);
+  font-family: var(--fuente-texto);
+  font-size: var(--text-base);
+  line-height: var(--interlineado-cuerpo);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: var(--interlineado-titulo);
+  font-weight: 600;
+  margin: 0 0 var(--e-4);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--text-3xl);
+}
+h2 {
+  font-size: var(--text-2xl);
+}
+h3 {
+  font-size: var(--text-xl);
+}
+h4 {
+  font-size: var(--text-lg);
+}
+
+p {
+  margin: 0 0 var(--e-4);
+}
+
+a {
+  color: var(--link);
+  text-underline-offset: 0.2em;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--fuente-mono);
+  font-size: 0.9em;
+}
+
+/* Números tabulares en tablas: calibres y ampacidades alineados por columna. */
+table {
+  font-variant-numeric: tabular-nums;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Foco visible en todo elemento interactivo. Nunca `outline: none` sin
+ * reemplazo: el criterio de la Etapa 2 exige recorrido completo por teclado. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* Movimiento solo si el usuario no pidió reducirlo (§3.4). */
+@media (prefers-reduced-motion: no-preference) {
+  :where(a, button, input, select, summary, .transicionable) {
+    transition:
+      color var(--transicion) ease,
+      background-color var(--transicion) ease,
+      border-color var(--transicion) ease,
+      opacity var(--transicion) ease;
+  }
+}
+
+/* Enlace de salto: visible solo al recibir foco. */
+.salto-contenido {
+  position: absolute;
+  left: var(--e-2);
+  top: var(--e-2);
+  z-index: 10;
+  padding: var(--e-2) var(--e-3);
+  background: var(--bg-2);
+  color: var(--fg-0);
+  border: 1px solid var(--color-line-ui);
+  border-radius: var(--r-md);
+  transform: translateY(-200%);
+}
+
+.salto-contenido:focus-visible {
+  transform: translateY(0);
+}

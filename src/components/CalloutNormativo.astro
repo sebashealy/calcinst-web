@@ -1,0 +1,59 @@
+---
+/**
+ * CalloutNormativo — cita a un artículo o tabla de la norma (§3.5, D8).
+ *
+ * El build de la Etapa 4 cruzará las `ref` usadas en el cuerpo de cada post
+ * contra el `normativa[]` de su frontmatter y fallará si algo no está declarado.
+ * Aquí solo se define la presentación y el enlace estable a /normativa/{ref}/.
+ */
+interface Props {
+  /** Referencia tal como se cita: "430-22", "310-15(b)(16)", "cap9-tabla-4". */
+  ref: string
+  /** Versión de la norma citada. La cadena la fija el contenido, no el componente. */
+  version: string
+  tipo?: 'articulo' | 'tabla' | 'nota'
+}
+
+const { ref, version, tipo = 'articulo' } = Astro.props
+
+/** Ancla de /normativa/{ref}/: minúsculas, sin paréntesis, separado por guiones. */
+const slug = ref
+  .toLowerCase()
+  .replace(/[()]/g, '-')
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-+|-+$/g, '')
+
+const prefijo = { articulo: 'Art.', tabla: 'Tabla', nota: 'Nota' }[tipo]
+---
+
+<aside class="callout">
+  <p class="cabecera">
+    <a href={`/normativa/${slug}/`} class="ref">{version} · {prefijo} {ref}</a>
+  </p>
+  <div class="cuerpo"><slot /></div>
+</aside>
+
+<style>
+  .callout {
+    border-left: 3px solid var(--link);
+    background: var(--bg-1);
+    padding: var(--e-3) var(--e-4);
+    margin: var(--e-6) 0;
+    border-radius: 0 var(--r-md) var(--r-md) 0;
+  }
+
+  .cabecera {
+    margin: 0 0 var(--e-2);
+  }
+
+  .ref {
+    font-family: var(--fuente-mono);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--link);
+  }
+
+  .cuerpo :global(> :last-child) {
+    margin-bottom: 0;
+  }
+</style>

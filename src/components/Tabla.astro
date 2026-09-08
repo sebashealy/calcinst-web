@@ -1,0 +1,83 @@
+---
+/**
+ * Tabla — datos técnicos. Caption obligatorio (§3.5) y scroll horizontal propio
+ * en móvil, para que la página nunca desborde en horizontal.
+ */
+interface Props {
+  /** Obligatorio: una tabla sin resumen no es navegable con lector de pantalla. */
+  caption: string
+  /** Oculta el caption visualmente sin quitarlo del árbol de accesibilidad. */
+  captionOculto?: boolean
+}
+
+const { caption, captionOculto = false } = Astro.props
+
+if (!caption?.trim()) {
+  throw new Error('Tabla: `caption` es obligatorio.')
+}
+---
+
+<div class="envoltorio" tabindex="0" role="region" aria-label={caption}>
+  <table>
+    <caption class:list={[captionOculto && 'sr']}>{caption}</caption>
+    <slot />
+  </table>
+</div>
+
+<style>
+  /* tabindex + overflow: el contenedor es enfocable para poder desplazarlo
+   * con teclado cuando la tabla no cabe. */
+  .envoltorio {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--r-md);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+  }
+
+  caption {
+    text-align: left;
+    padding: var(--e-3) var(--e-4);
+    color: var(--fg-1);
+    font-size: var(--text-sm);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  table :global(th),
+  table :global(td) {
+    padding: var(--e-2) var(--e-4);
+    text-align: left;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  table :global(thead th) {
+    background: var(--bg-2);
+    color: var(--fg-0);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  table :global(tbody tr:last-child td) {
+    border-bottom: none;
+  }
+
+  /* Datos técnicos: monoespaciada y alineados a la derecha (§3.1). */
+  table :global(.num) {
+    font-family: var(--fuente-mono);
+    text-align: right;
+    white-space: nowrap;
+  }
+</style>

@@ -4,34 +4,41 @@
 
 ## Última etapa cerrada
 
-Etapa 1 — 2026-09-06. Evidencia presentada en E1-a … E1-o. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
+Etapa 2 — 2026-09-08. Evidencia presentada en E2-a … E2-i. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
 
-Cotejo criterio por criterio (plan §6, Etapa 1):
+Cotejo criterio por criterio (plan §6, Etapa 2):
 
 | Criterio de aceptación | Estado | Evidencia |
 |---|---|---|
-| `npm run build` genera `dist/` estático | cumplido | E1-c, E1-m |
-| CI verde en PR | cumplido | E1-g (`gh pr checks 1` → `verificar pass`) |
-| `https://calcinst.mx` responde 200 con TLS | cumplido | E1-l (`curl -sSI` → `HTTP/1.1 200 OK`) |
-| `www.` y `.com` redirigen 301 | cumplido en la raíz; **defectuoso con ruta** | E1-n: las tres URL no canónicas devuelven 301 al apex, pero una de las reglas rompe el hostname y la otra descarta la ruta |
-| Prueba de humo I5 documentada y rama borrada | cumplido | E1-k (`curl` a `/api/ping` en el preview) y E1-m (rama borrada) |
-| Lighthouse CI corre (presupuestos laxos) | cumplido | E1-h (`Run #1...done`, `All results processed!`) |
+| Contraste verificado con herramienta para cada par token/fondo en ambos temas (≥ 4.5:1 texto, ≥ 3:1 UI) | cumplido | E2-b: matriz medida sobre el render real; dos tokens del plan no llegaban y se corrigieron (A3) |
+| Navegación por teclado completa con foco visible | cumplido | E2-d: 21 paradas, 0 sin foco visible, enlace de salto primero, `Escape` cierra el menú y devuelve el foco |
+| `prefers-reduced-motion` respetado | cumplido | E2-e: emulado `reduce`, ningún elemento conserva transición ni animación |
+| Fuentes autoalojadas y subconjuntadas (< 60 KB total WOFF2) | cumplido | E2-a y E2-f: 52 340 B = 51.1 KiB, con las cuatro caras de §3.3 |
+| Cero JS salvo el conmutador de tema | cumplido con matiz | E2-f: 1.42 KiB en 4 scripts. Además del conmutador hay dos que el propio plan prevé (menú móvil accesible en §3.5, botón de copiar en `BloqueCodigo`) y el fijador de tema de `<head>` |
+| Página con todos los componentes en todos sus estados, ambos temas | cumplido en `/diseno/` | E2-g y A4: `/_diseno/` es irrealizable en Astro; comprobado |
 
-Cinco criterios cumplidos con evidencia literal. El sexto está cumplido en su forma literal —las tres URL no canónicas responden 301 hacia `https://calcinst.mx`— pero con un defecto que el criterio, redactado antes de existir el sitio, no alcanzaba a expresar: las redirecciones no preservan correctamente la ruta (E1-n). No afecta al sitio de una sola página que existe hoy; sí lo haría desde la Etapa 4. Se documenta como pendiente con fecha de corte en vez de darse por bueno.
+Añadido no exigido pero pedido por el plan como mitigación de riesgo de esta etapa: `verificar-invariantes.mjs` ahora falla si aparece un color literal fuera de `tokens.css`, con prueba negativa (E2-i).
+
+Cuatro addenda emitidos: **A2** (conmutador en JS plano, no React), **A3** (dos tokens corregidos y uno nuevo), **A4** (`/diseno/` en vez de `/_diseno/`), **A5** (el sistema no usa utilidades de Tailwind).
 
 ## Siguiente etapa
 
-Etapa 2 — Sistema de diseño y componentes base.
+Etapa 3 — Layout global: navegación, pie, estado de lanzamiento.
 
-Criterios de aceptación (copiados del plan, §6, Etapa 2):
+Criterios de aceptación (copiados del plan, §6, Etapa 3):
 
-> **Criterios de aceptación:** contraste verificado con herramienta para **cada** par token/fondo de §3.2 en ambos temas (≥ 4.5:1 texto, ≥ 3:1 UI); navegación por teclado completa en `/_diseno/` con foco visible; `prefers-reduced-motion` respetado (comprobado con emulación en DevTools); fuentes autoalojadas y subconjuntadas (< 60 KB total WOFF2); cero JS salvo el conmutador de tema.
+> **Criterios de aceptación:** cambiar `ESTADO_LANZAMIENTO` a cada uno de los tres valores cambia el texto del botón de acción y el pie sin tocar otro archivo (`git diff --stat` = 1 archivo en cada prueba); el script I7 falla intencionalmente al introducir un literal prohibido en un componente de prueba y vuelve a pasar al quitarlo (prueba negativa documentada); menú móvil operable con teclado y lector de pantalla (`aria-expanded`, `Escape` cierra).
 
-> **Evidencia:** tabla de contrastes con valores medidos (salida de la herramienta, no la estimación de este plan); capturas de `/_diseno/` en 360 px y 1280 px, ambos temas; tamaño de `dist/_astro/*.woff2`; `git diff --stat`.
+> **Evidencia:** tres `git diff --stat` (uno por estado) + captura de cada estado; salida del script en fallo y en éxito; conteo de tests antes/después.
 
-> **Riesgos:** definir colores en componentes en lugar de tokens (regla de lint: prohibir hex en `.astro` y `.tsx`); `outline: none` sin reemplazo.
+> **Riesgos:** el estado se filtra a `producto.json` y queda duplicado; menú móvil sin cierre por `Escape`.
 
-Nota para quien ejecute la Etapa 2: la página `/_diseno/` debe quedar fuera del sitemap y con `noindex`. Hoy todo el sitio lleva `X-Robots-Tag: noindex` vía `public/_headers`, que se retira en la Etapa 9; a partir de entonces el `noindex` de `/_diseno/` tiene que ser propio y no depender de esa cabecera global.
+Notas de la Etapa 2 para quien ejecute la 3:
+
+- `BarraNav` y `Pie` ya están construidos y son **presentacionales**: reciben el texto de acción y el de estado por props, sin conocer ningún literal de lanzamiento. Cablearlos es pasarles los valores de `lanzamiento.ts`.
+- El menú móvil ya cumple su parte del criterio de la Etapa 3 (`aria-expanded`, `Escape` cierra y devuelve el foco), verificado en E2-d. Falta comprobarlo con lector de pantalla.
+- `Insignia` no tiene variantes de estado a propósito: usa tonos genéricos, para que los literales `proximamente` / `beta` / `disponible` puedan vivir solo en `src/config/` cuando I7 entre en vigor.
+- `verificar-invariantes.mjs` ya tiene la estructura para añadir la comprobación de I7 junto a la de TOKENS.
 
 ## Evidencia Etapa 0
 
@@ -513,7 +520,7 @@ Archivos base creados sin ejecutar npm:
 - `README.md` — tres líneas: "# CalcInst — sitio web" / (línea en blanco) / "Ver ESTADO_SITIO.md."
 - `.gitignore` — estándar de Node (dependencias, builds, logs, cobertura, cachés, `.env`, SO, editores).
 
-## Evidencia Etapa 1 (en curso, 2026-09-05)
+## Evidencia Etapa 1 (2026-09-05/06)
 
 ### E1-a — Aprobaciones de la puerta de la Etapa 1
 
@@ -879,6 +886,180 @@ Con esto, `main` solo recibe commits cuyo check `verificar` pasó, así que lo q
 
 **El repositorio pasó a público.** Revisión de lo versionado en busca de material sensible: sin claves, tokens ni identificadores de cuenta. Las únicas coincidencias de la búsqueda son prosa que **nombra** variables de entorno al documentar su ausencia (E1-j) y dependencias de Azure dentro de `package-lock.json`. Nada que retirar.
 
+## Evidencia Etapa 2 (2026-09-08)
+
+### E2-a — Dependencias y fuentes subconjuntadas
+
+Aprobadas por Sebastián con versión exacta: `subset-font` 2.7.0, `puppeteer-core` 24.43.1, `axe-core` 4.13.0. Ninguna descarga un navegador: `puppeteer-core` usa el Chrome ya instalado, y de hecho ya estaba en el árbol como transitivo de `@lhci/cli`; declararlo lo vuelve estable.
+
+**No se añadió React.** El plan nombraba el conmutador de tema como isla `.tsx` (§4.1), pero React + ReactDOM rondan los 45 KB comprimidos y I4 limita el JS de páginas de contenido a 5 KB. Ver addendum A2.
+
+Las cuatro caras `latin` de Fontsource suman 74.6 KiB, por encima del presupuesto de 60 KB. `scripts/generar-fuentes.mjs` las recorta a los 141 caracteres que el sitio usa (ASCII imprimible, español, tipografía de cita y notación técnica):
+
+```
+> npm run fuentes
+ibm-plex-sans-400.woff2   22.1 KiB ->  15.4 KiB  (-30.2 %)
+ibm-plex-sans-600.woff2   23.7 KiB ->  16.4 KiB  (-30.9 %)
+ibm-plex-mono-400.woff2   14.4 KiB ->   9.6 KiB  (-33.4 %)
+ibm-plex-mono-500.woff2   14.5 KiB ->   9.8 KiB  (-32.7 %)
+----------------------------------------------------------------
+TOTAL                     74.6 KiB ->  51.1 KiB
+Presupuesto: 60.0 KiB (61440 B)
+Resultado:   52340 B - DENTRO
+Caracteres subconjuntados: 141
+```
+
+52 340 B está por debajo del presupuesto en las dos lecturas posibles de «60 KB» (61 440 B binarios y 60 000 B decimales), y conserva las cuatro caras de §3.3 en lugar de sacrificar el peso Mono 500.
+
+### E2-b — Contraste medido con herramienta, en ambos temas
+
+`scripts/auditar-diseno.mjs` sirve `dist/`, abre `/diseno/` en Chrome y lee los colores **ya renderizados** con `getComputedStyle`. No interpreta el CSS fuente: mide lo que el navegador pinta, que es lo que exige el criterio («salida de la herramienta, no la estimación de este plan»).
+
+```
+> npm run auditar
+
+=== TEMA OSCURO ===
+token            valor     bg-0    bg-1    bg-2   veredicto
+--fg-0           #e6edf3    16.27   15.37   13.93   OK (>=4.5)
+--fg-1           #9aa7b4     7.83    7.40    6.71   OK (>=4.5)
+--fg-2           #7d8894     5.33    5.03    4.56   OK (>=4.5)
+--accent         #f5b72b    10.70   10.11    9.16   OK (>=4.5)
+--link           #5cc8ff    10.21    9.65    8.75   OK (>=4.5)
+--ok             #3dd68c    10.25    9.68    8.77   OK (>=4.5)
+--warn           #f5b72b    10.70   10.11    9.16   OK (>=4.5)
+--danger         #f0716b     6.66    6.30    5.70   OK (>=4.5)
+--color-line-ui  #636b75     3.56    3.36    3.05   OK (>=3)
+--color-line     #263140     1.46    1.38    1.25   decorativo
+texto sobre --accent: 10.70
+
+=== TEMA CLARO ===
+token            valor     bg-0    bg-1    bg-2   veredicto
+--fg-0           #0b0f14    18.05   19.22   16.95   OK (>=4.5)
+--fg-1           #3d4753     8.87    9.44    8.33   OK (>=4.5)
+--fg-2           #5a6472     5.64    6.00    5.29   OK (>=4.5)
+--accent         #956400     4.81    5.12    4.52   OK (>=4.5)
+--link           #0969da     4.88    5.19    4.58   OK (>=4.5)
+--ok             #0f7b43     5.01    5.34    4.71   OK (>=4.5)
+--warn           #956400     4.81    5.12    4.52   OK (>=4.5)
+--danger         #c0342b     5.24    5.57    4.92   OK (>=4.5)
+--color-line-ui  #858a8e     3.27    3.49    3.08   OK (>=3)
+--color-line     #d0d7de     1.36    1.45    1.28   decorativo
+texto sobre --accent: 5.12
+```
+
+**Dos tokens del plan no llegaban al umbral y se corrigieron** (addendum A3). `--color-line` se declara decorativo y se le añade un compañero `--color-line-ui` para bordes de controles interactivos, que sí deben cumplir 3:1.
+
+### E2-c — axe-core: cero violaciones
+
+Reglas `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` sobre `/diseno/`, que muestra todos los componentes en todos sus estados:
+
+```
+=== TEMA OSCURO ===
+axe-core: 0 violacion(es)
+
+=== TEMA CLARO ===
+axe-core: 0 violacion(es)
+```
+
+### E2-d — Recorrido con teclado
+
+```
+teclado: 21 paradas · salto primero: si · sin foco visible: 0 · Escape cierra menu y devuelve foco: si
+```
+
+Idéntico en ambos temas. Es decir: el enlace «Saltar al contenido» es la primera parada, las 21 paradas tienen indicador de foco visible medido (`outline-style` distinto de `none` y `outline-width > 0`), y el menú móvil no es una trampa de teclado — `Escape` lo cierra y devuelve el foco al botón que lo abrió.
+
+### E2-e — `prefers-reduced-motion`
+
+```
+prefers-reduced-motion: respetado
+```
+
+Comprobado emulando `reduce` y recargando: ningún elemento conserva `transition-duration > 0` ni animación activa. El único elemento animado del sistema (el girador del botón `cargando`) queda estático y su estado se comunica por `aria-busy`, no por movimiento.
+
+### E2-f — Presupuestos
+
+```
+=== WOFF2 en dist ===
+  ibm-plex-mono-400.woff2   9796 B
+  ibm-plex-mono-500.woff2  10016 B
+  ibm-plex-sans-400.woff2  15764 B
+  ibm-plex-sans-600.woff2  16764 B
+  TOTAL: 52340 B = 51.1 KiB  (presupuesto 60 KiB)
+
+=== JS por pagina (I4: <= 5 KB) ===
+  dist/index.html         0 script(s)  0 B     (0.00 KiB)
+  dist/diseno/index.html  4 script(s)  1459 B  (1.42 KiB)
+  archivos .js externos: 0
+
+=== script bloqueante de tema (plan: < 300 B) ===
+  241 B
+```
+
+Astro deja los cuatro scripts en línea por su tamaño; no se descarga ningún `.js`. Los cuatro son: el fijador de tema, el conmutador, el menú móvil y el botón de copiar. **1.42 KiB frente a los 5 KB del presupuesto**, y el bloqueante de `<head>` en 241 B frente a los 300 B que fijaba el plan.
+
+### E2-g — Capturas
+
+Cuatro capturas a 2× de densidad, página completa, en `evidencia/etapa-2/` (fuera del control de versiones por peso; se adjuntan al presentar la etapa):
+
+| Archivo | Tema | Ancho |
+|---|---|---|
+| `diseno-oscuro-1280.png` | oscuro | 1280 px |
+| `diseno-oscuro-360.png` | oscuro | 360 px |
+| `diseno-claro-1280.png` | claro | 1280 px |
+| `diseno-claro-360.png` | claro | 360 px |
+
+Revisándolas se detectó y corrigió un defecto que ninguna métrica habría delatado: `BloqueCodigo` fijaba el tema `github-dark` de Shiki, así que en tema claro el bloque seguía siendo oscuro. Ahora emite los dos temas como variables (`defaultColor: false`) y el CSS elige según el tema activo, que es lo que el plan pedía con «tema propio derivado de los tokens».
+
+### E2-h — Batería de cierre
+
+```
+> npx astro check
+Result (21 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+> npm test
+No test files found, exiting with code 0
+
+> npm run lint
+(sin salida; exit 0)
+
+> npm run format:check
+All matched files use Prettier code style!
+
+> node scripts/verificar-invariantes.mjs
+verificar-invariantes: 0 verificaciones activas, 0 fallos (esqueleto Etapa 1)
+
+> npm run build
+2 page(s) built
+```
+
+Conteo de pruebas: **0 antes, 0 después**. La Etapa 2 no introduce pruebas unitarias; las primeras llegan en la Etapa 3. La verificación de esta etapa es de navegador, no de Vitest, y vive en `scripts/auditar-diseno.mjs`.
+
+### E2-i — Verificación de tokens con prueba negativa
+
+El plan anota como riesgo de esta etapa «definir colores en componentes en lugar de tokens» y propone una regla de lint. Se implementó dentro de `verificar-invariantes.mjs` en lugar de traer `stylelint`: no añade dependencias y deja la comprobación en el mismo sitio que las de I1, I3 e I7.
+
+```
+> node scripts/verificar-invariantes.mjs
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+verificar-invariantes: 1 verificacion(es) activas, 0 fallo(s)
+exit: 0
+```
+
+Prueba negativa: se sustituyó `color: var(--link)` por `color: #5cc8ff` en `Insignia.astro`.
+
+```
+[FALLA] TOKENS — el color se define solo en src/styles/tokens.css
+  - src\components\Insignia.astro:42 — color: #5cc8ff;
+verificar-invariantes: 1 verificacion(es) activas, 1 fallo(s)
+exit: 1
+```
+
+Restaurado el archivo, vuelve a pasar con exit 0. La comprobación cubre hex y las funciones `rgb()`, `hsl()`, `oklch()` y `color-mix()` en `src/components`, `src/pages` y `src/layouts`; `tokens.css` queda fuera porque es donde el color debe definirse.
+
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
@@ -889,9 +1070,26 @@ La opción B descartada era desplegar desde GitHub Actions con `wrangler deploy`
 
 ## Bloqueos
 
-1. **Preservación de ruta en las dos Redirect Rules** (E1-n): cambiarlas a redirección dinámica con destino `concat("https://calcinst.mx", http.request.uri.path)` y *Preserve query string*. **Corte: antes de publicar el primer post (Etapa 4)**, porque desde ahí un 301 a `calcinst.mxblog` sería un enlace permanente roto. No bloquea las Etapas 2 y 3.
-2. **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum A2. Es el único punto de gobierno que sigue abierto desde la Etapa 0.
-3. **Opcional, a criterio de Sebastián:** activar `enforce_admins` en la protección de `main` (E1-o) para cerrar el hueco de push directo por administrador.
+### P1 — Preservación de ruta en las dos Redirect Rules (corte: antes de cerrar la Etapa 4)
+
+Defecto documentado en E1-n. Corrección: cambiar ambas reglas a redirección **dinámica** con destino `concat("https://calcinst.mx", http.request.uri.path)` y *Preserve query string* activado.
+
+**La Etapa 4 no se cierra sin esto**, por decisión de Sebastián (2026-09-06): desde el primer post publicado, un 301 hacia `calcinst.mxblog` sería un enlace permanente roto. No bloquea las Etapas 2 ni 3.
+
+**La verificación debe cubrir tres casos, no solo uno** (requisito de Sebastián, 2026-09-06). Verificar únicamente una ruta simple fue lo que dejó pasar el defecto original:
+
+| Caso | Petición | Resultado esperado | Qué detecta |
+|---|---|---|---|
+| Raíz | `https://www.calcinst.mx/` | `Location: https://calcinst.mx/` | Que `uri.path = /` **no** produzca doble barra (`https://calcinst.mx//`) al concatenar |
+| Ruta | `https://www.calcinst.mx/blog/mi-post/` | `Location: https://calcinst.mx/blog/mi-post/` | La concatenación sin separador que rompió el hostname (`calcinst.mxblog`) |
+| Ruta + query | `https://www.calcinst.mx/blog/?pagina=2&utm_source=x` | `Location: https://calcinst.mx/blog/?pagina=2&utm_source=x` | Que ruta y query se preserven **juntas**; el defecto 2 conservaba el query pero descartaba la ruta |
+
+Los tres casos se repiten contra `calcinst.com` y `www.calcinst.com`, que usan la otra regla: son nueve comprobaciones en total.
+
+### Otros pendientes
+
+- **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum A2. Único punto de gobierno abierto desde la Etapa 0.
+- **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, addendum AD1.
 
 Nada de lo anterior impide iniciar la Etapa 2.
 
@@ -925,3 +1123,53 @@ En la prueba de humo I5 (E1-f), `@astrojs/cloudflare` 14.3.0 generó `dist/serve
 **Costo de este cambio respecto al plan original: ninguno.** No hay repositorio conectado, no hay despliegue, no hay DNS apuntando a un proyecto. Lo único que cambia en el repositorio es el destino del despliegue; `public/_headers` se conserva tal cual (misma sintaxis) y ningún archivo de contenido, componente o configuración de build se altera. Tomar esta decisión después de conectar el repositorio sí habría sido una migración.
 
 **Consecuencia operativa para esta etapa:** al conectar, hay que activar la casilla *Builds for non-production branches*, sin la cual el PR de la prueba de humo I5 no genera preview y la puerta de la Etapa 1 no se puede cerrar.
+
+### A2 — El conmutador de tema es JS plano, no una isla React (2026-09-08)
+
+**Contradicción del plan consigo mismo.** §4.1 y §3.5 sitúan el conmutador en `src/components/islas/ConmutadorTema.tsx`, es decir, una isla React. I4 fija un presupuesto de **5 KB de JS** en páginas de contenido. React más ReactDOM rondan los 45 KB comprimidos: cumplir ambas cosas es imposible.
+
+**Resolución: manda el invariante.** El propio plan ya apuntaba a esta salida sin decirlo — en los riesgos de la Etapa 10 pide resolver el parpadeo de tema «con script inline bloqueante de < 300 bytes en `<head>`», que es JS plano, no React.
+
+Implementación: `src/components/ScriptTema.astro` (fijador bloqueante en `<head>`, 241 B medidos) y `src/components/ConmutadorTema.astro` (el botón y su listener). El proyecto **no tiene dependencia de React**, y el JS total de la página más cargada es de 1.42 KiB.
+
+**Costo de revertir:** medio. Volver a React exigiría añadir `@astrojs/react`, `react` y `react-dom`, y renegociar I4. No hay motivo previsible para hacerlo: ningún componente de la Etapa 2 necesita estado de cliente más allá de tres listeners.
+
+### A3 — Dos tokens de color corregidos y uno nuevo (2026-09-08)
+
+Los contrastes de §3.2 eran estimaciones y el propio plan pedía verificarlos con herramienta. Medidos sobre el render real, dos no llegaban al umbral que exige el criterio de la etapa:
+
+| Token | Valor del plan | Medido (peor fondo) | Valor corregido | Medido tras corregir |
+|---|---|---|---|---|
+| `--fg-2` (oscuro) | `#6B7885` | 3.64 sobre `--bg-2` | `#7D8894` | 4.56 |
+| `--accent` (claro) | `#9A6700` | 4.30 sobre `--bg-2` | `#956400` | 4.52 |
+
+El plan ya admitía la fragilidad de `--fg-2` («solo para texto ≥ 18 px o no esencial»), pero el criterio de la Etapa 2 pide 4.5:1 para texto sin esa excepción, así que se corrige en vez de documentar una salvedad.
+
+**Token nuevo: `--color-line-ui`.** §3.2 define un único `--color-line` para «bordes, separadores», marcado como decorativo. Pero §3.5 usa ese mismo borde como el único indicador visual del botón `secundario`, y el borde de un control interactivo sí está sujeto a WCAG 1.4.11 (3:1). Separarlos evita la disyuntiva entre subir el contraste de todos los separadores —lo que ensuciaría la dirección visual densa y sobria— o dejar los controles por debajo del umbral:
+
+- `--color-line` sigue siendo decorativo (paneles, separadores). Medido: 1.46 / 1.25.
+- `--color-line-ui` es para bordes de controles. Medido: 3.56 / 3.05 en oscuro, 3.27 / 3.08 en claro.
+
+El tema claro completa además los tokens que §3.2 dejaba sin especificar (`--fg-2`, `--color-line`, `--color-grid`, `--ok`, `--warn`, `--danger`), todos verificados en los tres fondos.
+
+**Costo de revertir:** nulo. Son valores en un archivo de tokens.
+
+### A4 — La página de diseño se sirve en `/diseno/`, no en `/_diseno/` (2026-09-08)
+
+El plan pedía `src/pages/_diseno.astro` sirviendo `/_diseno/`. **Es imposible en Astro:** los archivos con prefijo `_` dentro de `src/pages` quedan excluidos del enrutado por diseño, precisamente para poder colocar ahí archivos que no son páginas.
+
+Comprobado, no supuesto: se creó `src/pages/_prueba.astro`, se construyó, y la salida solo contenía `index.html` — ninguna ruta para el archivo con guion bajo.
+
+La página se sirve en `/diseno/` con `<meta name="robots" content="noindex, nofollow">`. **Pendiente para la Etapa 9:** excluirla del sitemap explícitamente. Hoy todo el sitio lleva `X-Robots-Tag: noindex` por cabecera, pero esa cabecera se retira en la Etapa 9, y a partir de entonces el `noindex` de esta página depende solo de su propia etiqueta.
+
+**Costo de revertir:** bajo. Cambiar la ruta después exigiría una redirección 301, pero es una página interna sin enlaces entrantes.
+
+### A5 — El sistema de diseño no usa utilidades de Tailwind (2026-09-08)
+
+D1 fija el stack «Astro + MDX + Tailwind CSS v4», y así sigue: `tailwindcss` y `@tailwindcss/vite` continúan instalados y configurados en `astro.config.mjs`. Pero los componentes de la Etapa 2 se escribieron con **propiedades personalizadas CSS y estilos con ámbito**, no con clases de utilidad.
+
+Razón: §3 describe un sistema de *tokens*, y expresarlo como variables CSS lo hace legible desde cualquier componente, comprobable desde el navegador (que es como se midió el contraste en E2-b) y portable si algún día el stack cambia, lo que empuja en la dirección de I2. Mantener a la vez el *preflight* de Tailwind y el reset propio de `tokens.css` duplicaba reglas sin aportar nada, así que se eliminó `src/styles/global.css`, que era el único punto de entrada de Tailwind y no lo usaba nadie.
+
+Tailwind queda disponible: la etapa que necesite utilidades solo tiene que volver a importarlo. **No se cambia D1.**
+
+**Costo de revertir:** nulo. Es un `@import` de una línea.

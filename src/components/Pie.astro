@@ -1,0 +1,103 @@
+---
+/**
+ * Pie — pie de página (§3.5).
+ * `estado` llega por prop: los literales de estado viven en `src/config/` (I7).
+ */
+interface Props {
+  /** Texto de estado del proyecto, provisto por la config (Etapa 3). */
+  estado?: string
+}
+
+const { estado } = Astro.props
+const anio = new Date().getFullYear()
+
+const enlaces = [
+  { href: '/terminos/', texto: 'Términos' },
+  { href: '/privacidad/', texto: 'Privacidad' },
+  { href: '/contacto/', texto: 'Contacto' },
+  { href: '/blog/rss.xml', texto: 'RSS' },
+]
+---
+
+<footer class="pie">
+  <div class="contenido">
+    <p class="marca">
+      <span class="nombre">CalcInst</span>
+      {estado && <span class="estado">{estado}</span>}
+    </p>
+    <nav aria-label="Enlaces del pie">
+      <ul class="enlaces">
+        {
+          enlaces.map((e) => (
+            <li>
+              <a href={e.href}>{e.texto}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <p class="copia">© {anio}</p>
+  </div>
+</footer>
+
+<style>
+  .pie {
+    border-top: 1px solid var(--color-line);
+    margin-top: var(--e-16);
+    background: var(--bg-0);
+  }
+
+  .contenido {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-4);
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--e-6) var(--e-4);
+    font-size: var(--text-sm);
+  }
+
+  .marca {
+    display: flex;
+    align-items: center;
+    gap: var(--e-3);
+    margin: 0;
+    margin-right: auto;
+  }
+
+  .nombre {
+    font-family: var(--fuente-mono);
+    font-weight: 500;
+    color: var(--fg-0);
+  }
+
+  .estado {
+    color: var(--fg-2);
+  }
+
+  .enlaces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .enlaces a {
+    color: var(--fg-1);
+    text-decoration: none;
+  }
+
+  .enlaces a:hover {
+    color: var(--fg-0);
+    text-decoration: underline;
+  }
+
+  .copia {
+    margin: 0;
+    color: var(--fg-2);
+    font-family: var(--fuente-mono);
+  }
+</style>

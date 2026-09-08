@@ -1,0 +1,19 @@
+---
+/**
+ * ScriptTema — fija el tema ANTES del primer pintado.
+ *
+ * Va en <head> y es bloqueante a propósito: si se difiere, la página parpadea
+ * en claro antes de pasar a oscuro (riesgo anotado en la Etapa 10 del plan).
+ * `is:inline` evita que Astro lo procese o lo mueva a un bundle.
+ * Sin preferencia guardada no escribe nada y manda `prefers-color-scheme`.
+ */
+---
+
+<script is:inline>
+  try {
+    const t = localStorage.getItem('tema')
+    if (t === 'claro' || t === 'oscuro') document.documentElement.dataset.tema = t
+  } catch {
+    /* Modo privado o cookies bloqueadas: se cae al tema del sistema, que es correcto. */
+  }
+</script>

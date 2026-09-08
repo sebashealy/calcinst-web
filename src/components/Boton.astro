@@ -1,0 +1,139 @@
+---
+/**
+ * Boton — acción principal, secundaria o fantasma (§3.5).
+ *
+ * Renderiza <a> si recibe `href`, <button> si no. Un botón sin texto visible
+ * exige `aria-label`: se valida en tiempo de build, no por disciplina.
+ */
+interface Props {
+  variante?: 'primario' | 'secundario' | 'fantasma'
+  tamano?: 'sm' | 'md'
+  href?: string
+  tipo?: 'button' | 'submit'
+  cargando?: boolean
+  deshabilitado?: boolean
+  soloIcono?: boolean
+  'aria-label'?: string
+}
+
+const {
+  variante = 'primario',
+  tamano = 'md',
+  href,
+  tipo = 'button',
+  cargando = false,
+  deshabilitado = false,
+  soloIcono = false,
+  'aria-label': ariaLabel,
+} = Astro.props
+
+if (soloIcono && !ariaLabel) {
+  throw new Error('Boton: `soloIcono` exige `aria-label`; sin él es inaccesible.')
+}
+
+const clases = ['boton', `v-${variante}`, `t-${tamano}`, soloIcono && 'solo-icono']
+const inerte = deshabilitado || cargando
+const Etiqueta = href && !inerte ? 'a' : 'button'
+---
+
+<Etiqueta
+  class:list={clases}
+  href={Etiqueta === 'a' ? href : undefined}
+  type={Etiqueta === 'button' ? tipo : undefined}
+  disabled={Etiqueta === 'button' && inerte ? true : undefined}
+  aria-disabled={Etiqueta === 'a' && inerte ? 'true' : undefined}
+  aria-busy={cargando ? 'true' : undefined}
+  aria-label={ariaLabel}
+>
+  {cargando && <span class="girador" aria-hidden="true" />}
+  <slot />
+</Etiqueta>
+
+<style>
+  .boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--e-2);
+    border: 1px solid transparent;
+    border-radius: var(--r-md);
+    font-family: var(--fuente-texto);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .t-sm {
+    padding: var(--e-1) var(--e-3);
+    font-size: var(--text-sm);
+    min-height: 32px;
+  }
+  .t-md {
+    padding: var(--e-2) var(--e-4);
+    font-size: var(--text-base);
+    min-height: 40px;
+  }
+
+  .solo-icono.t-sm {
+    padding: var(--e-1);
+    width: 32px;
+  }
+  .solo-icono.t-md {
+    padding: var(--e-2);
+    width: 40px;
+  }
+
+  .v-primario {
+    background: var(--accent);
+    color: var(--accent-texto);
+    border-color: var(--accent);
+  }
+  .v-secundario {
+    background: var(--bg-1);
+    color: var(--fg-0);
+    border-color: var(--color-line-ui);
+  }
+  .v-fantasma {
+    background: transparent;
+    color: var(--fg-1);
+  }
+
+  .v-primario:hover:not([disabled]):not([aria-disabled='true']) {
+    filter: brightness(1.08);
+  }
+  .v-secundario:hover:not([disabled]):not([aria-disabled='true']) {
+    background: var(--bg-2);
+  }
+  .v-fantasma:hover:not([disabled]):not([aria-disabled='true']) {
+    color: var(--fg-0);
+    background: var(--bg-1);
+  }
+
+  .boton[disabled],
+  .boton[aria-disabled='true'] {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .girador {
+    width: 0.85em;
+    height: 0.85em;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+  }
+
+  /* La animación solo existe si el usuario no pidió reducir movimiento;
+   * en caso contrario el anillo queda estático y `aria-busy` comunica el estado. */
+  @media (prefers-reduced-motion: no-preference) {
+    .girador {
+      animation: girar 700ms linear infinite;
+    }
+  }
+
+  @keyframes girar {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
