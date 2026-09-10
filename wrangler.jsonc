@@ -7,6 +7,16 @@
   "assets": {
     "directory": "./dist/",
   },
+  // Explícitos a propósito (ESTADO_SITIO.md, P3). Tras declarar `routes`, los PR
+  // dejaron de recibir URL de preview y `calcinst-web.instcalc.workers.dev` pasó a
+  // 404. La documentación dice que ninguno de los dos cambia por declarar rutas, así
+  // que no se confía en el valor por omisión: el archivo de wrangler prevalece sobre
+  // el dashboard en cada despliegue.
+  //   workers_dev: false — producción NO se sirve en workers.dev (evita un host
+  //                        duplicado del canónico; es además el estado ya observado).
+  //   preview_urls: true — cada rama y cada versión tienen su URL de preview.
+  "workers_dev": false,
+  "preview_urls": true,
   // Dominio canónico (D2). Los Custom Domains crean su propio registro DNS y no
   // requieren zone_id ni zone_name. Aquí solo va el canónico: `www.calcinst.mx`,
   // `calcinst.com` y `www.calcinst.com` NO sirven el sitio, redirigen con 301
