@@ -7,10 +7,7 @@
  * generaría página alguna (comprobado). Se sirve en `/diseno/` con `noindex`
  * y quedará fuera del sitemap en la Etapa 9. Addendum A4 en ESTADO_SITIO.md.
  */
-import '../styles/tokens.css'
-import ScriptTema from '../components/ScriptTema.astro'
-import BarraNav from '../components/BarraNav.astro'
-import Pie from '../components/Pie.astro'
+import LayoutBase from '../layouts/LayoutBase.astro'
 import Boton from '../components/Boton.astro'
 import Tarjeta from '../components/Tarjeta.astro'
 import Insignia from '../components/Insignia.astro'
@@ -19,6 +16,7 @@ import CalloutNormativo from '../components/CalloutNormativo.astro'
 import AvisoErrata from '../components/AvisoErrata.astro'
 import BloqueCodigo from '../components/BloqueCodigo.astro'
 import Descargo from '../components/Descargo.astro'
+import { TEXTO_VIGENTE } from '../config/lanzamiento'
 
 const tokensColor: Array<[string, string]> = [
   ['--bg-0', 'Fondo de página'],
@@ -75,282 +73,308 @@ const codigoDemo = [
 ].join('\n')
 ---
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex, nofollow" />
-    <title>Sistema de diseño · CalcInst</title>
-    <ScriptTema />
-  </head>
-  <body>
-    <a href="#contenido" class="salto-contenido">Saltar al contenido</a>
-    <BarraNav textoAccion="Acción" rutaActual="/diseno/" />
+<LayoutBase titulo="Sistema de diseño" noindex>
+  <div class="pagina">
+    <header class="intro">
+      <h1>Sistema de diseño</h1>
+      <p class="guia">
+        Página interna de la Etapa 2: no se indexa y quedará fuera del sitemap. Muestra cada
+        componente en sus estados. El conmutador de la barra alterna tema oscuro y claro, y los
+        mismos tokens sirven a los dos.
+      </p>
+    </header>
 
-    <main id="contenido" class="pagina">
-      <header class="intro">
-        <h1>Sistema de diseño</h1>
-        <p class="guia">
-          Página interna de la Etapa 2: no se indexa y quedará fuera del sitemap. Muestra cada
-          componente en sus estados. El conmutador de la barra alterna tema oscuro y claro, y los
-          mismos tokens sirven a los dos.
-        </p>
-      </header>
+    <section aria-labelledby="s-estado">
+      <h2 id="s-estado">Estado de lanzamiento vigente</h2>
+      <p class="guia">
+        Leído de <code>src/config/lanzamiento.ts</code>. Esta página no contiene ningún literal de
+        estado: cambia sola cuando cambia la configuración.
+      </p>
+      <p class="fila">
+        <Insignia tono={TEXTO_VIGENTE.insignia.tono} etiqueta="Estado">
+          {TEXTO_VIGENTE.insignia.texto}
+        </Insignia>
+      </p>
+      <dl class="valores">
+        <dt>Botón de acción</dt>
+        <dd>{TEXTO_VIGENTE.accion}</dd>
+        <dt>Aviso global</dt>
+        <dd>{TEXTO_VIGENTE.banner ?? '(ninguno)'}</dd>
+        <dt>Línea del pie</dt>
+        <dd>{TEXTO_VIGENTE.pie ?? '(oculta)'}</dd>
+        <dt>Página de descarga</dt>
+        <dd>{TEXTO_VIGENTE.descarga}</dd>
+      </dl>
+    </section>
 
-      <section aria-labelledby="s-color">
-        <h2 id="s-color">Tokens de color</h2>
-        <p class="guia">
-          Los valores medidos de contraste están en <code>ESTADO_SITIO.md</code>, no aquí: esta
-          página muestra el color, la evidencia la produce la herramienta.
-        </p>
-        <ul class="muestras">
-          {
-            tokensColor.map(([token, uso]) => (
-              <li class="muestra">
-                <span class="chip" style={`background: var(${token})`} aria-hidden="true" />
-                <code>{token}</code>
-                <span class="uso">{uso}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
+    <section aria-labelledby="s-color">
+      <h2 id="s-color">Tokens de color</h2>
+      <p class="guia">
+        Los valores medidos de contraste están en <code>ESTADO_SITIO.md</code>, no aquí: esta página
+        muestra el color, la evidencia la produce la herramienta.
+      </p>
+      <ul class="muestras">
+        {
+          tokensColor.map(([token, uso]) => (
+            <li class="muestra">
+              <span class="chip" style={`background: var(${token})`} aria-hidden="true" />
+              <code>{token}</code>
+              <span class="uso">{uso}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
-      <section aria-labelledby="s-tipo">
-        <h2 id="s-tipo">Tipografía</h2>
-        <p class="guia">Texto en IBM Plex Sans; datos y referencias en IBM Plex Mono.</p>
-        <ul class="escala">
-          {
-            escala.map(([token, px]) => (
-              <li style={`font-size: var(${token})`}>
-                Dimensionamiento de conductores
-                <code class="tenue">
-                  {token} · {px}
-                </code>
-              </li>
-            ))
-          }
-        </ul>
-        <p class="mono-demo">
-          <span class="m4">Mono 400 · 8 AWG · 50 A · 310-15(b)(16)</span><br />
-          <span class="m5">Mono 500 · 8 AWG · 50 A · 310-15(b)(16)</span>
-        </p>
-      </section>
+    <section aria-labelledby="s-tipo">
+      <h2 id="s-tipo">Tipografía</h2>
+      <p class="guia">Texto en IBM Plex Sans; datos y referencias en IBM Plex Mono.</p>
+      <ul class="escala">
+        {
+          escala.map(([token, px]) => (
+            <li style={`font-size: var(${token})`}>
+              Dimensionamiento de conductores
+              <code class="tenue">
+                {token} · {px}
+              </code>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mono-demo">
+        <span class="m4">Mono 400 · 8 AWG · 50 A · 310-15(b)(16)</span><br />
+        <span class="m5">Mono 500 · 8 AWG · 50 A · 310-15(b)(16)</span>
+      </p>
+    </section>
 
-      <section aria-labelledby="s-botones">
-        <h2 id="s-botones">Boton</h2>
-        <div class="fila">
-          <Boton variante="primario">Primario</Boton>
-          <Boton variante="secundario">Secundario</Boton>
-          <Boton variante="fantasma">Fantasma</Boton>
-        </div>
-        <div class="fila">
-          <Boton variante="primario" tamano="sm">Primario sm</Boton>
-          <Boton variante="secundario" tamano="sm">Secundario sm</Boton>
-          <Boton variante="fantasma" tamano="sm">Fantasma sm</Boton>
-        </div>
-        <div class="fila">
-          <Boton cargando>Cargando</Boton>
-          <Boton deshabilitado>Deshabilitado</Boton>
-          <Boton href="#s-botones" variante="secundario">Enlace con aspecto de botón</Boton>
-          <Boton soloIcono aria-label="Ejemplo de botón solo con icono">+</Boton>
-        </div>
-      </section>
+    <section aria-labelledby="s-botones">
+      <h2 id="s-botones">Boton</h2>
+      <div class="fila">
+        <Boton variante="primario">Primario</Boton>
+        <Boton variante="secundario">Secundario</Boton>
+        <Boton variante="fantasma">Fantasma</Boton>
+      </div>
+      <div class="fila">
+        <Boton variante="primario" tamano="sm">Primario sm</Boton>
+        <Boton variante="secundario" tamano="sm">Secundario sm</Boton>
+        <Boton variante="fantasma" tamano="sm">Fantasma sm</Boton>
+      </div>
+      <div class="fila">
+        <Boton cargando>Cargando</Boton>
+        <Boton deshabilitado>Deshabilitado</Boton>
+        <Boton href="#s-botones" variante="secundario">Enlace con aspecto de botón</Boton>
+        <Boton soloIcono aria-label="Ejemplo de botón solo con icono">+</Boton>
+      </div>
+    </section>
 
-      <section aria-labelledby="s-insignias">
-        <h2 id="s-insignias">Insignia</h2>
-        <p class="guia">
-          Sin variantes de estado de lanzamiento: esos literales solo pueden vivir en{' '}
-          <code>src/config/</code> (I7). Aquí solo hay tonos.
-        </p>
-        <div class="fila">
-          <Insignia>Neutro</Insignia>
-          <Insignia tono="info">Info</Insignia>
-          <Insignia tono="ok">Correcto</Insignia>
-          <Insignia tono="aviso">Advertencia</Insignia>
-          <Insignia tono="peligro">Error</Insignia>
-        </div>
-      </section>
+    <section aria-labelledby="s-insignias">
+      <h2 id="s-insignias">Insignia</h2>
+      <p class="guia">
+        Sin variantes de estado de lanzamiento: esos literales solo pueden vivir en{' '}
+        <code>src/config/</code> (I7). Aquí solo hay tonos.
+      </p>
+      <div class="fila">
+        <Insignia>Neutro</Insignia>
+        <Insignia tono="info">Info</Insignia>
+        <Insignia tono="ok">Correcto</Insignia>
+        <Insignia tono="aviso">Advertencia</Insignia>
+        <Insignia tono="peligro">Error</Insignia>
+      </div>
+    </section>
 
-      <section aria-labelledby="s-tarjetas">
-        <h2 id="s-tarjetas">Tarjeta</h2>
-        <div class="rejilla">
-          <Tarjeta>
-            <h3>Tarjeta simple</h3>
-            <p class="guia">
-              Fondo <code>--bg-1</code>, borde <code>--color-line</code>, sin sombra.
-            </p>
-          </Tarjeta>
-          <Tarjeta reticula>
-            <h3>Con retícula</h3>
-            <p class="guia">La retícula métrica es estática: no se anima en ningún caso.</p>
-          </Tarjeta>
-        </div>
-      </section>
-
-      <section aria-labelledby="s-tabla">
-        <h2 id="s-tabla">Tabla</h2>
-        <Tabla
-          caption="Ejemplo de estructura de tabla. Los datos son inventados y no proceden de la norma."
-        >
-          <thead>
-            <tr>
-              <th>Circuito</th>
-              <th>Calibre</th>
-              <th class="num">Longitud (m)</th>
-              <th class="num">Caída (%)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Ejemplo A</td>
-              <td>—</td>
-              <td class="num">18.40</td>
-              <td class="num">1.20</td>
-            </tr>
-            <tr>
-              <td>Ejemplo B</td>
-              <td>—</td>
-              <td class="num">142.05</td>
-              <td class="num">3.75</td>
-            </tr>
-            <tr>
-              <td>Ejemplo C</td>
-              <td>—</td>
-              <td class="num">7.90</td>
-              <td class="num">0.45</td>
-            </tr>
-          </tbody>
-        </Tabla>
-      </section>
-
-      <section aria-labelledby="s-callout">
-        <h2 id="s-callout">CalloutNormativo</h2>
-        <CalloutNormativo ref="430-22" version="NOM-001-SEDE-2018" tipo="articulo">
-          <p>
-            Texto de ejemplo. El contenido normativo lo redacta una persona; el andamiaje solo
-            define cómo se presenta la cita y a dónde enlaza.
+    <section aria-labelledby="s-tarjetas">
+      <h2 id="s-tarjetas">Tarjeta</h2>
+      <div class="rejilla">
+        <Tarjeta>
+          <h3>Tarjeta simple</h3>
+          <p class="guia">
+            Fondo <code>--bg-1</code>, borde <code>--color-line</code>, sin sombra.
           </p>
-        </CalloutNormativo>
-        <CalloutNormativo ref="310-15(b)(16)" version="NOM-001-SEDE-2018" tipo="tabla">
-          <p>Ejemplo de cita a una tabla, con su enlace a la página de la referencia.</p>
-        </CalloutNormativo>
-      </section>
+        </Tarjeta>
+        <Tarjeta reticula>
+          <h3>Con retícula</h3>
+          <p class="guia">La retícula métrica es estática: no se anima en ningún caso.</p>
+        </Tarjeta>
+      </div>
+    </section>
 
-      <section aria-labelledby="s-erratas">
-        <h2 id="s-erratas">AvisoErrata</h2>
-        <p class="guia">Va al inicio del post, nunca al final (§9.1).</p>
-        <AvisoErrata erratas={erratasLeve} />
-        <AvisoErrata erratas={erratasGraves} />
-      </section>
+    <section aria-labelledby="s-tabla">
+      <h2 id="s-tabla">Tabla</h2>
+      <Tabla
+        caption="Ejemplo de estructura de tabla. Los datos son inventados y no proceden de la norma."
+      >
+        <thead>
+          <tr>
+            <th>Circuito</th>
+            <th>Calibre</th>
+            <th class="num">Longitud (m)</th>
+            <th class="num">Caída (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ejemplo A</td>
+            <td>—</td>
+            <td class="num">18.40</td>
+            <td class="num">1.20</td>
+          </tr>
+          <tr>
+            <td>Ejemplo B</td>
+            <td>—</td>
+            <td class="num">142.05</td>
+            <td class="num">3.75</td>
+          </tr>
+          <tr>
+            <td>Ejemplo C</td>
+            <td>—</td>
+            <td class="num">7.90</td>
+            <td class="num">0.45</td>
+          </tr>
+        </tbody>
+      </Tabla>
+    </section>
 
-      <section aria-labelledby="s-codigo">
-        <h2 id="s-codigo">BloqueCodigo</h2>
-        <BloqueCodigo codigo={codigoDemo} lenguaje="ts" titulo="ejemplo.ts" />
-      </section>
+    <section aria-labelledby="s-callout">
+      <h2 id="s-callout">CalloutNormativo</h2>
+      <CalloutNormativo ref="430-22" version="NOM-001-SEDE-2018" tipo="articulo">
+        <p>
+          Texto de ejemplo. El contenido normativo lo redacta una persona; el andamiaje solo define
+          cómo se presenta la cita y a dónde enlaza.
+        </p>
+      </CalloutNormativo>
+      <CalloutNormativo ref="310-15(b)(16)" version="NOM-001-SEDE-2018" tipo="tabla">
+        <p>Ejemplo de cita a una tabla, con su enlace a la página de la referencia.</p>
+      </CalloutNormativo>
+    </section>
 
-      <section aria-labelledby="s-descargo">
-        <h2 id="s-descargo">Descargo</h2>
-        <Descargo />
-      </section>
-    </main>
+    <section aria-labelledby="s-erratas">
+      <h2 id="s-erratas">AvisoErrata</h2>
+      <p class="guia">Va al inicio del post, nunca al final (§9.1).</p>
+      <AvisoErrata erratas={erratasLeve} />
+      <AvisoErrata erratas={erratasGraves} />
+    </section>
 
-    <Pie estado="Página interna de diseño" />
+    <section aria-labelledby="s-codigo">
+      <h2 id="s-codigo">BloqueCodigo</h2>
+      <BloqueCodigo codigo={codigoDemo} lenguaje="ts" titulo="ejemplo.ts" />
+    </section>
 
-    <style>
-      .pagina {
-        max-width: 72rem;
-        margin: 0 auto;
-        padding: var(--e-8) var(--e-4);
-      }
+    <section aria-labelledby="s-descargo">
+      <h2 id="s-descargo">Descargo</h2>
+      <Descargo />
+    </section>
+  </div>
+</LayoutBase>
 
-      .intro {
-        margin-bottom: var(--e-12);
-      }
+<style>
+  .pagina {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--e-8) var(--e-4);
+  }
 
-      .guia {
-        color: var(--fg-1);
-        max-width: var(--medida);
-      }
+  .intro {
+    margin-bottom: var(--e-12);
+  }
 
-      section {
-        margin-bottom: var(--e-16);
-        padding-top: var(--e-6);
-        border-top: 1px solid var(--color-line);
-      }
+  .guia {
+    color: var(--fg-1);
+    max-width: var(--medida);
+  }
 
-      .fila {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--e-3);
-        margin-bottom: var(--e-4);
-      }
+  section {
+    margin-bottom: var(--e-16);
+    padding-top: var(--e-6);
+    border-top: 1px solid var(--color-line);
+  }
 
-      .rejilla {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-        gap: var(--e-4);
-      }
+  .fila {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-3);
+    margin-bottom: var(--e-4);
+  }
 
-      .muestras,
-      .escala {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
+  .rejilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--e-4);
+  }
 
-      .muestras {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-        gap: var(--e-2);
-      }
+  .muestras,
+  .escala {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 
-      .muestra {
-        display: flex;
-        align-items: center;
-        gap: var(--e-3);
-        font-size: var(--text-sm);
-      }
+  .muestras {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: var(--e-2);
+  }
 
-      .chip {
-        width: 2.5rem;
-        height: 1.5rem;
-        border: 1px solid var(--color-line-ui);
-        border-radius: var(--r-sm);
-        flex: none;
-      }
+  .muestra {
+    display: flex;
+    align-items: center;
+    gap: var(--e-3);
+    font-size: var(--text-sm);
+  }
 
-      .uso {
-        color: var(--fg-2);
-      }
+  .chip {
+    width: 2.5rem;
+    height: 1.5rem;
+    border: 1px solid var(--color-line-ui);
+    border-radius: var(--r-sm);
+    flex: none;
+  }
 
-      .escala li {
-        margin-bottom: var(--e-2);
-        line-height: var(--interlineado-titulo);
-      }
+  .uso {
+    color: var(--fg-2);
+  }
 
-      .tenue {
-        color: var(--fg-2);
-        font-size: var(--text-xs);
-        margin-left: var(--e-2);
-      }
+  .escala li {
+    margin-bottom: var(--e-2);
+    line-height: var(--interlineado-titulo);
+  }
 
-      .mono-demo {
-        margin-top: var(--e-6);
-        color: var(--fg-0);
-      }
+  .tenue {
+    color: var(--fg-2);
+    font-size: var(--text-xs);
+    margin-left: var(--e-2);
+  }
 
-      .m4 {
-        font-family: var(--fuente-mono);
-        font-weight: 400;
-      }
+  .mono-demo {
+    margin-top: var(--e-6);
+    color: var(--fg-0);
+  }
 
-      .m5 {
-        font-family: var(--fuente-mono);
-        font-weight: 500;
-      }
-    </style>
-  </body>
-</html>
+  .m4 {
+    font-family: var(--fuente-mono);
+    font-weight: 400;
+  }
+
+  .m5 {
+    font-family: var(--fuente-mono);
+    font-weight: 500;
+  }
+
+  .valores {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--e-2) var(--e-6);
+    margin: 0;
+    font-size: var(--text-sm);
+  }
+
+  .valores dt {
+    color: var(--fg-2);
+  }
+
+  .valores dd {
+    margin: 0;
+    font-family: var(--fuente-mono);
+    color: var(--fg-0);
+  }
+</style>

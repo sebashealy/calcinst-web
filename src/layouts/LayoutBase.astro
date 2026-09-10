@@ -1,0 +1,76 @@
+---
+/**
+ * LayoutBase — esqueleto común de todas las páginas (Etapa 3).
+ *
+ * Es el único punto donde el estado de lanzamiento entra en la interfaz: lee
+ * los textos ya resueltos de `src/config/` y los pasa a componentes que no
+ * saben nada del estado. Cambiar `ESTADO_LANZAMIENTO` cambia el botón de
+ * acción, el aviso y el pie sin tocar este archivo (criterio de la Etapa 3).
+ */
+import '../styles/tokens.css'
+import ScriptTema from '../components/ScriptTema.astro'
+import BarraNav from '../components/BarraNav.astro'
+import Pie from '../components/Pie.astro'
+import { DESTINO_ACCION, ESTADO_LANZAMIENTO, TEXTO_VIGENTE } from '../config/lanzamiento'
+import { ENLACES_PIE, enlacesPrincipales } from '../config/navegacion'
+import { SITIO } from '../config/sitio'
+import producto from '../config/producto.json'
+
+interface Props {
+  titulo: string
+  descripcion?: string
+  /** Etiqueta propia de la página; independiente del `X-Robots-Tag` global. */
+  noindex?: boolean
+}
+
+const { titulo, descripcion, noindex = false } = Astro.props
+const tituloCompleto = titulo === SITIO.nombre ? titulo : `${titulo} · ${SITIO.nombre}`
+const enlaces = enlacesPrincipales(ESTADO_LANZAMIENTO, producto.precios)
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {descripcion && <meta name="description" content={descripcion} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <title>{tituloCompleto}</title>
+    <ScriptTema />
+  </head>
+  <body>
+    <a href="#contenido" class="salto-contenido">Saltar al contenido</a>
+    {
+      TEXTO_VIGENTE.banner && (
+        <div class="banner" role="note">
+          <p>{TEXTO_VIGENTE.banner}</p>
+        </div>
+      )
+    }
+    <BarraNav
+      textoAccion={TEXTO_VIGENTE.accion}
+      hrefAccion={DESTINO_ACCION}
+      enlaces={enlaces}
+      rutaActual={Astro.url.pathname}
+    />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Pie estado={TEXTO_VIGENTE.pie} enlaces={ENLACES_PIE} />
+  </body>
+</html>
+
+<style>
+  .banner {
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--warn);
+    color: var(--fg-0);
+    font-size: var(--text-sm);
+  }
+
+  .banner p {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--e-2) var(--e-4);
+  }
+</style>
