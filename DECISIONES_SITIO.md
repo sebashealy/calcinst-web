@@ -27,3 +27,15 @@
 **Qué implica aceptar.** El enunciado de D2 ("Cloudflare solo despliega lo que pasó CI") se sostiene por convención, no por imposición técnica: un push directo de la cuenta administradora se desplegaría sin esperar a CI. La mitigación es de proceso — trabajar por PR salvo urgencia real.
 
 **Costo de revertir:** nulo. Es una casilla en la configuración de la rama; activarla en cualquier momento cierra el hueco sin tocar el repositorio.
+
+### AD2 — Tailwind CSS se desinstala; D1 queda en «Astro + MDX» (2026-09-10)
+
+**Contexto.** El addendum A5 (`ESTADO_SITIO.md`) registró que el sistema de diseño de la Etapa 2 se construyó con propiedades personalizadas CSS y estilos con ámbito, y que Tailwind seguía instalado sin usarse. Sebastián pidió decidir, con fecha de corte, si entraba en las Etapas 5–6 o se desinstalaba: una dependencia de build que no produce nada es deuda.
+
+**Decisión: desinstalar ya**, con corte en la propia Etapa 3 (commit `e12657c`). Se retiran `tailwindcss` y `@tailwindcss/vite` (13 paquetes menos en `node_modules`) y el registro del plugin en `astro.config.mjs`, que era la única referencia en todo el repositorio. El build no cambia.
+
+**Por qué no esperar a la Etapa 5.** Esperar solo tendría sentido si reinstalar fuera caro, y no lo es: es un comando. Lo que sí tiene costo es mantener una dependencia muerta durante dos etapas. Y la puerta para volver a introducirla ya existe: la regla de aprobación de dependencias con versión exacta. Si una etapa demuestra una necesidad concreta que los tokens y los estilos con ámbito no cubren, se propone entonces, con evidencia, como cualquier otra dependencia.
+
+**Efecto sobre D1:** el stack pasa a ser **Astro + MDX**, con el sistema de diseño en `src/styles/tokens.css`. Las versiones de Tailwind citadas en la fila D1 quedan como registro histórico de la Etapa 0.
+
+**Costo de revertir:** bajo. Reinstalar y registrar el plugin; ningún componente depende de su ausencia.

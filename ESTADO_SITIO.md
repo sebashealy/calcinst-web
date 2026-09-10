@@ -4,41 +4,44 @@
 
 ## Última etapa cerrada
 
-Etapa 2 — 2026-09-08. Evidencia presentada en E2-a … E2-i. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
+Etapa 3 — 2026-09-10. Evidencia presentada en E3-a … E3-h. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
 
-Cotejo criterio por criterio (plan §6, Etapa 2):
+Cotejo criterio por criterio (plan §6, Etapa 3):
 
 | Criterio de aceptación | Estado | Evidencia |
 |---|---|---|
-| Contraste verificado con herramienta para cada par token/fondo en ambos temas (≥ 4.5:1 texto, ≥ 3:1 UI) | cumplido | E2-b: matriz medida sobre el render real; dos tokens del plan no llegaban y se corrigieron (A3) |
-| Navegación por teclado completa con foco visible | cumplido | E2-d: 21 paradas, 0 sin foco visible, enlace de salto primero, `Escape` cierra el menú y devuelve el foco |
-| `prefers-reduced-motion` respetado | cumplido | E2-e: emulado `reduce`, ningún elemento conserva transición ni animación |
-| Fuentes autoalojadas y subconjuntadas (< 60 KB total WOFF2) | cumplido | E2-a y E2-f: 52 340 B = 51.1 KiB, con las cuatro caras de §3.3 |
-| Cero JS salvo el conmutador de tema | cumplido con matiz | E2-f: 1.42 KiB en 4 scripts. Además del conmutador hay dos que el propio plan prevé (menú móvil accesible en §3.5, botón de copiar en `BloqueCodigo`) y el fijador de tema de `<head>` |
-| Página con todos los componentes en todos sus estados, ambos temas | cumplido en `/diseno/` | E2-g y A4: `/_diseno/` es irrealizable en Astro; comprobado |
+| Cambiar `ESTADO_LANZAMIENTO` a cada valor cambia el botón de acción y el pie sin tocar otro archivo (`git diff --stat` = 1 archivo) | cumplido | E3-b: tres transiciones, `1 file changed` en cada una; pruebas e invariantes pasan sin modificarse en los tres estados |
+| El script I7 falla con un literal prohibido y vuelve a pasar al quitarlo (prueba negativa documentada) | cumplido | E3-d: exit 1 señalando archivo y línea, exit 0 al retirarlo; además permanente en CI |
+| Menú móvil operable con teclado y lector de pantalla (`aria-expanded`, `Escape` cierra) | cumplido con límite | E3-e: teclado verificado y árbol de accesibilidad correcto en los tres momentos. **No** se probó con un lector real; queda sugerida una comprobación de un minuto con Narrador |
 
-Añadido no exigido pero pedido por el plan como mitigación de riesgo de esta etapa: `verificar-invariantes.mjs` ahora falla si aparece un color literal fuera de `tokens.css`, con prueba negativa (E2-i).
+Evidencia pedida: tres `git diff --stat` y captura de cada estado (E3-b, E3-c), salida del script en fallo y en éxito (E3-d), conteo de pruebas antes y después (E3-h: 0 → 31).
 
-Cuatro addenda emitidos: **A2** (conmutador en JS plano, no React), **A3** (dos tokens corregidos y uno nuevo), **A4** (`/diseno/` en vez de `/_diseno/`), **A5** (el sistema no usa utilidades de Tailwind).
+Riesgos anotados de la etapa, cubiertos con prueba: «el estado se filtra a `producto.json`» (dos pruebas en `tests/lanzamiento.test.ts`) y «menú móvil sin cierre por `Escape`» (E3-e y la auditoría de E3-f).
+
+También en esta etapa, a pedido de Sebastián: **P2** (juego de caracteres) y **P3** (URL de preview) registrados en «Bloqueos», y Tailwind desinstalado (**AD2** en `DECISIONES_SITIO.md`, **A6** aquí). Addendum **A7** con las decisiones de implementación que precisan el plan.
 
 ## Siguiente etapa
 
-Etapa 3 — Layout global: navegación, pie, estado de lanzamiento.
+Etapa 4 — Blog completo, con dos posts reales.
 
-Criterios de aceptación (copiados del plan, §6, Etapa 3):
+Criterios de aceptación (copiados del plan, §6, Etapa 4):
 
-> **Criterios de aceptación:** cambiar `ESTADO_LANZAMIENTO` a cada uno de los tres valores cambia el texto del botón de acción y el pie sin tocar otro archivo (`git diff --stat` = 1 archivo en cada prueba); el script I7 falla intencionalmente al introducir un literal prohibido en un componente de prueba y vuelve a pasar al quitarlo (prueba negativa documentada); menú móvil operable con teclado y lector de pantalla (`aria-expanded`, `Escape` cierra).
+> **Criterios de aceptación:** un post sin `normativa` rompe el build (prueba negativa); un post con `verificadoDOF: false` y `borrador: false` rompe el build; un `CalloutNormativo` en el cuerpo no declarado en el frontmatter rompe el build; `rss.xml` valida en el validador W3C; el post renderizado con `remark` puro conserva todo el texto; Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB; los dos posts tienen todas sus citas con `verificadoDOF: true` (con nota de qué versión del DOF se consultó, ver H1).
 
-> **Evidencia:** tres `git diff --stat` (uno por estado) + captura de cada estado; salida del script en fallo y en éxito; conteo de tests antes/después.
+> **Evidencia:** salidas de las tres pruebas negativas; resultado del validador RSS; informe Lighthouse; `git diff --stat`; conteo de tests.
 
-> **Riesgos:** el estado se filtra a `producto.json` y queda duplicado; menú móvil sin cierre por `Escape`.
+> **Riesgos:** el redactor (humano) publica con `verificadoDOF: true` sin haber verificado — esto no lo detecta el código; se mitiga con la regla del calendario editorial (§7: la verificación se hace en la sesión de redacción, no al publicar).
 
-Notas de la Etapa 2 para quien ejecute la 3:
+**Precondiciones antes de empezar la Etapa 4** (detalle en «Bloqueos»):
 
-- `BarraNav` y `Pie` ya están construidos y son **presentacionales**: reciben el texto de acción y el de estado por props, sin conocer ningún literal de lanzamiento. Cablearlos es pasarles los valores de `lanzamiento.ts`.
-- El menú móvil ya cumple su parte del criterio de la Etapa 3 (`aria-expanded`, `Escape` cierra y devuelve el foco), verificado en E2-d. Falta comprobarlo con lector de pantalla.
-- `Insignia` no tiene variantes de estado a propósito: usa tonos genéricos, para que los literales `proximamente` / `beta` / `disponible` puedan vivir solo en `src/config/` cuando I7 entre en vigor.
-- `verificar-invariantes.mjs` ya tiene la estructura para añadir la comprobación de I7 junto a la de TOKENS.
+- **P2** — el juego de caracteres como dato del proyecto, con las dos comprobaciones de build. Hoy 10 caracteres declarados no tienen glifo.
+- **P3** — URL de preview por PR funcionando (se comprueba en el PR de la Etapa 3; ver E3-g).
+- **H1** — versión vigente de la NOM-001-SEDE, antes de redactar T01.
+- **Contenido humano:** T01 y T03 los redacta Sebastián; el andamiaje de la Etapa 4 puede construirse antes, pero la etapa no cierra sin los dos posts.
+
+**Para cerrarla:** **P1**, las Redirect Rules con sus nueve comprobaciones.
+
+Dependencias que la Etapa 4 probablemente pedirá, **sin instalar**: `@astrojs/rss` (4.0.19 al 2026-09-05, en D1). Zod ya viene con Astro (`astro/zod`), así que el esquema del frontmatter no necesita dependencia propia; se confirmará al empezar.
 
 ## Evidencia Etapa 0
 
@@ -1060,6 +1063,173 @@ exit: 1
 
 Restaurado el archivo, vuelve a pasar con exit 0. La comprobación cubre hex y las funciones `rgb()`, `hsl()`, `oklch()` y `color-mix()` en `src/components`, `src/pages` y `src/layouts`; `tokens.css` queda fuera porque es donde el color debe definirse.
 
+## Evidencia Etapa 3 (2026-09-10)
+
+### E3-a — Configuración y layout
+
+`src/config/` queda con cinco archivos, y es el único lugar donde algo depende del estado de lanzamiento:
+
+| Archivo | Contenido |
+|---|---|
+| `lanzamiento.ts` | `ESTADOS`, `ESTADO_LANZAMIENTO` (la línea que se cambia), `TEXTO` por estado y `TEXTO_VIGENTE` ya resuelto |
+| `navegacion.ts` | Enlaces de barra y pie; la regla de «Precios» de §4.4 como función pura |
+| `producto.json` | Nombre, versión (`null`), licencia de D4, `precios: null`. **Sin campo de estado** (riesgo anotado de la etapa) |
+| `sitio.ts` | Nombre, dominio canónico —`astro.config.mjs` lo importa de aquí—, correo de contacto (`null`, pendiente de Sebastián) y redes |
+| `capacidades.json` | Las once capacidades de §4.3 con su estado inicial; redacción marcada como provisional |
+
+`src/layouts/LayoutBase.astro` es el único punto donde el estado entra en la interfaz: lee `TEXTO_VIGENTE` y los enlaces ya resueltos y se los pasa a `BarraNav` y `Pie`, que siguen siendo presentacionales. `/diseno/` pasa a usar el layout y añade una sección «Estado de lanzamiento vigente» que muestra los cuatro valores sin contener un solo literal de estado.
+
+### E3-b — El criterio central: tres estados, un archivo cada vez
+
+Para que las tres transiciones fueran comparables se hizo un commit por transición en una rama local temporal (`proximamente → beta → disponible → proximamente`), borrada al terminar. En cada estado se construyó el sitio y se corrieron **sin modificar** las pruebas y el verificador de invariantes.
+
+```
+################ ESTADO: beta ################
+--- git diff --stat HEAD~1..HEAD ---
+ src/config/lanzamiento.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+--- linea cambiada ---
+-export const ESTADO_LANZAMIENTO: EstadoLanzamiento = ESTADOS.proximamente
++export const ESTADO_LANZAMIENTO: EstadoLanzamiento = ESTADOS.beta
+--- build: ok ---
+--- pruebas (sin modificar) ---
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+--- invariantes ---
+verificar-invariantes: 2 verificacion(es) activas, 0 fallo(s)
+
+################ ESTADO: disponible ################
+--- git diff --stat HEAD~1..HEAD ---
+ src/config/lanzamiento.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+--- linea cambiada ---
+-export const ESTADO_LANZAMIENTO: EstadoLanzamiento = ESTADOS.beta
++export const ESTADO_LANZAMIENTO: EstadoLanzamiento = ESTADOS.disponible
+--- build: ok ---
+--- pruebas (sin modificar) ---
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+--- invariantes ---
+verificar-invariantes: 2 verificacion(es) activas, 0 fallo(s)
+
+################ ESTADO: proximamente ################
+--- git diff --stat HEAD~1..HEAD ---
+ src/config/lanzamiento.ts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+--- linea cambiada ---
+-export const ESTADO_LANZAMIENTO: EstadoLanzamiento = ESTADOS.disponible
++export const ESTADO_LANZAMIENTO: EstadoLanzamiento = ESTADOS.proximamente
+--- build: ok ---
+--- pruebas (sin modificar) ---
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+--- invariantes ---
+verificar-invariantes: 2 verificacion(es) activas, 0 fallo(s)
+```
+
+Lo que renderizó cada build, extraído con selectores DOM desde Chrome (no con expresiones regulares sobre el HTML, que en un primer intento fallaron por los atributos `data-astro-cid-*` que Astro añade):
+
+| | `proximamente` | `beta` | `disponible` |
+|---|---|---|---|
+| Botón de acción | Únete a la lista | Descargar beta | Descargar |
+| Aviso global | — | Versión beta: puede contener errores. Verifica cada resultado. | — |
+| Línea del pie | Estado: en desarrollo | Estado: versión beta | (oculta) |
+| Insignia | Próximamente | Beta | Disponible |
+| Enlace «Precios» | no | no | **no** |
+| Destino del botón | `/descarga/` | `/descarga/` | `/descarga/` |
+
+La última fila de «Precios» es la regla de §4.4 funcionando: en `disponible` tampoco aparece, porque `producto.precios` sigue en `null`. Hacen falta las dos condiciones.
+
+### E3-c — Capturas de cada estado
+
+`estado-proximamente.png`, `estado-beta.png`, `estado-disponible.png` (1280 px, tema oscuro, ~40 KB cada una), entregadas a Sebastián durante la sesión. Para que fueran compactas, el script de captura retira las secciones del catálogo de `/diseno/`; barra, aviso, insignia y pie son los reales de cada build. Una primera tanda arrastraba unos 3 800 px de fondo vacío porque la captura de página completa conservaba la altura previa a retirar las secciones; se recortaron al borde inferior del pie.
+
+### E3-d — Prueba negativa de I7
+
+Sobre el árbol real, con un componente de prueba que contiene un literal prohibido:
+
+```
+=== con el componente de prueba ===
+[FALLA] I7 — el estado de lanzamiento vive solo en src/config/
+  - src/components/PruebaI7.astro:3 — contiene «unete a la lista»
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+verificar-invariantes: 2 verificacion(es) activas, 1 fallo(s)
+exit: 1
+
+=== tras quitarlo ===
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+verificar-invariantes: 2 verificacion(es) activas, 0 fallo(s)
+exit: 0
+```
+
+Además la prueba negativa queda **permanente**: `tests/invariantes.test.ts` ejerce el verificador contra árboles temporales en cada CI —literal en un componente, literal retirado, literal dentro de `src/config/`, variantes sin acento y en mayúsculas, comparación `ESTADOS.proximamente` fuera de config y literal en un `.mdx`—. Si alguien debilita el verificador, falla la misma PR.
+
+### E3-e — Menú móvil con teclado y lector de pantalla
+
+Teclado: sin cambios respecto de la Etapa 2, verificado de nuevo sobre el layout nuevo (E3-f). Lo que recibe un lector de pantalla, leído del **árbol de accesibilidad de Chrome** a 360 px, abriendo con `Enter` y cerrando con `Escape`:
+
+```json
+{
+  "cerrado":    { "rol": "button", "nombre": "Abrir menú",  "expandido": false, "menuVisible": false },
+  "abierto":    { "rol": "button", "nombre": "Cerrar menú", "expandido": true,  "menuVisible": true  },
+  "enlacesAlcanzables": ["Producto", "Quiénes somos", "Blog", "Únete a la lista"],
+  "trasEscape": { "rol": "button", "nombre": "Abrir menú",  "expandido": false, "menuVisible": false, "focoEnBoton": true }
+}
+```
+
+**Límite de esta evidencia:** es el árbol que Chrome expone a las tecnologías de asistencia, no una prueba con un lector de pantalla real. Comprueba nombre, rol y estado `aria-expanded`, que es lo que el criterio enumera, pero no cómo lo verbaliza un lector concreto. Una verificación de un minuto con Narrador de Windows (`Ctrl` + `Win` + `Enter`) sobre `/diseno/` a ancho de móvil lo cerraría: al enfocar el botón debe anunciar «Abrir menú, botón, contraído», y tras pulsarlo, «expandido».
+
+### E3-f — Control de regresión sobre la Etapa 2
+
+La migración de `/diseno/` al layout podía romper lo verificado en la Etapa 2. Se reejecutó su auditoría completa:
+
+```
+=== TEMA OSCURO ===
+axe-core: 0 violacion(es)
+teclado: 21 paradas · salto primero: si · sin foco visible: 0 · Escape cierra menu y devuelve foco: si
+prefers-reduced-motion: respetado
+=== TEMA CLARO ===
+axe-core: 0 violacion(es)
+teclado: 21 paradas · salto primero: si · sin foco visible: 0 · Escape cierra menu y devuelve foco: si
+prefers-reduced-motion: respetado
+RESULTADO: sin incumplimientos.
+```
+
+Idéntico a E2-c/E2-d/E2-e. El JS de `/diseno/` sigue en 4 scripts y 1 459 B.
+
+### E3-h — Batería de cierre
+
+```
+> npx astro check
+Result (27 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+> npm test
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+
+> npm run lint
+(sin salida; exit 0)
+
+> npm run format:check
+All matched files use Prettier code style!
+
+> node scripts/verificar-invariantes.mjs
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+verificar-invariantes: 2 verificacion(es) activas, 0 fallo(s)
+
+> npm run build
+2 page(s) built
+```
+
+**Conteo de pruebas: 0 antes, 31 después**, en dos archivos. Se retiró `passWithNoTests` de `vitest.config.ts`: su justificación (E1-c) era que aún no había pruebas, y con pruebas reales solo serviría para que un CI al que se le borraran todas siguiera en verde.
+
+Al desinstalar Tailwind (AD2), npm informó `removed 13 packages, and audited 708 packages`.
+
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
@@ -1086,12 +1256,70 @@ Defecto documentado en E1-n. Corrección: cambiar ambas reglas a redirección **
 
 Los tres casos se repiten contra `calcinst.com` y `www.calcinst.com`, que usan la otra regla: son nueve comprobaciones en total.
 
+### P2 — Juego de caracteres declarado como dato del proyecto (corte: antes de iniciar la Etapa 4)
+
+Registrado a pedido de Sebastián (2026-09-10). **Requisito:** el juego de caracteres de las fuentes se declara explícitamente como dato versionado del proyecto, no se deriva del contenido existente, y **el build falla si un `.mdx` usa un carácter fuera del conjunto declarado**.
+
+**Corrección de una premisa, con su causa.** Los 18 símbolos que motivaron el registro (`²` `°` `Ω` `±` `≈` `×` `≤` `≥` `µ`, las mayúsculas acentuadas y `¿` `¡`) **sí están declarados** en `scripts/generar-fuentes.mjs`: el conjunto se escribió a mano con notación técnica incluida, no se derivó del contenido. La redacción de E2-a («los 141 caracteres que el sitio usa») era imprecisa e inducía justo esa lectura; lo correcto es «los 141 caracteres declarados».
+
+**Pero el problema de fondo existe, y es peor que el registrado: declarar un carácter no garantiza su glifo.** `subset-font` descarta en silencio lo que la fuente de origen no contiene. Medido el 2026-09-10 con harfbuzz sobre las fuentes ya generadas (descomprimidas a TrueType, porque harfbuzz no lee WOFF2 directamente; un primer intento sin descomprimir dio 0 glifos, artefacto de medición descartado):
+
+```
+ibm-plex-sans-400    glifos: 131 de 141 | sin glifo: ≤ ≥ ≈ Ω μ Δ → ← ✓ ✗
+ibm-plex-sans-600    glifos: 131 de 141 | sin glifo: ≤ ≥ ≈ Ω μ Δ → ← ✓ ✗
+ibm-plex-mono-400    glifos: 131 de 141 | sin glifo: ≤ ≥ ≈ Ω μ Δ → ← ✓ ✗
+ibm-plex-mono-500    glifos: 131 de 141 | sin glifo: ≤ ≥ ≈ Ω μ Δ → ← ✓ ✗
+```
+
+**Diez caracteres declarados no tienen glifo en ninguna de las cuatro caras**, y varios son exactamente de los que el contenido normativo necesitará. Hoy ningún texto los usa, así que no hay daño visible; en cuanto un post escriba «≤ 3 %» o «Ω», el navegador los tomará de una fuente del sistema y mezclará tipografías dentro de una misma expresión.
+
+**Causa:** el generador parte de los archivos `latin` de Fontsource, que siguen el rango `latin` de Google Fonts. Ese rango incluye U+2191 `↑` y U+2193 `↓` como excepción, pero no U+2192 `→` ni U+2190 `←`, ni el bloque griego, ni los operadores matemáticos — de ahí que `↑ ↓` sí aparezcan y `→ ←` no. **No es una carencia de IBM Plex:** la fuente completa oficial (`@ibm/plex-sans` 1.1.0, `fonts/complete/woff2/IBMPlexSans-Regular.woff2`) tiene 9 de los 10; solo le falta `✗`.
+
+```
+IBM Plex Sans Regular (completa)   ≤✔ ≥✔ ≈✔ Ω✔ μ✔ Δ✔ →✔ ←✔ ✓✔ ✗✘
+```
+
+La cobertura de **IBM Plex Mono completa no se pudo verificar** en esta sesión: la ruta armada en `@ibm/plex-mono` 2.5.0 dio 404 y el paquete unificado `@ibm/plex` 6.4.1 devuelve 403 en jsDelivr. Queda como primer paso de la resolución.
+
+**Qué debe cumplir la resolución de P2:**
+
+1. El conjunto vive en un archivo de datos versionado (por ejemplo, `src/config/caracteres.json`), no como constante dentro de un script.
+2. El generador subconjunta desde las fuentes **completas** de IBM, no desde los recortes `latin` de Fontsource.
+3. **Comprobación A:** todo carácter declarado tiene glifo en las cuatro caras generadas. Hoy fallaría con 10 caracteres — que es exactamente lo que debe detectar.
+4. **Comprobación B:** todo carácter usado en un `.mdx` pertenece al conjunto declarado; si no, el build falla, nombrando archivo, línea y carácter.
+5. Decidir qué hacer con `✗`, que no existe en IBM Plex: quitarlo del conjunto o aceptarlo documentado como carácter de otra fuente.
+6. Decidir entre `µ` (U+00B5, signo micro, sí cubierto hoy) y `μ` (U+03BC, mu griega, no cubierta): son caracteres distintos que se ven igual, y la comprobación B obligará a usar uno de forma coherente.
+7. Volver a medir el presupuesto de fuentes: añadir griego, operadores y flechas crece los archivos, que hoy suman 51.1 KiB de 60 KB.
+
+### P3 — Las URL de preview por PR dejaron de generarse (corte: antes de iniciar la Etapa 4)
+
+Registrado a pedido de Sebastián (2026-09-10): la Etapa 4 depende de poder revisar cada PR en su preview.
+
+**El síntoma empezó un PR antes de lo que se creía.** Contenido de los comentarios de Cloudflare, leído por API:
+
+| PR | Fecha | Comentario de Cloudflare | Columna «Preview URL» |
+|---|---|---|---|
+| #1 | 2026-09-05 18:04 | «Deployment successful» | **sí**: `https://prueba-i5-humo-calcinst-web.instcalc.workers.dev` |
+| #2 | 2026-09-06 02:43 | «Deployment successful» | **no** |
+| #3 | 2026-09-08 14:55 | ninguno | — |
+
+Al cerrar la Etapa 1 solo se revisó que el check de Workers Builds pasara, no el contenido del comentario; por eso la pérdida de la URL en el PR #2 pasó inadvertida.
+
+**Correlación:** entre el PR #1 y el #2 entró el commit `9efa9e4`, que declaró `routes` con `custom_domain` en `wrangler.jsonc`. Además, `https://calcinst-web.instcalc.workers.dev/`, que respondía 200 al conectar el repositorio, **hoy devuelve 404**: algo desactivó el subdominio `workers.dev`, del que dependen las preview URLs.
+
+**Lo que dice la documentación, y por qué no cierra el diagnóstico.** `https://developers.cloudflare.com/workers/wrangler/configuration/` indica que `workers_dev` vale `true` por omisión y que `preview_urls` hereda ese valor, **sin mencionar** que declarar `routes` lo cambie. La evidencia apunta a ese commit, pero la documentación no lo respalda: no se afirma una causa. Lo que sí documenta `https://developers.cloudflare.com/workers/versions-and-deployments/preview-urls/` es que `preview_urls` se puede fijar en el archivo de wrangler y que **ese archivo prevalece sobre el dashboard en cada despliegue**.
+
+**Corrección aplicada (commit `f0b2b47`):** declarar ambos campos explícitamente en lugar de depender de valores por omisión que la evidencia y la documentación no reconcilian — `"workers_dev": false` (producción no se sirve en `workers.dev`, que es además el estado observado y evita un host duplicado del canónico) y `"preview_urls": true`. El PR de la Etapa 3 es la prueba; resultado en E3-g.
+
 ### Otros pendientes
 
-- **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum A2. Único punto de gobierno abierto desde la Etapa 0.
-- **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, addendum AD1.
+- **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum que corresponda. Único punto de gobierno abierto desde la Etapa 0.
+- **Correo de contacto público** (corte: Etapa 6). `SITIO.correoContacto` está en `null` a propósito: publicar una dirección es decisión de Sebastián. Lo necesitan la página de Contacto (Etapa 6) y el correo alterno que exige I1 en el formulario (Etapa 8).
+- **Revisión de `capacidades.json`** (corte: antes de la Etapa 5, que es la primera que la renderiza). Tres cosas: (1) nombres y descripciones son redacción provisional (`"redaccionProvisional": true`); (2) los `motivo` se copiaron de §4.3, que cita `ESTADO_PROYECTO.md` del 2026-07-30 — una nota de memoria de sesiones anteriores sugiere que las correcciones de los Art. 430-22 y 430-24 se aplicaron el 2026-08-06, así que esos motivos pueden estar desfasados y deben cotejarse con el estado real de CalcInst; (3) `normativa[]` está vacío en todas las capacidades: poblarlo es contenido normativo y debe cotejarse con el DOF (I3).
+- **Inicio sin `LayoutBase`** (corte: Etapa 5). `index.astro` sigue siendo la página mínima de la Etapa 1. Ponerle la barra de navegación ahora publicaría en la portada enlaces a páginas que aún no existen (`/producto/`, `/blog/`…); la Etapa 5 la reconstruye sobre el layout.
+- **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, AD1.
 
-Nada de lo anterior impide iniciar la Etapa 2.
+**Para iniciar la Etapa 4 deben estar resueltos P2 y P3**, y para cerrarla, P1. Además la Etapa 4 depende de contenido humano: los posts T01 y T03 los redacta Sebastián, y T01 exige cerrar antes H1 (versión vigente de la NOM).
 
 ## Nota sobre E0-f
 
@@ -1173,3 +1401,18 @@ Razón: §3 describe un sistema de *tokens*, y expresarlo como variables CSS lo 
 Tailwind queda disponible: la etapa que necesite utilidades solo tiene que volver a importarlo. **No se cambia D1.**
 
 **Costo de revertir:** nulo. Es un `@import` de una línea.
+
+### A6 — Tailwind desinstalado; resuelve A5 (2026-09-10)
+
+A5 dejó Tailwind instalado sin uso. Sebastián pidió decidirlo con fecha de corte; se desinstaló en la Etapa 3 (commit `e12657c`). Decisión, razones y efecto sobre D1 en `DECISIONES_SITIO.md`, AD2. A5 se conserva sin editar como registro de la situación previa.
+
+### A7 — Decisiones de implementación de la Etapa 3 que precisan el plan (2026-09-10)
+
+Ninguna cambia una decisión D1–D8; se registran porque el código hace algo más preciso o más estricto de lo que el plan dice literalmente.
+
+1. **`TEXTO` gana dos campos sobre §4.2.** El plan define `accion`, `banner` y `descarga`. Se añaden `pie` —el criterio de la etapa exige que el pie cambie con el estado, y §4.2 no le daba texto— e `insignia` `{ tono, texto }`, que es el mapeo estado→insignia que la Etapa 2 dejó prometido al quitar a `Insignia` sus variantes de estado. En `disponible`, `pie` es `null`: un producto ya lanzado no necesita anunciar su estado en cada pie de página.
+2. **I7 compara sin acentos y sin mayúsculas.** El plan lista cuatro literales exactos; comparados al pie de la letra, «Próximamente» con mayúscula, «PROXIMAMENTE» o «Unete a la lista» se colarían. Se normalizan contenido y literales antes de comparar.
+3. **I7 recorre `src/` excepto `src/config/`, no «cualquier archivo fuera de `src/config/`».** Leído literalmente, el enunciado del plan haría fallar al propio verificador, a los documentos de gobierno y a las pruebas, que necesariamente nombran esos literales. El objetivo del invariante es el código y el contenido del sitio, que viven en `src/`.
+4. **Consecuencia deliberada de I7: los componentes no pueden comparar estados.** `proximamente` es a la vez literal prohibido y nombre de la clave del estado, así que escribir `ESTADOS.proximamente` fuera de `src/config/` también falla. Es lo buscado: toda lógica que dependa del estado vive en la configuración (por ejemplo, la regla de «Precios» de §4.4 es una función pura en `navegacion.ts`) y los componentes solo reciben valores ya resueltos. Hay una prueba que lo fija.
+5. **`astro.config.mjs` importa el dominio de `sitio.ts`** en vez de repetirlo, para que el canónico tenga una sola fuente.
+6. **`index.astro` no pasa todavía a `LayoutBase`** (ver «Otros pendientes»): la barra publicaría en la portada enlaces a páginas inexistentes.
