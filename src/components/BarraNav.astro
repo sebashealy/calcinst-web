@@ -2,27 +2,24 @@
 /**
  * BarraNav — navegación principal (§3.5).
  *
- * Presentacional: el texto del botón de acción llega por prop porque los
- * literales de estado de lanzamiento solo pueden vivir en `src/config/` (I7).
- * La Etapa 3 la cablea con `lanzamiento.ts`.
+ * Presentacional: el texto del botón de acción y los enlaces llegan por prop
+ * porque todo lo que depende del estado de lanzamiento vive en `src/config/`
+ * (I7). `LayoutBase` es quien los resuelve.
  */
 import Boton from './Boton.astro'
 import ConmutadorTema from './ConmutadorTema.astro'
+import type { Enlace } from '../config/navegacion'
 
 interface Props {
   /** Texto del botón de acción. Lo decide la config, nunca este componente. */
   textoAccion?: string
   hrefAccion?: string
+  /** Enlaces principales; los resuelve `src/config/navegacion.ts`. */
+  enlaces: readonly Enlace[]
   rutaActual?: string
 }
 
-const { textoAccion, hrefAccion = '/descarga/', rutaActual = '' } = Astro.props
-
-const enlaces = [
-  { href: '/producto/', texto: 'Producto' },
-  { href: '/quienes-somos/', texto: 'Quiénes somos' },
-  { href: '/blog/', texto: 'Blog' },
-]
+const { textoAccion, hrefAccion = '/descarga/', enlaces, rutaActual = '' } = Astro.props
 
 const esActual = (href: string) => rutaActual === href || rutaActual.startsWith(href)
 ---

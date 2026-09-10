@@ -1,0 +1,94 @@
+{
+  "fuente": "PLAN_SITIO_WEB.md §4.3, con datos de ESTADO_PROYECTO.md del 2026-07-30",
+  "redaccionProvisional": true,
+  "capacidades": [
+    {
+      "id": "dibujo-reticula-metros",
+      "nombre": "Dibujo sobre retícula en metros",
+      "descripcion": "Traza la instalación sobre una retícula con escala en metros.",
+      "estado": "verificado",
+      "motivo": "Completo, sin dependencia normativa.",
+      "normativa": []
+    },
+    {
+      "id": "distancias-grafo",
+      "nombre": "Longitudes por el trazo",
+      "descripcion": "Calcula la longitud real de cada circuito siguiendo el trazo dibujado.",
+      "estado": "verificado",
+      "motivo": "Completo.",
+      "normativa": []
+    },
+    {
+      "id": "factor-agrupamiento",
+      "nombre": "Factor de agrupamiento",
+      "descripcion": "Determina el factor de ajuste por número de conductores en una misma canalización.",
+      "estado": "verificado",
+      "motivo": "Tabla 310-15(b)(3)(a), con pruebas.",
+      "normativa": []
+    },
+    {
+      "id": "correccion-temperatura",
+      "nombre": "Corrección por temperatura",
+      "descripcion": "Aplica el factor de corrección por temperatura ambiente.",
+      "estado": "verificado",
+      "motivo": "Con pruebas; el factor no se recorta a 1 (decisión registrada).",
+      "normativa": []
+    },
+    {
+      "id": "sizing-caso-1",
+      "nombre": "Dimensionamiento de conductores (caso 1)",
+      "descripcion": "Dimensionamiento de conductores, caso 1 del motor de cálculo.",
+      "estado": "implementado",
+      "motivo": "Falta corregir Art. 430-22 y construir el caso de referencia calculado a mano.",
+      "normativa": []
+    },
+    {
+      "id": "sizing-caso-2",
+      "nombre": "Dimensionamiento de conductores (caso 2)",
+      "descripcion": "Dimensionamiento de conductores, caso 2 del motor de cálculo.",
+      "estado": "implementado",
+      "motivo": "Ídem caso 1.",
+      "normativa": []
+    },
+    {
+      "id": "sizing-caso-3-alimentador",
+      "nombre": "Dimensionamiento de alimentadores",
+      "descripcion": "Dimensionamiento del conductor alimentador de un tablero.",
+      "estado": "implementado",
+      "motivo": "Falta corregir Art. 430-24 (suma aritmética + 25 %); Bug 4 abierto.",
+      "normativa": []
+    },
+    {
+      "id": "caida-tension",
+      "nombre": "Caída de tensión",
+      "descripcion": "Calcula la caída de tensión de cada circuito.",
+      "estado": "implementado",
+      "motivo": "Depende del calibre; pasa a verificado con los casos de referencia.",
+      "normativa": []
+    },
+    {
+      "id": "protecciones",
+      "nombre": "Selección de protecciones",
+      "descripcion": "Selección de la protección de cada circuito.",
+      "estado": "planeado",
+      "motivo": "No iniciado. No aparece como funcionalidad.",
+      "normativa": []
+    },
+    {
+      "id": "memoria-calculo-exportable",
+      "nombre": "Memoria de cálculo exportable",
+      "descripcion": "Documento de memoria de cálculo con formato para revisión y firma.",
+      "estado": "planeado",
+      "motivo": "Hoy solo hay exportación CSV; el sitio no dice «memoria de cálculo».",
+      "normativa": []
+    },
+    {
+      "id": "exportacion-csv",
+      "nombre": "Exportación CSV",
+      "descripcion": "Exporta los resultados del cálculo a un archivo CSV.",
+      "estado": "verificado",
+      "motivo": "Completo.",
+      "normativa": []
+    }
+  ]
+}

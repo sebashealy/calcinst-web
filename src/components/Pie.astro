@@ -1,22 +1,19 @@
 ---
 /**
  * Pie — pie de página (§3.5).
- * `estado` llega por prop: los literales de estado viven en `src/config/` (I7).
+ * `estado` y los enlaces llegan por prop: lo que depende del estado de
+ * lanzamiento vive en `src/config/` (I7).
  */
+import type { Enlace } from '../config/navegacion'
+
 interface Props {
-  /** Texto de estado del proyecto, provisto por la config (Etapa 3). */
-  estado?: string
+  /** Línea de estado resuelta por la config; `null` la oculta. */
+  estado?: string | null
+  enlaces: readonly Enlace[]
 }
 
-const { estado } = Astro.props
+const { estado, enlaces } = Astro.props
 const anio = new Date().getFullYear()
-
-const enlaces = [
-  { href: '/terminos/', texto: 'Términos' },
-  { href: '/privacidad/', texto: 'Privacidad' },
-  { href: '/contacto/', texto: 'Contacto' },
-  { href: '/blog/rss.xml', texto: 'RSS' },
-]
 ---
 
 <footer class="pie">
