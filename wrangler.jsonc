@@ -14,7 +14,10 @@
   // el dashboard en cada despliegue.
   //   workers_dev: false — producción NO se sirve en workers.dev (evita un host
   //                        duplicado del canónico; es además el estado ya observado).
-  //   preview_urls: true — cada rama y cada versión tienen su URL de preview.
+  //   preview_urls: true — NO basta por sí solo: comprobado en el PR #4, con
+  //                        workers_dev en false no se genera URL de preview (la de la
+  //                        versión devuelve 404). Las previews viven en workers.dev.
+  //                        Activarlas exige workers_dev: true; decisión pendiente (P3).
   "workers_dev": false,
   "preview_urls": true,
   // Dominio canónico (D2). Los Custom Domains crean su propio registro DNS y no

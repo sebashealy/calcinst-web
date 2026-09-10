@@ -4,7 +4,7 @@
 
 ## Última etapa cerrada
 
-Etapa 3 — 2026-09-10. Evidencia presentada en E3-a … E3-h. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
+Etapa 3 — 2026-09-10. Evidencia presentada en E3-a … E3-h (E3-g: prueba de P3, negativa). **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
 
 Cotejo criterio por criterio (plan §6, Etapa 3):
 
@@ -35,7 +35,7 @@ Criterios de aceptación (copiados del plan, §6, Etapa 4):
 **Precondiciones antes de empezar la Etapa 4** (detalle en «Bloqueos»):
 
 - **P2** — el juego de caracteres como dato del proyecto, con las dos comprobaciones de build. Hoy 10 caracteres declarados no tienen glifo.
-- **P3** — URL de preview por PR funcionando (se comprueba en el PR de la Etapa 3; ver E3-g).
+- **P3** — URL de preview por PR funcionando. La corrección probada en el PR #4 no bastó (E3-g); falta la decisión de Sebastián entre las opciones A y B.
 - **H1** — versión vigente de la NOM-001-SEDE, antes de redactar T01.
 - **Contenido humano:** T01 y T03 los redacta Sebastián; el andamiaje de la Etapa 4 puede construirse antes, pero la etapa no cierra sin los dos posts.
 
@@ -1198,6 +1198,31 @@ RESULTADO: sin incumplimientos.
 
 Idéntico a E2-c/E2-d/E2-e. El JS de `/diseno/` sigue en 4 scripts y 1 459 B.
 
+### E3-g — Prueba de P3 en este PR: la corrección no bastó
+
+El PR #4 lleva `f0b2b47` (`workers_dev: false` y `preview_urls: true` explícitos). Resultado, observado con un sondeo de 373 s sobre la API de GitHub y luego contra las URL directamente:
+
+```
+=== comentario de Cloudflare en PR #4 ===
+(ninguno)
+=== checks ===
+Workers Builds: calcinst-web	pass
+verificar	pass
+```
+
+El build sí desplegó una versión — la salida del check dice `Version ID: 9c725d17-6488-4392-a992-68785719878a` — y en el PR #1 la URL de preview por versión tenía justamente la forma `<prefijo del ID>-calcinst-web.instcalc.workers.dev`. Probada:
+
+```
+> curl -sSI https://9c725d17-calcinst-web.instcalc.workers.dev/diseno/
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=UTF-8
+
+> curl https://etapa-3-layout-estado-calcinst-web.instcalc.workers.dev/diseno/
+HTTP 404
+```
+
+**Conclusión: con `workers_dev: false`, declarar `preview_urls: true` no genera URL de preview.** Las previews se sirven en el subdominio `workers.dev` y no existen sin él, en línea con la documentación: «Preview URLs are disabled by default when `workers_dev` is disabled». El comentario de `wrangler.jsonc`, que afirmaba lo contrario, se corrigió en este mismo PR. **P3 sigue abierto**; el siguiente paso implica una decisión de Sebastián (ver P3).
+
 ### E3-h — Batería de cierre
 
 ```
@@ -1310,6 +1335,15 @@ Al cerrar la Etapa 1 solo se revisó que el check de Workers Builds pasara, no e
 **Lo que dice la documentación, y por qué no cierra el diagnóstico.** `https://developers.cloudflare.com/workers/wrangler/configuration/` indica que `workers_dev` vale `true` por omisión y que `preview_urls` hereda ese valor, **sin mencionar** que declarar `routes` lo cambie. La evidencia apunta a ese commit, pero la documentación no lo respalda: no se afirma una causa. Lo que sí documenta `https://developers.cloudflare.com/workers/versions-and-deployments/preview-urls/` es que `preview_urls` se puede fijar en el archivo de wrangler y que **ese archivo prevalece sobre el dashboard en cada despliegue**.
 
 **Corrección aplicada (commit `f0b2b47`):** declarar ambos campos explícitamente en lugar de depender de valores por omisión que la evidencia y la documentación no reconcilian — `"workers_dev": false` (producción no se sirve en `workers.dev`, que es además el estado observado y evita un host duplicado del canónico) y `"preview_urls": true`. El PR de la Etapa 3 es la prueba; resultado en E3-g.
+
+**Resultado (2026-09-10): no resolvió.** En el PR #4 no hubo comentario y la URL de preview de la versión desplegada devuelve 404 (E3-g). Con `workers_dev` en `false` no hay previews, declare lo que declare `preview_urls`.
+
+**Decisión pendiente de Sebastián — el siguiente paso tiene un costo que no es técnico:**
+
+- **Opción A — `workers_dev: true`.** Lo más probable es que devuelva las previews: era el estado al conectar el repositorio, cuando el PR #1 sí las tuvo. Pero expone producción en un **segundo host público** (`calcinst-web.instcalc.workers.dev`), cuando D2 fija un único canónico. Hasta la Etapa 9 no daña la indexación, porque todo el sitio lleva `noindex`; desde la 9, las etiquetas canónicas —que esa etapa introduce de todos modos— tendrían que cubrir también ese host.
+- **Opción B — no usar previews de Cloudflare.** Revisar cada PR en local (`npm run build && npm run preview`) o con un artefacto del CI. No expone nada más, pero pierde la revisión en el entorno real, que es lo que la Etapa 4 quería para leer los posts antes de publicarlos.
+
+Recomendación: **A**. El segundo host existió desde el primer día hasta el commit `9efa9e4`; mientras rija `noindex` no tiene efecto sobre buscadores, y la mitigación definitiva (canónicas) ya está en el plan. Se aplicaría en un commit propio y se verificaría con el primer PR siguiente.
 
 ### Otros pendientes
 
