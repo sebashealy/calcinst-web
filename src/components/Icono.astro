@@ -1,0 +1,61 @@
+---
+/**
+ * Icono — ornamentos de interfaz en SVG (AD4, §3.1).
+ *
+ * Sustituye a los caracteres de marca, aspa y flechas que `caracteres.json`
+ * prohíbe: son ornamento, no notación dentro de una oración, y dependían de
+ * glifos que IBM Plex no tiene o que el subconjunto descartaba en silencio.
+ * Heredan el color con `currentColor` y miden 1em, así que se comportan como
+ * texto. Decorativos por omisión; con `etiqueta` se anuncian como imagen.
+ */
+interface Props {
+  nombre:
+    | 'correcto'
+    | 'incorrecto'
+    | 'flecha-derecha'
+    | 'flecha-izquierda'
+    | 'flecha-arriba'
+    | 'flecha-abajo'
+  /** Texto para lectores de pantalla. Sin él, el icono es decorativo. */
+  etiqueta?: string
+}
+
+const { nombre, etiqueta } = Astro.props
+
+const TRAZOS: Record<Props['nombre'], string> = {
+  correcto: 'M3.5 8.5l3 3 6-7',
+  incorrecto: 'M4 4l8 8M12 4l-8 8',
+  'flecha-derecha': 'M3 8h10M9 4l4 4-4 4',
+  'flecha-izquierda': 'M13 8H3M7 4L3 8l4 4',
+  'flecha-arriba': 'M8 13V3M4 7l4-4 4 4',
+  'flecha-abajo': 'M8 3v10M4 9l4 4 4-4',
+}
+
+const accesible = etiqueta
+  ? { role: 'img' as const, 'aria-label': etiqueta }
+  : { 'aria-hidden': 'true' as const }
+---
+
+<svg
+  class="icono"
+  viewBox="0 0 16 16"
+  width="1em"
+  height="1em"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  focusable="false"
+  {...accesible}
+>
+  <path d={TRAZOS[nombre]}></path>
+</svg>
+
+<style>
+  .icono {
+    display: inline-block;
+    flex: none;
+    vertical-align: -0.125em;
+  }
+</style>

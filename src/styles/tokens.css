@@ -120,7 +120,11 @@
 
 :root {
   --fuente-texto: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
-  --fuente-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+  /* IBM Plex Sans va segunda en la pila mono a propósito: IBM Plex Mono no tiene
+   * griego (Ω, μ, Δ) ni en su versión completa, y sin este respaldo el navegador
+   * tomaría esos glifos de una fuente del sistema. Así salen de la misma familia
+   * de diseño. La comprobación GLIFOS lo verifica y lo lista (AD4). */
+  --fuente-mono: 'IBM Plex Mono', 'IBM Plex Sans', ui-monospace, 'Cascadia Mono', Menlo, monospace;
 
   /* Escala 1.25 sobre base 16 px. */
   --text-xs: 0.75rem; /* 12 */

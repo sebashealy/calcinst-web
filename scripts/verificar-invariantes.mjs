@@ -8,6 +8,10 @@
  * Verificaciones activas:
  *  - I7 (Etapa 3): literales de estado de lanzamiento fuera de src/config/.
  *  - TOKENS (Etapa 2): colores literales fuera de src/styles/tokens.css.
+ *  - NOTACION (P2): puntos de código prohibidos por caracteres.json (el signo de
+ *    ohm, el signo micro, el incremento, los ornamentos que van como SVG).
+ *  - CARACTERES (P2): ningún .md/.mdx usa un carácter fuera del conjunto declarado.
+ *  - GLIFOS (P2, bloqueante): ningún carácter declarado se pierde al subconjuntar.
  *
  * Pendientes, cada una en su etapa:
  *  - I3c (Etapa 4): términos de credenciales profesionales en src/ y content/.
@@ -20,6 +24,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import path from 'node:path'
+import { aTextoCodigo, leerConjunto, verificarGlifos } from './lib/fuentes.mjs'
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -136,7 +141,77 @@ export function verificarTokens(raiz = RAIZ) {
     )
 }
 
-/** @type {Array<{ invariante: string, descripcion: string, verificar: (raiz?: string) => string[] }>} */
+/** Directorios donde vive el contenido: `src/content/` y, si algún día existe, `content/`. */
+const DIRECTORIOS_DE_CONTENIDO = ['src/content', 'content']
+
+/**
+ * NOTACION: los puntos de código que `caracteres.json` prohíbe no aparecen en
+ * `src/` ni en `content/`. El mensaje dice qué usar en su lugar.
+ *
+ * @param {string} [raiz]
+ * @returns {string[]}
+ */
+export function verificarNotacion(raiz = RAIZ) {
+  const { prohibidos } = leerConjunto(raiz)
+  const porCodigo = new Map(prohibidos.map((p) => [p.cp, p]))
+  return ['src', 'content']
+    .flatMap((dir) => archivos(raiz, dir, EXTENSIONES_TEXTO))
+    .flatMap((relativa) =>
+      leer(raiz, relativa)
+        .split('\n')
+        .flatMap((linea, i) =>
+          [...linea].flatMap((c, col) => {
+            const p = porCodigo.get(c.codePointAt(0))
+            return p
+              ? [
+                  `${relativa}:${i + 1}:${col + 1} — ${p.codigo} (${p.nombre}); usar ${p.sugerencia}`,
+                ]
+              : []
+          }),
+        ),
+    )
+}
+
+/**
+ * CARACTERES: todo carácter de un .md o .mdx pertenece al conjunto declarado.
+ * Saltos de línea y tabuladores son estructura, no texto, y se admiten.
+ *
+ * @param {string} [raiz]
+ * @returns {string[]}
+ */
+export function verificarCaracteres(raiz = RAIZ) {
+  const { declarados } = leerConjunto(raiz)
+  const estructura = new Set([0x09, 0x0a, 0x0d])
+  return DIRECTORIOS_DE_CONTENIDO.flatMap((dir) => archivos(raiz, dir, ['.md', '.mdx'])).flatMap(
+    (relativa) =>
+      leer(raiz, relativa)
+        .split('\n')
+        .flatMap((linea, i) =>
+          [...linea].flatMap((c, col) => {
+            const cp = c.codePointAt(0)
+            return declarados.has(cp) || estructura.has(cp)
+              ? []
+              : [
+                  `${relativa}:${i + 1}:${col + 1} — ${aTextoCodigo(cp)} fuera del conjunto declarado`,
+                ]
+          }),
+        ),
+  )
+}
+
+/**
+ * GLIFOS: comprobación A de P2, bloqueante. Ningún carácter declarado se pierde
+ * al subconjuntar; si una cara mono lo toma de su respaldo, el resultado lo dice.
+ *
+ * @param {string} [raiz]
+ * @returns {Promise<string[]>}
+ */
+export async function verificarGlifosDeclarados(raiz = RAIZ) {
+  const { fallos } = await verificarGlifos({ raiz })
+  return fallos
+}
+
+/** @type {Array<{ invariante: string, descripcion: string, verificar: (raiz?: string) => string[] | Promise<string[]> }>} */
 export const VERIFICACIONES = [
   {
     invariante: 'I7',
@@ -148,12 +223,27 @@ export const VERIFICACIONES = [
     descripcion: 'el color se define solo en src/styles/tokens.css',
     verificar: verificarTokens,
   },
+  {
+    invariante: 'NOTACION',
+    descripcion: 'ningún punto de código prohibido por caracteres.json',
+    verificar: verificarNotacion,
+  },
+  {
+    invariante: 'CARACTERES',
+    descripcion: 'el contenido .md/.mdx solo usa caracteres declarados',
+    verificar: verificarCaracteres,
+  },
+  {
+    invariante: 'GLIFOS',
+    descripcion: 'ningún carácter declarado se pierde al subconjuntar las fuentes',
+    verificar: verificarGlifosDeclarados,
+  },
 ]
 
-function main() {
+async function main() {
   let totalFallos = 0
   for (const { invariante, descripcion, verificar } of VERIFICACIONES) {
-    const fallos = verificar()
+    const fallos = await verificar()
     if (fallos.length > 0) {
       totalFallos += fallos.length
       console.error(`[FALLA] ${invariante} — ${descripcion}`)
@@ -165,10 +255,12 @@ function main() {
   console.log(
     `verificar-invariantes: ${VERIFICACIONES.length} verificacion(es) activas, ${totalFallos} fallo(s)`,
   )
-  process.exit(totalFallos === 0 ? 0 : 1)
+  // exitCode y no process.exit(): cortar el proceso mientras harfbuzz (WASM)
+  // cierra sus recursos dispara una asercion de libuv en Windows y sale con 127.
+  process.exitCode = totalFallos === 0 ? 0 : 1
 }
 
 // Solo se ejecuta como programa; al importarlo desde las pruebas no hace nada.
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main()
+  await main()
 }
