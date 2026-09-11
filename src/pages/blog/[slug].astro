@@ -1,0 +1,28 @@
+---
+/**
+ * /blog/{slug}/ — página de un post (D8: sin fecha ni categoría en la URL).
+ *
+ * `getStaticPaths` valida TODA la colección, borradores incluidos, antes de
+ * generar nada: slugs y cruce cuerpo↔frontmatter (I3 b). Un problema aquí
+ * rompe el build.
+ */
+import type { GetStaticPaths } from 'astro'
+import { getCollection, render } from 'astro:content'
+import LayoutPost from '../../layouts/LayoutPost.astro'
+import { publicables } from '../../lib/blog'
+import { exigirColeccionValida } from '../../lib/coleccion'
+import { COMPONENTES_MDX } from '../../lib/componentes-mdx'
+
+export const getStaticPaths = (async () => {
+  const todos = await getCollection('blog')
+  exigirColeccionValida(todos)
+  return publicables(todos).map((post) => ({ params: { slug: post.id }, props: { post } }))
+}) satisfies GetStaticPaths
+
+const { post } = Astro.props
+const { Content } = await render(post)
+---
+
+<LayoutPost datos={post.data}>
+  <Content components={COMPONENTES_MDX} />
+</LayoutPost>

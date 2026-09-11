@@ -12,8 +12,10 @@ import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
 import {
   normalizar,
+  terminosDeCredencial,
   tieneColorLiteral,
   verificarCaracteres,
+  verificarI3c,
   verificarI7,
   verificarNotacion,
   verificarTokens,
@@ -199,5 +201,39 @@ describe('GLIFOS — nada declarado se pierde al subconjuntar (P2, bloqueante)',
     const { fallos } = await verificarGlifos({ raiz: RAIZ_REAL, declarados })
     expect(fallos.length).toBeGreaterThan(0)
     expect(fallos.every((f) => f.includes('U+2717'))).toBe(true)
+  })
+})
+
+describe('I3c — sin credenciales profesionales (§9.1)', () => {
+  it.each([
+    ['Ing. Pérez revisó el cálculo.', 'Ing.'],
+    ['Soy ingeniero titulado.', 'ingeniero titulado'],
+    ['Con cédula profesional vigente.', 'cédula'],
+    ['Con CEDULA vigente.', 'cédula'],
+    ['Tengo licencia profesional.', 'licencia profesional'],
+    ['Miembro colegiado.', 'colegiado'],
+  ])('detecta «%s»', (texto, termino) => {
+    expect(terminosDeCredencial(texto).map((h) => h.termino)).toEqual([termino])
+  })
+
+  it('admite el contexto negativo del descargo de §9.1', () => {
+    expect(terminosDeCredencial('un estudiante, no un profesionista con cédula. Su valor')).toEqual(
+      [],
+    )
+  })
+
+  it('una negación no declarada no basta: la lista blanca es explícita', () => {
+    expect(terminosDeCredencial('No tengo cédula, pero sé calcular.')).toHaveLength(1)
+  })
+
+  it('no confunde «Ing.» con otras palabras', () => {
+    expect(terminosDeCredencial('Ingeniería eléctrica; ingresos; Inglés.')).toEqual([])
+  })
+
+  it('recorre src/ y content/ y señala archivo y línea', () => {
+    const r = arbol({ 'src/pages/quienes.astro': '<p>Texto</p>\n<p>Ing. Sebastián</p>' })
+    expect(verificarI3c(r)).toEqual([
+      'src/pages/quienes.astro:2 — «Ing.» fuera de un contexto negativo declarado',
+    ])
   })
 })

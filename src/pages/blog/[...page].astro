@@ -1,0 +1,77 @@
+---
+/**
+ * /blog/ y /blog/2/, /blog/3/… — índice paginado (D8).
+ *
+ * El archivo se llama `[...page]` y no `[...pagina]` como proponía el plan:
+ * `paginate()` de Astro 7 exige que el parámetro se llame `page` (A8).
+ */
+import type { GetStaticPaths } from 'astro'
+import { getCollection } from 'astro:content'
+import LayoutBase from '../../layouts/LayoutBase.astro'
+import ListaPosts from '../../components/ListaPosts.astro'
+import { publicables } from '../../lib/blog'
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = publicables(await getCollection('blog'))
+  return paginate(posts, { pageSize: 10 })
+}) satisfies GetStaticPaths
+
+const { page } = Astro.props
+const titulo = page.currentPage === 1 ? 'Blog' : `Blog · página ${page.currentPage}`
+---
+
+<LayoutBase
+  titulo={titulo}
+  descripcion="Artículos sobre instalaciones eléctricas y la NOM-001-SEDE, cada afirmación con el artículo o la tabla que la sostiene."
+>
+  <div class="blog">
+    <header class="cabecera">
+      <h1>Blog</h1>
+      <p>
+        Cada afirmación técnica cita el artículo o la tabla de la norma en que se apoya.
+        <a href="/blog/rss.xml">RSS</a>
+      </p>
+    </header>
+
+    <ListaPosts posts={page.data} />
+
+    {
+      page.lastPage > 1 && (
+        <nav class="paginacion" aria-label="Páginas del blog">
+          {page.url.prev ? <a href={page.url.prev}>Más recientes</a> : <span />}
+          <span class="posicion">
+            Página {page.currentPage} de {page.lastPage}
+          </span>
+          {page.url.next ? <a href={page.url.next}>Anteriores</a> : <span />}
+        </nav>
+      )
+    }
+  </div>
+</LayoutBase>
+
+<style>
+  .blog {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--e-8) var(--e-4) 0;
+  }
+
+  .cabecera {
+    margin-bottom: var(--e-8);
+    color: var(--fg-1);
+  }
+
+  .paginacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--e-4);
+    margin-top: var(--e-8);
+    font-size: var(--text-sm);
+  }
+
+  .posicion {
+    font-family: var(--fuente-mono);
+    color: var(--fg-2);
+  }
+</style>

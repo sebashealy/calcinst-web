@@ -6,15 +6,20 @@
  * contra el `normativa[]` de su frontmatter y fallará si algo no está declarado.
  * Aquí solo se define la presentación y el enlace estable a /normativa/{ref}/.
  */
+import { VERSION_NOM } from '../config/norma'
+
 interface Props {
   /** Referencia tal como se cita: "430-22", "310-15(b)(16)", "cap9-tabla-4". */
   ref: string
-  /** Versión de la norma citada. La cadena la fija el contenido, no el componente. */
-  version: string
+  /**
+   * Versión citada. En los posts se omite: la declara el frontmatter
+   * (`normativa[].version`) y por omisión rige `src/config/norma.ts`.
+   */
+  version?: string
   tipo?: 'articulo' | 'tabla' | 'nota'
 }
 
-const { ref, version, tipo = 'articulo' } = Astro.props
+const { ref, version = VERSION_NOM, tipo = 'articulo' } = Astro.props
 
 /** Ancla de /normativa/{ref}/: minúsculas, sin paréntesis, separado por guiones. */
 const slug = ref

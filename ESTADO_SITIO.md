@@ -20,28 +20,25 @@ Riesgos anotados de la etapa, cubiertos con prueba: «el estado se filtra a `pro
 
 También en esta etapa, a pedido de Sebastián: **P2** (juego de caracteres) y **P3** (URL de preview) registrados en «Bloqueos», y Tailwind desinstalado (**AD2** en `DECISIONES_SITIO.md`, **A6** aquí). Addendum **A7** con las decisiones de implementación que precisan el plan.
 
-## Siguiente etapa
+## Etapa en curso
 
-Etapa 4 — Blog completo, con dos posts reales.
+Etapa 4 — Blog completo, con dos posts reales. **Infraestructura terminada y fusionable; la etapa no se cierra todavía**: le faltan los dos posts, que son de Sebastián, y P1.
 
-Criterios de aceptación (copiados del plan, §6, Etapa 4):
+Cotejo criterio por criterio (plan §6, Etapa 4):
 
-> **Criterios de aceptación:** un post sin `normativa` rompe el build (prueba negativa); un post con `verificadoDOF: false` y `borrador: false` rompe el build; un `CalloutNormativo` en el cuerpo no declarado en el frontmatter rompe el build; `rss.xml` valida en el validador W3C; el post renderizado con `remark` puro conserva todo el texto; Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB; los dos posts tienen todas sus citas con `verificadoDOF: true` (con nota de qué versión del DOF se consultó, ver H1).
+| Criterio de aceptación | Estado | Evidencia |
+|---|---|---|
+| Un post sin `normativa` rompe el build | cumplido | E4-h, contra el build real; permanente en `tests/blog-schema.test.ts` |
+| `verificadoDOF: false` con `borrador: false` rompe el build | cumplido | E4-h; permanente en `tests/blog-schema.test.ts` |
+| Un `CalloutNormativo` no declarado en el frontmatter rompe el build | cumplido, y ampliado a tipo y versión | E4-h; permanente en `tests/contenido.test.ts` |
+| `rss.xml` valida en el validador del W3C | cumplido | E4-j: válido, 0 errores; el único aviso es artefacto de subir el XML como texto (se confirma por URL en E4-o) |
+| El post renderizado con remark puro conserva todo el texto | cumplido | E4-i, con GFM tras la decisión de Sebastián |
+| Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB | cumplido | E4-k: 1.36 s, 1 137 B, 83 691 B sin comprimir |
+| Los dos posts con todas sus citas en `verificadoDOF: true` | **pendiente** | Contenido de Sebastián (T01 y T03). T01 exige cerrar antes H1, cuya verificación definitiva también es suya |
 
-> **Evidencia:** salidas de las tres pruebas negativas; resultado del validador RSS; informe Lighthouse; `git diff --stat`; conteo de tests.
+**Para cerrar la Etapa 4 faltan:** (1) T01 y T03, redactados por Sebastián, con sus citas cotejadas contra el DOF; (2) la verificación definitiva de H1 antes de publicar T01; (3) **P1**, las Redirect Rules con sus nueve comprobaciones. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
 
-> **Riesgos:** el redactor (humano) publica con `verificadoDOF: true` sin haber verificado — esto no lo detecta el código; se mitiga con la regla del calendario editorial (§7: la verificación se hace en la sesión de redacción, no al publicar).
-
-**Precondiciones antes de empezar la Etapa 4** (detalle en «Bloqueos»):
-
-- **P2** — **resuelto** el 2026-09-11 (AD4; evidencia E4-a … E4-e). El conjunto es un dato, las fuentes salen de IBM Plex completa y el build falla si algo declarado no sobrevive.
-- **P3** — resuelto por Sebastián en la opción A (`workers_dev: true`, AD3); pendiente de comprobar que la preview del PR siguiente responde 200 (ver P3).
-- **H1** — refutada provisionalmente: la vigente sería la NOM-001-SEDE-2012. La verificación definitiva es de Sebastián y bloquea la **publicación** de T01, no la infraestructura de la Etapa 4.
-- **Contenido humano:** T01 y T03 los redacta Sebastián; el andamiaje de la Etapa 4 puede construirse antes, pero la etapa no cierra sin los dos posts.
-
-**Para cerrarla:** **P1**, las Redirect Rules con sus nueve comprobaciones.
-
-Dependencias que la Etapa 4 probablemente pedirá, **sin instalar**: `@astrojs/rss` (4.0.19 al 2026-09-05, en D1). Zod ya viene con Astro (`astro/zod`), así que el esquema del frontmatter no necesita dependencia propia; se confirmará al empezar.
+Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-n. Diferencias con el plan en el addendum A8.
 
 ## Evidencia Etapa 0
 
@@ -1407,6 +1404,231 @@ Las paradas pasan de 21 a 22 por un motivo esperado: la tabla de prohibidos es u
 
 Batería: `astro check` 0 errores en 30 archivos · 41 pruebas · lint limpio · formato limpio · 5 invariantes en verde · build de 2 páginas. Una nota de método: un primer `astro check` con un filtro `grep` en plural («errors») ocultó un «1 error» en singular, de tipos, en `Icono.astro`; se corrigió el error y el filtro. En las etapas anteriores la línea «0 errors» aparecía explícita y CI falla ante cualquier error de tipos, así que no queda nada pendiente hacia atrás.
 
+### E4-f — Infraestructura del blog
+
+Dependencias aprobadas por Sebastián con versión exacta: `@astrojs/rss` 4.0.19 (dependencia) y, para la prueba de portabilidad, `unified` 11.0.5, `remark-parse` 11.0.0, `remark-mdx` 3.1.1, `remark-frontmatter` 5.0.0, `mdast-util-to-string` 4.0.0 y —aprobado durante la etapa, ver E4-i— `remark-gfm` 4.0.1. Zod no necesita dependencia propia: Astro 7 reexporta Zod 4.5.4 en `astro/zod`.
+
+| Archivo | Papel |
+|---|---|
+| `src/content.config.ts` | Colección `blog` con el cargador `glob` (`src/content/blog/**/*.mdx`) |
+| `src/lib/blog.ts` | Esquema D8 en un módulo puro, reglas de publicación, slugs, borradores |
+| `src/lib/coleccion.ts` | Comprobaciones que necesitan el cuerpo: slugs y cruce de citas (I3 b) |
+| `scripts/lib/mdx.mjs` | Análisis del cuerpo con remark puro; lo usan el build y la prueba I2 |
+| `src/lib/componentes-mdx.ts` + `componentes-portables.json` | Los cinco componentes permitidos, inyectados (sin `import`) y con su equivalente en Markdown |
+| `src/pages/blog/[slug].astro` | Post; su `getStaticPaths` valida toda la colección antes de generar nada |
+| `src/pages/blog/[...page].astro` | Índice paginado, 10 por página |
+| `src/pages/blog/categoria/[categoria].astro` | Las cinco categorías, siempre, aunque estén vacías |
+| `src/pages/blog/etiqueta/[etiqueta].astro` | Una página por etiqueta en uso |
+| `src/pages/blog/rss.xml.ts` + `src/lib/feed.ts` | RSS 2.0 con contenido íntegro, vía la API de contenedor |
+| `src/layouts/LayoutPost.astro` | Erratas al inicio (§9.1), referencias citadas desde el frontmatter, etiquetas, descargo |
+| `scripts/verificar-portabilidad.mjs` | Invariante I2; corre en CI después del build |
+| `src/content/blog/LEEME.md` | Guía para redactar un post: frontmatter, reglas que rompen el build, componentes |
+
+**Borradores.** `borrador: true` excluye el post del build; solo entra con `MOSTRAR_BORRADORES=1`, que existe para validar en local y no se configura en Cloudflare. Un borrador visible lleva `noindex` propio y un aviso en la página. Comprobado en los dos sentidos con dos posts de prueba: el build de producción genera 8 páginas y ningún post; con la variable, 12 páginas con los dos posts y sus dos etiquetas.
+
+**Posts de prueba.** Texto de relleno marcado como tal, sin ninguna afirmación técnica, `borrador: true` y todas sus citas con `verificadoDOF: false`. **Se borraron antes del commit final**, como pidió Sebastián; el estado final no contiene ningún `verificadoDOF: true`.
+
+### E4-g — Esquema y reglas de publicación (I3 a)
+
+`src/lib/blog.ts` implementa el frontmatter de D8 con Zod: título ≤ 70, descripción 120–160, las cinco categorías cerradas, etiquetas en minúsculas con guiones, `normativa[]` con al menos una entrada, `borrador` **obligatorio y explícito** —nadie publica por omisión—, `fechaActualizacion` exigida si hay erratas, y la `version` de cada referencia tomada por omisión de `src/config/norma.ts`. La regla de publicación va en un `superRefine`: con `borrador: false`, toda referencia debe tener `verificadoDOF: true`.
+
+El cruce cuerpo↔frontmatter (I3 b) va más allá del enunciado del plan: además de exigir que cada `<CalloutNormativo ref>` esté declarado, rechaza un `tipo` distinto del declarado y **una versión pintada distinta de la declarada**, porque la cita del cuerpo se pinta con la versión por omisión y podría contradecir al frontmatter.
+
+### E4-h — Las tres pruebas negativas del criterio, contra el build real
+
+Cada post de prueba viola una sola regla. Se ejecutó `npm run build`, que es lo que corre Cloudflare:
+
+```
+################ CRITERIO 1: post sin normativa
+[InvalidContentEntryDataError] blog → negativa-sin-normativa data does not match collection schema.
+  normativa**: **normativa: Required
+exit npm run build: 127
+
+################ CRITERIO 2: verificadoDOF false con borrador false
+[InvalidContentEntryDataError] blog → negativa-sin-cotejar data does not match collection schema.
+  normativa.0.verificadoDOF: «430-22» no está cotejada con el DOF: un post publicado no puede citarla (I3)
+exit npm run build: 1
+
+################ CRITERIO 3: CalloutNormativo no declarado en el frontmatter
+El blog tiene 1 problema(s) que impiden construir:
+  - negativa-cita-no-declarada.mdx, línea 13: cita «250-122» en el cuerpo, pero no está declarada en normativa[]
+exit npm run build: 127
+
+################ restaurado
+[build] 8 page(s) built
+exit npm run build: 0
+```
+
+**Sobre el código 127.** En Windows, Astro dispara al cerrarse una aserción de libuv (`Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\win\async.c`) después de ciertos errores, y el proceso sale con 127 en lugar de 1. Se comprobó ejecutando `npx astro build` directamente. **El build falla en todos los casos**; en Linux —CI y Cloudflare— el código sería 1. No se pudo verificar en Linux porque las negativas son manuales, pero las tres reglas corren en CI de todos modos, como pruebas: `tests/blog-schema.test.ts` (criterios 1 y 2) y `tests/contenido.test.ts` (criterio 3).
+
+**Defecto encontrado en la primera pasada del criterio 3:** el mensaje decía «línea 1», porque `entry.body` no incluye el frontmatter y las líneas se contaban desde el cuerpo. Quien redactara buscaría en el lugar equivocado. Ahora se analiza el archivo completo a partir del `filePath` que guarda el cargador, y la línea es la del archivo —13 en la prueba—; hay una prueba que lo fija.
+
+### E4-i — Portabilidad (I2): hallazgo sobre GFM
+
+**Astro 7 ya no usa remark para MDX:** `@astrojs/mdx` 8 renderiza con `@astrojs/markdown-satteri`. Por eso la prueba I2 es de verdad independiente del motor del sitio. `verificar-portabilidad.mjs` rechaza componentes fuera de la lista, `import`/`export` y expresiones `{…}`, y comprueba que **cada bloque de texto del archivo, leído con remark, aparece en la página que construyó Astro**.
+
+Primera ejecución, con un post que incluía una tabla en sintaxis GFM:
+
+```
+[OK] prueba-infraestructura-dos.mdx
+[FALLA] prueba-infraestructura-uno.mdx
+  - texto que no aparece en la página: «| Columna A | Columna B | | --------- | --------- | | celda uno | celda dos |»
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 1 fallo(s)
+```
+
+Todo el texto llegaba intacto —títulos, listas, énfasis, código, el interior de las citas, la notación— salvo la tabla: remark sin GFM sigue CommonMark y la lee como un párrafo con barras, mientras Astro la pinta como `<table>`. La prueba hacía su trabajo. **Decisión de Sebastián: las tablas GFM cuentan como portables** (se aprobó `remark-gfm` 4.0.1). Tras incorporarlo:
+
+```
+[OK] prueba-infraestructura-dos.mdx
+[OK] prueba-infraestructura-uno.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+```
+
+El análisis compara celda por celda. En CI corre después del build de producción; sin posts publicables informa `0 post(s)`.
+
+### E4-j — RSS: validador del W3C
+
+El feed se envió como texto al servicio oficial (`https://validator.w3.org/feed/check.cgi`, salida SOAP), construido con los dos posts de prueba para que tuviera items con contenido íntegro. Primera pasada:
+
+```
+validity>true
+errorcount>0
+warningcount>2
+  style attribute contains potentially dangerous content
+  Missing atom:link with rel="self"
+```
+
+Dos avisos, cero errores. Los dos se corrigieron: los atributos `style` que Shiki pone en el código se retiran del feed —los lectores los descartan igual—, y se añadió la autorreferencia `atom:link rel="self"`. Segunda pasada:
+
+```
+validity>true
+errorcount>0
+warningcount>1
+  aviso: Self reference doesn't match document location
+```
+
+**El aviso que queda es un artefacto del método**, no un defecto del feed: al subir el XML como texto, el validador no conoce su URL. Se comprueba validando por URL tras desplegar (E4-o).
+
+El feed declara `xmlns:content` y el idioma `es-mx`, todos los enlaces de su contenido son absolutos y no contiene scripts ni atributos internos de Astro. Los enlaces a `/normativa/…` darán 404 hasta la Etapa 9, que crea esas páginas.
+
+### E4-k — Lighthouse del post
+
+Lighthouse 12.6.1 por su API, con un Chrome lanzado por puppeteer (el `lhci` local falla en Windows al limpiar el perfil, E1-d), perfil móvil, emulación 412×823 y estrangulamiento simulado, sobre el post de prueba servido **sin compresión** —cota superior; Cloudflare comprime en producción—:
+
+```
+  performance      100
+  accessibility    100
+  best-practices   100
+  seo              60
+LCP:                         1.36 s   (presupuesto 2.0 s)
+Peso total transferido:      83691 B   (presupuesto 300 KB = 307200 B)
+JS transferido como archivo: 0 B
+JS en línea en el HTML:      1137 B
+JS total:                    1137 B   (presupuesto 5 KB = 5120 B)
+Fuentes transferidas:        57924 B
+```
+
+**Los tres presupuestos del criterio se cumplen.** El SEO de 60 es esperado: el borrador lleva `noindex` («Page is blocked from indexing»).
+
+**Defecto encontrado:** la primera pasada dio 96 en buenas prácticas por un error de consola: **`/favicon.ico` devolvía 404**. El sitio no tiene icono desde la Etapa 1, así que *todas* las páginas de producción provocaban ese error. Se evita la petición con `<link rel="icon" href="data:,">` en `LayoutBase`; el icono real es una decisión de marca y queda pendiente.
+
+### E4-l — Accesibilidad y presentación del blog
+
+axe-core con las reglas WCAG 2.1 A/AA y las buenas prácticas, sobre las cinco clases de página del blog, en los dos temas y a 360 y 1280 px:
+
+```
+/blog/                                 oscuro   360 px  0 violaciones
+/blog/                                 claro   1280 px  0 violaciones
+/blog/prueba-infraestructura-uno/      oscuro   360 px  0 violaciones
+/blog/prueba-infraestructura-uno/      claro   1280 px  0 violaciones
+/blog/prueba-infraestructura-dos/      oscuro   360 px  0 violaciones
+/blog/prueba-infraestructura-dos/      claro   1280 px  0 violaciones
+/blog/categoria/conductores/           oscuro   360 px  0 violaciones
+/blog/categoria/conductores/           claro   1280 px  0 violaciones
+/blog/etiqueta/prueba/                 oscuro   360 px  0 violaciones
+/blog/etiqueta/prueba/                 claro   1280 px  0 violaciones
+TOTAL: 0 violacion(es)
+```
+
+Se pasó axe completo porque la regla de regiones desplazables enfocables no forma parte del informe de Lighthouse 12, así que su 100 de accesibilidad no la cubría.
+
+**Tres defectos que solo aparecieron mirando, corregidos:**
+
+1. **Enlaces de paginación sin barra final** (`/blog/2`, `/blog`), cuando todas las URL del sitio terminan en `/`: cada clic costaba una redirección 307 y quedaban URL incoherentes para las canónicas de la Etapa 9. Causa: el `trailingSlash` por omisión de Astro, `'ignore'`. Ahora es `'always'`, y todos los enlaces internos del sitio terminan en barra o son archivos (comprobado sobre `dist/`). La paginación se probó con 13 borradores temporales: 10 en la primera página, 3 en la segunda, enlaces `/blog/2/` y `/blog/`.
+2. **El bloque de código del Markdown se veía aplastado** y con el tema oscuro fijo, el mismo defecto que la Etapa 2 corrigió en `BloqueCodigo`. Ahora Shiki emite los dos temas también para el Markdown (`markdown.shikiConfig` en `astro.config.mjs`) y el cuerpo del post tiene estilos de prosa.
+3. **La tabla GFM salía sin ningún estilo** («Columna A Columna B / celda uno celda dos»). Ahora tiene celdas, cabecera y desplazamiento propio en móvil.
+
+Capturas (`post-1280.png`, `post-360.png`, `indice-1280.png`) entregadas a Sebastián durante la sesión. Control de regresión de `/diseno/` tras tocar el layout: sin cambios (axe 0 en ambos temas, 22 paradas de teclado con foco visible, `prefers-reduced-motion` respetado).
+
+### E4-m — Caché del contenido: el build falla al borrar el último post
+
+Al borrar los posts de prueba, el build de producción falló sin generar páginas:
+
+```
+[vite]: Rolldown failed to resolve import "astro:content-layer-deferred-module?…&fileName=src%2Fcontent%2Fblog%2Fprueba-infraestructura-dos.mdx…" from ".astro\content-modules.mjs".
+```
+
+El almacén del content layer (`node_modules/.astro/data-store.json`) conservaba el post borrado. Borrar `.astro/` no bastaba. Se caracterizó en vez de suponerlo:
+
+```
+  0) sin posts, cache limpio -> OK
+  1) se crean a y b -> OK
+  2) se borra b (queda a) -> OK
+  3) se borra a (la coleccion queda vacia) -> FALLA (referencia rancia)
+  4) tras borrar node_modules/.astro y .astro -> OK
+```
+
+**Solo falla al borrar el último post**: el cargador `glob` de Astro 7 limpia las entradas borradas mientras queda alguna, pero no cuando la colección se queda vacía. CI construye desde cero y no lo sufriría. Cloudflare sí, si conserva `node_modules` entre builds, y a Sebastián le pasaría en local. **Corrección:** `npm run build` pasa a ser `astro build --force`, que limpia ese caché en cada build; con un blog pequeño cuesta un segundo. Repetido con `--force`:
+
+```
+  1) se crean a y b -> OK
+  2) se borra b (queda a) -> OK
+  3) se borra a (la coleccion queda vacia), con --force -> OK
+```
+
+`LEEME.md` explica el equivalente para el servidor de desarrollo: `npx astro dev --force`.
+
+### E4-n — Batería de cierre en el estado final (sin posts)
+
+```
+> npx astro check
+Result (46 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+> npm test
+ Test Files  4 passed (4)
+      Tests  91 passed (91)
+
+> npm run lint
+exit: 0
+
+> npm run format:check
+All matched files use Prettier code style!
+
+> node scripts/verificar-invariantes.mjs
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 6 verificacion(es) activas, 0 fallo(s)
+
+> npm run build
+[build] 8 page(s) built
+
+> npm run portabilidad
+verificar-portabilidad: 0 post(s), 0 comparado(s) con su página, 0 fallo(s)
+```
+
+**I3 c** entra en esta etapa como sexta comprobación: `Ing.`, `ingeniero titulado`, `cédula`, `licencia profesional` y `colegiado` no pueden aparecer en `src/` ni en `content/` salvo en contextos negativos **declarados como frases exactas**. Hoy hay dos: la del `Descargo` («no un profesionista con cédula») y el ejemplo del propio plan. Una negación no declarada no basta; hay una prueba que lo fija.
+
+**Pruebas: 41 → 91** en cuatro archivos (`blog-schema`, `contenido`, `invariantes`, `lanzamiento`). `git diff --stat` desde el inicio de la etapa tras el bloque P2 (`d5f0d64`): 26 archivos, +3114 / −60.
+
+**Dos defectos del propio proceso, anotados para no repetirlos.** Dos veces, pasar código con barras invertidas por la shell de Git Bash las destruyó en silencio: `'\n'` se convirtió en un salto de línea real y `/\bIng\./` en `/⌫Ing./` —una expresión rota, con un carácter de retroceso, que ni siquiera daba error de sintaxis—. Se repararon construyendo la barra por su código (92) y se buscaron caracteres de control en todo el repositorio: ninguno. Desde entonces, el código con barras invertidas se escribe con la herramienta de archivos, no por la shell.
+
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
@@ -1539,6 +1761,8 @@ Condición de AD3, fijada por Sebastián el 2026-09-11. Texto literal:
 - **Correo de contacto público** (corte: Etapa 6). `SITIO.correoContacto` está en `null` a propósito: publicar una dirección es decisión de Sebastián. Lo necesitan la página de Contacto (Etapa 6) y el correo alterno que exige I1 en el formulario (Etapa 8).
 - **Revisión de `capacidades.json` — de Sebastián; bloquea la Etapa 5, no la 4.** (1) Nombres y descripciones son redacción provisional (`"redaccionProvisional": true`). (2) Los `motivo` se copiaron de §4.3, que cita `ESTADO_PROYECTO.md` del 2026-07-30, y pueden estar desfasados. La revisión debe distinguir **dos cosas distintas**: (a) si las correcciones de los Art. 430-22 y 430-24 ya se aplicaron al motor de cálculo, y (b) si existe el **caso de referencia calculado a mano**. **Solo (b) permite pasar** `sizing-caso-1`, `sizing-caso-2` y `sizing-caso-3-alimentador` a `verificado`: que el código esté corregido no demuestra que calcule bien. (3) `normativa[]` está vacío en todas las capacidades: poblarlo es contenido normativo y debe cotejarse con el DOF (I3).
 - **Inicio sin `LayoutBase`** (corte: Etapa 5). `index.astro` sigue siendo la página mínima de la Etapa 1. Ponerle la barra de navegación ahora publicaría en la portada enlaces a páginas que aún no existen (`/producto/`, `/blog/`…); la Etapa 5 la reconstruye sobre el layout.
+- **Icono del sitio** (decisión de marca; corte: Etapa 10, cuyo criterio exige Lighthouse ≥ 95 en buenas prácticas). Hoy `LayoutBase` declara `<link rel="icon" href="data:,">` solo para que el navegador no pida `/favicon.ico` y registre un 404 en cada página (E4-k).
+- **Enlaces a `/normativa/…`** (corte: Etapa 9). `CalloutNormativo` y el RSS ya enlazan a `/normativa/{ref}/`, que no existe hasta la Etapa 9: esos enlaces dan 404 mientras tanto.
 - **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, AD1.
 
 **Para iniciar la Etapa 4 deben estar resueltos P2 y P3**, y para cerrarla, P1. Además la Etapa 4 depende de contenido humano: los posts T01 y T03 los redacta Sebastián, y T01 exige cerrar antes H1 (versión vigente de la NOM).
@@ -1638,3 +1862,18 @@ Ninguna cambia una decisión D1–D8; se registran porque el código hace algo m
 4. **Consecuencia deliberada de I7: los componentes no pueden comparar estados.** `proximamente` es a la vez literal prohibido y nombre de la clave del estado, así que escribir `ESTADOS.proximamente` fuera de `src/config/` también falla. Es lo buscado: toda lógica que dependa del estado vive en la configuración (por ejemplo, la regla de «Precios» de §4.4 es una función pura en `navegacion.ts`) y los componentes solo reciben valores ya resueltos. Hay una prueba que lo fija.
 5. **`astro.config.mjs` importa el dominio de `sitio.ts`** en vez de repetirlo, para que el canónico tenga una sola fuente.
 6. **`index.astro` no pasa todavía a `LayoutBase`** (ver «Otros pendientes»): la barra publicaría en la portada enlaces a páginas inexistentes.
+
+### A8 — Diferencias de la Etapa 4 con el plan, por Astro 7 y por lo encontrado al construir (2026-09-11)
+
+Ninguna cambia una decisión D1–D8; se registran porque el código difiere de la letra del plan.
+
+1. **La configuración de colecciones va en `src/content.config.ts`**, no en `src/content/config.ts`: es el archivo que busca Astro 7 (comprobado en su código).
+2. **El índice paginado es `[...page].astro`**, no `[...pagina].astro`: `paginate()` de Astro 7 exige que el parámetro se llame `page` y fallaría con `PageNumberParamNotFound`. La URL no cambia: `/blog/2/`.
+3. **Los posts no importan componentes**: se inyectan con `<Content components={…} />`. Un `import` en un `.mdx` no es portable, e I2 lo rechaza.
+4. **`@astrojs/mdx` 8 no usa remark** (usa `markdown-satteri`). La prueba de portabilidad «con remark puro» es, por eso, un análisis independiente del motor del sitio, y **acepta GFM** por decisión de Sebastián (AD5).
+5. **Borradores con `MOSTRAR_BORRADORES=1`**: el plan dice que se excluyen del build de producción, pero no cómo validarlos. La variable existe solo para eso y nunca se configura en Cloudflare.
+6. **El cruce cuerpo↔frontmatter compara también tipo y versión**, no solo la referencia, y señala la línea **del archivo**.
+7. **`trailingSlash: 'always'`** en `astro.config.mjs`, para que todas las URL que genera Astro terminen en barra, como fija D8.
+8. **`npm run build` usa `astro build --force`**, por un caso límite de Astro 7: al borrar el último post, el caché de contenido rompe el build (E4-m).
+9. **I3 c admite contextos negativos como frases exactas**, no por heurística: hoy, la del `Descargo` y el ejemplo del propio plan.
+

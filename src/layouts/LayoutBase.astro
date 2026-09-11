@@ -36,6 +36,9 @@ const enlaces = enlacesPrincipales(ESTADO_LANZAMIENTO, producto.precios)
     {descripcion && <meta name="description" content={descripcion} />}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{tituloCompleto}</title>
+    <!-- Sin icono todavía: diseñarlo es una decisión de marca pendiente. `data:,`
+         evita que el navegador pida /favicon.ico y registre un 404 en cada página. -->
+    <link rel="icon" href="data:," />
     <ScriptTema />
   </head>
   <body>
