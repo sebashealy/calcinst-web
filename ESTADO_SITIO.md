@@ -38,7 +38,7 @@ Cotejo criterio por criterio (plan §6, Etapa 4):
 
 **Para cerrar la Etapa 4 faltan:** (1) T01 y T03, redactados por Sebastián, con sus citas cotejadas contra el DOF; (2) la verificación definitiva de H1 antes de publicar T01; (3) **P1**, las Redirect Rules con sus nueve comprobaciones. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
 
-Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-n. Diferencias con el plan en el addendum A8.
+Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o. Diferencias con el plan en el addendum A8.
 
 ## Evidencia Etapa 0
 
@@ -1628,6 +1628,29 @@ verificar-portabilidad: 0 post(s), 0 comparado(s) con su página, 0 fallo(s)
 **Pruebas: 41 → 91** en cuatro archivos (`blog-schema`, `contenido`, `invariantes`, `lanzamiento`). `git diff --stat` desde el inicio de la etapa tras el bloque P2 (`d5f0d64`): 26 archivos, +3114 / −60.
 
 **Dos defectos del propio proceso, anotados para no repetirlos.** Dos veces, pasar código con barras invertidas por la shell de Git Bash las destruyó en silencio: `'\n'` se convirtió en un salto de línea real y `/\bIng\./` en `/⌫Ing./` —una expresión rota, con un carácter de retroceso, que ni siquiera daba error de sintaxis—. Se repararon construyendo la barra por su código (92) y se buscaron caracteres de control en todo el repositorio: ninguno. Desde entonces, el código con barras invertidas se escribe con la herramienta de archivos, no por la shell.
+
+### E4-o — Producción tras fusionar el PR #7 (2026-09-11)
+
+Checks del PR #7 en verde en Linux, con todos los pasos de CI —entre ellos GLIFOS con harfbuzz y la portabilidad—; preview por rama y por versión respondiendo 200. En producción:
+
+```
+https://calcinst.mx/blog/                200
+https://calcinst.mx/blog/categoria/conductores/ 200
+https://calcinst.mx/blog/rss.xml         200
+https://calcinst.mx/blog/prueba-infraestructura-uno/ 404
+```
+
+El 404 es el esperado: los posts de prueba nunca se publicaron.
+
+Validador del W3C, **por URL** (`https://validator.w3.org/feed/check.cgi?url=https://calcinst.mx/blog/rss.xml`):
+
+```
+  validity>true
+  errorcount>0
+  warningcount>0
+```
+
+**Cero avisos**: validado por URL, la autorreferencia coincide con la ubicación, lo que confirma que el aviso que quedaba en E4-j era un artefacto de subir el XML como texto. Precisión: el feed de producción no tiene items porque no hay posts publicados, así que esta pasada valida el canal; el contenido de los items se validó en E4-j, con 0 errores.
 
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
