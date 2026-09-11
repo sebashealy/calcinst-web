@@ -1,0 +1,253 @@
+---
+/**
+ * LayoutPost — página de un post (Etapa 4).
+ *
+ * Orden fijado por el plan: las erratas van al INICIO (§9.1), el descargo al
+ * pie de todo post técnico, y las referencias citadas se listan desde el
+ * frontmatter, que es la fuente de trazabilidad (I3).
+ */
+import LayoutBase from './LayoutBase.astro'
+import AvisoErrata from '../components/AvisoErrata.astro'
+import Descargo from '../components/Descargo.astro'
+import Insignia from '../components/Insignia.astro'
+import { NOMBRE_CATEGORIA, fechaLarga, type DatosPost } from '../lib/blog'
+
+interface Props {
+  datos: DatosPost
+}
+
+const { datos } = Astro.props
+const iso = (d: Date) => d.toISOString().slice(0, 10)
+const prefijo = { articulo: 'Art.', tabla: 'Tabla', nota: 'Nota' } as const
+const erratas = datos.erratas.map((e) => ({
+  fecha: iso(e.fecha),
+  descripcion: e.descripcion,
+  afectaResultado: e.afectaResultado,
+}))
+---
+
+<LayoutBase titulo={datos.title} descripcion={datos.description} noindex={datos.borrador}>
+  <article class="post">
+    <header class="cabecera">
+      {
+        datos.borrador && (
+          <p class="aviso-borrador">
+            <Insignia tono="aviso">Borrador</Insignia> No publicado: visible solo en builds locales
+            con MOSTRAR_BORRADORES=1.
+          </p>
+        )
+      }
+      <p class="meta">
+        <time datetime={iso(datos.fechaPublicacion)}>{fechaLarga(datos.fechaPublicacion)}</time>
+        {
+          datos.fechaActualizacion && (
+            <span>
+              · actualizado el{' '}
+              <time datetime={iso(datos.fechaActualizacion)}>
+                {fechaLarga(datos.fechaActualizacion)}
+              </time>
+            </span>
+          )
+        }
+        <span aria-hidden="true">·</span>
+        <a href={`/blog/categoria/${datos.categoria}/`}>{NOMBRE_CATEGORIA[datos.categoria]}</a>
+      </p>
+      <h1>{datos.title}</h1>
+      <p class="entradilla">{datos.description}</p>
+    </header>
+
+    <AvisoErrata erratas={erratas} />
+
+    <div class="cuerpo">
+      <slot />
+    </div>
+
+    <aside class="referencias" aria-labelledby="titulo-referencias">
+      <h2 id="titulo-referencias">Referencias citadas</h2>
+      <ul>
+        {
+          datos.normativa.map((n) => (
+            <li>
+              <span class="ref">
+                {n.version} · {prefijo[n.tipo]} {n.ref}
+              </span>
+              {!n.verificadoDOF && <Insignia tono="aviso">Sin cotejar con el DOF</Insignia>}
+            </li>
+          ))
+        }
+      </ul>
+    </aside>
+
+    {
+      datos.etiquetas.length > 0 && (
+        <nav class="etiquetas" aria-label="Etiquetas">
+          <ul>
+            {datos.etiquetas.map((e) => (
+              <li>
+                <a href={`/blog/etiqueta/${e}/`}>{e}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
+    <Descargo />
+  </article>
+</LayoutBase>
+
+<style>
+  .post {
+    max-width: var(--medida);
+    margin: 0 auto;
+    padding: var(--e-8) var(--e-4) 0;
+  }
+
+  .aviso-borrador {
+    display: flex;
+    align-items: center;
+    gap: var(--e-2);
+    margin: 0 0 var(--e-4);
+    font-size: var(--text-sm);
+    color: var(--warn);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-2);
+    margin: 0 0 var(--e-3);
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+  }
+
+  .meta time {
+    font-family: var(--fuente-mono);
+  }
+
+  .entradilla {
+    color: var(--fg-1);
+    font-size: var(--text-lg);
+    margin-bottom: var(--e-8);
+  }
+
+  .cuerpo :global(h2) {
+    margin-top: var(--e-12);
+  }
+
+  .cuerpo :global(ul),
+  .cuerpo :global(ol) {
+    padding-left: var(--e-6);
+  }
+
+  /* Código en línea: fondo sutil para distinguirlo del texto. */
+  .cuerpo :global(:not(pre) > code) {
+    background: var(--bg-2);
+    border-radius: var(--r-sm);
+    padding: 0 0.25em;
+  }
+
+  /* Bloques de código del Markdown, con el mismo aspecto que BloqueCodigo. */
+  .cuerpo :global(pre) {
+    margin: var(--e-6) 0;
+    padding: var(--e-4);
+    border: 1px solid var(--color-line);
+    border-radius: var(--r-md);
+    overflow-x: auto;
+    font-size: var(--text-sm);
+  }
+
+  /* Shiki emite los dos temas como variables (astro.config.mjs); aquí se elige
+   * cuál se usa, igual que en BloqueCodigo. */
+  .cuerpo :global(.astro-code),
+  .cuerpo :global(.astro-code span) {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+  }
+
+  :global(:root[data-tema='claro']) .cuerpo :global(.astro-code),
+  :global(:root[data-tema='claro']) .cuerpo :global(.astro-code span) {
+    color: var(--shiki-light);
+    background-color: var(--shiki-light-bg);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-tema='oscuro'])) .cuerpo :global(.astro-code),
+    :global(:root:not([data-tema='oscuro'])) .cuerpo :global(.astro-code span) {
+      color: var(--shiki-light);
+      background-color: var(--shiki-light-bg);
+    }
+  }
+
+  /* Tablas GFM del Markdown, con el aspecto del componente Tabla. */
+  .cuerpo :global(table) {
+    width: 100%;
+    margin: var(--e-6) 0;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .cuerpo :global(th),
+  .cuerpo :global(td) {
+    padding: var(--e-2) var(--e-4);
+    text-align: left;
+    border: 1px solid var(--color-line);
+  }
+
+  .cuerpo :global(thead th) {
+    background: var(--bg-2);
+    font-weight: 600;
+  }
+
+  .referencias {
+    margin-top: var(--e-12);
+    padding-top: var(--e-6);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-sm);
+  }
+
+  .referencias h2 {
+    font-size: var(--text-base);
+  }
+
+  .referencias ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .referencias li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-2);
+    margin-bottom: var(--e-2);
+  }
+
+  .ref {
+    font-family: var(--fuente-mono);
+    color: var(--fg-0);
+  }
+
+  .etiquetas ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-2);
+    list-style: none;
+    margin: var(--e-6) 0 0;
+    padding: 0;
+  }
+
+  .etiquetas a {
+    font-family: var(--fuente-mono);
+    font-size: var(--text-xs);
+    color: var(--fg-1);
+    border: 1px solid var(--color-line-ui);
+    border-radius: var(--r-sm);
+    padding: 0 var(--e-2);
+    text-decoration: none;
+  }
+</style>

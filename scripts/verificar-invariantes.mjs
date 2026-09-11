@@ -12,9 +12,10 @@
  *    ohm, el signo micro, el incremento, los ornamentos que van como SVG).
  *  - CARACTERES (P2): ningún .md/.mdx usa un carácter fuera del conjunto declarado.
  *  - GLIFOS (P2, bloqueante): ningún carácter declarado se pierde al subconjuntar.
+ *  - I3c (Etapa 4): términos de credencial profesional en src/ y content/, salvo
+ *    en contextos negativos declarados.
  *
  * Pendientes, cada una en su etapa:
- *  - I3c (Etapa 4): términos de credenciales profesionales en src/ y content/.
  *  - I1 (Etapa 8): bloques catch vacíos en src/.
  *
  * Las funciones se exportan para que tests/invariantes.test.ts las ejerza con
@@ -211,6 +212,66 @@ export async function verificarGlifosDeclarados(raiz = RAIZ) {
   return fallos
 }
 
+/**
+ * I3 c — la autoridad del sitio son las citas, no una credencial (§9.1). Estos
+ * términos no pueden aparecer en `src/` ni en `content/`. «Ing.» se compara
+ * tal cual (mayúscula y punto, para no confundirlo con otras palabras); el resto,
+ * sin acentos ni mayúsculas.
+ */
+export const TERMINOS_DE_CREDENCIAL = [
+  { termino: 'Ing.', patron: /\bIng\./ },
+  { termino: 'ingeniero titulado', patron: /ingeniero titulado/ },
+  { termino: 'cédula', patron: /cedula/ },
+  { termino: 'licencia profesional', patron: /licencia profesional/ },
+  { termino: 'colegiado', patron: /colegiad[oa]/ },
+]
+
+/**
+ * Contextos negativos admitidos, como frases exactas (sin acentos ni mayúsculas).
+ * Una línea que contenga una de ellas puede nombrar el término que niega.
+ * Cada entrada nueva es una decisión editorial: amplía lo que el sitio dice.
+ */
+export const CONTEXTOS_NEGATIVOS = [
+  // Descargo.astro, texto fijo de §9.1 del plan.
+  'no un profesionista con cedula',
+  // Ejemplo que el propio plan da en §5 para I3 c.
+  'no soy ingeniero titulado',
+]
+
+/**
+ * @param {string} contenido
+ * @returns {Array<{ linea: number, termino: string }>}
+ */
+export function terminosDeCredencial(contenido) {
+  const negativos = CONTEXTOS_NEGATIVOS.map(normalizar)
+  const hallazgos = []
+  contenido.split('\n').forEach((linea, i) => {
+    const plana = normalizar(linea)
+    for (const { termino, patron } of TERMINOS_DE_CREDENCIAL) {
+      const objetivo = termino === 'Ing.' ? linea : plana
+      if (!patron.test(objetivo)) continue
+      const excusado = negativos.some((n) => plana.includes(n) && n.includes(normalizar(termino)))
+      if (!excusado) hallazgos.push({ linea: i + 1, termino })
+    }
+  })
+  return hallazgos
+}
+
+/**
+ * @param {string} [raiz]
+ * @returns {string[]}
+ */
+export function verificarI3c(raiz = RAIZ) {
+  return ['src', 'content']
+    .flatMap((dir) => archivos(raiz, dir, EXTENSIONES_TEXTO))
+    .flatMap((relativa) =>
+      terminosDeCredencial(leer(raiz, relativa)).map(
+        ({ linea, termino }) =>
+          `${relativa}:${linea} — «${termino}» fuera de un contexto negativo declarado`,
+      ),
+    )
+}
+
 /** @type {Array<{ invariante: string, descripcion: string, verificar: (raiz?: string) => string[] | Promise<string[]> }>} */
 export const VERIFICACIONES = [
   {
@@ -232,6 +293,11 @@ export const VERIFICACIONES = [
     invariante: 'CARACTERES',
     descripcion: 'el contenido .md/.mdx solo usa caracteres declarados',
     verificar: verificarCaracteres,
+  },
+  {
+    invariante: 'I3c',
+    descripcion: 'ningún término de credencial profesional fuera de contextos negativos',
+    verificar: verificarI3c,
   },
   {
     invariante: 'GLIFOS',

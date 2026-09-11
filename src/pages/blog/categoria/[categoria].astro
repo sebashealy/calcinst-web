@@ -1,0 +1,43 @@
+---
+/**
+ * /blog/categoria/{categoria}/ — las cinco categorías cerradas de D8.
+ * Se generan todas aunque estén vacías: sus URL son estables desde el principio.
+ */
+import type { GetStaticPaths } from 'astro'
+import { getCollection } from 'astro:content'
+import LayoutBase from '../../../layouts/LayoutBase.astro'
+import ListaPosts from '../../../components/ListaPosts.astro'
+import { CATEGORIAS, NOMBRE_CATEGORIA, publicables } from '../../../lib/blog'
+
+export const getStaticPaths = (async () => {
+  const posts = publicables(await getCollection('blog'))
+  return CATEGORIAS.map((categoria) => ({
+    params: { categoria },
+    props: { categoria, posts: posts.filter((p) => p.data.categoria === categoria) },
+  }))
+}) satisfies GetStaticPaths
+
+const { categoria, posts } = Astro.props
+const nombre = NOMBRE_CATEGORIA[categoria]
+---
+
+<LayoutBase titulo={`${nombre} · Blog`}>
+  <div class="blog">
+    <p class="miga"><a href="/blog/">Blog</a> / Categoría</p>
+    <h1>{nombre}</h1>
+    <ListaPosts posts={posts} vacio="Todavía no hay publicaciones en esta categoría." />
+  </div>
+</LayoutBase>
+
+<style>
+  .blog {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--e-8) var(--e-4) 0;
+  }
+
+  .miga {
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+  }
+</style>

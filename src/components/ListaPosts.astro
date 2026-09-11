@@ -1,0 +1,99 @@
+---
+/**
+ * ListaPosts — lista de posts para el índice, las categorías y las etiquetas.
+ * Recibe entradas ya filtradas y ordenadas (`publicables` en `src/lib/blog.ts`).
+ */
+import type { CollectionEntry } from 'astro:content'
+import { NOMBRE_CATEGORIA, fechaLarga } from '../lib/blog'
+import Insignia from './Insignia.astro'
+
+interface Props {
+  posts: CollectionEntry<'blog'>[]
+  /** Mensaje cuando no hay nada que listar. */
+  vacio?: string
+}
+
+const { posts, vacio = 'Todavía no hay publicaciones.' } = Astro.props
+---
+
+{
+  posts.length === 0 ? (
+    <p class="vacio">{vacio}</p>
+  ) : (
+    <ol class="posts">
+      {posts.map((post) => (
+        <li class="post">
+          <p class="meta">
+            <time datetime={post.data.fechaPublicacion.toISOString().slice(0, 10)}>
+              {fechaLarga(post.data.fechaPublicacion)}
+            </time>
+            <span aria-hidden="true"> · </span>
+            <a href={`/blog/categoria/${post.data.categoria}/`}>
+              {NOMBRE_CATEGORIA[post.data.categoria]}
+            </a>
+            {post.data.borrador && <Insignia tono="aviso">Borrador</Insignia>}
+          </p>
+          <h2 class="titulo">
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          </h2>
+          <p class="descripcion">{post.data.description}</p>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+<style>
+  .posts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .post {
+    padding: var(--e-6) 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .post:first-child {
+    padding-top: 0;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-2);
+    margin: 0 0 var(--e-2);
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+  }
+
+  .meta time {
+    font-family: var(--fuente-mono);
+  }
+
+  .titulo {
+    font-size: var(--text-xl);
+    margin: 0 0 var(--e-2);
+  }
+
+  .titulo a {
+    color: var(--fg-0);
+    text-decoration: none;
+  }
+
+  .titulo a:hover {
+    text-decoration: underline;
+  }
+
+  .descripcion {
+    margin: 0;
+    color: var(--fg-1);
+    max-width: var(--medida);
+  }
+
+  .vacio {
+    color: var(--fg-1);
+  }
+</style>

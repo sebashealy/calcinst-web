@@ -1,0 +1,48 @@
+---
+/**
+ * /blog/etiqueta/{etiqueta}/ — una página por etiqueta en uso (D8).
+ * Las etiquetas no forman parte de la URL del post, así que reorganizarlas no
+ * rompe ningún enlace.
+ */
+import type { GetStaticPaths } from 'astro'
+import { getCollection } from 'astro:content'
+import LayoutBase from '../../../layouts/LayoutBase.astro'
+import ListaPosts from '../../../components/ListaPosts.astro'
+import { publicables } from '../../../lib/blog'
+
+export const getStaticPaths = (async () => {
+  const posts = publicables(await getCollection('blog'))
+  const etiquetas = [...new Set(posts.flatMap((p) => p.data.etiquetas))].sort()
+  return etiquetas.map((etiqueta) => ({
+    params: { etiqueta },
+    props: { etiqueta, posts: posts.filter((p) => p.data.etiquetas.includes(etiqueta)) },
+  }))
+}) satisfies GetStaticPaths
+
+const { etiqueta, posts } = Astro.props
+---
+
+<LayoutBase titulo={`${etiqueta} · Blog`}>
+  <div class="blog">
+    <p class="miga"><a href="/blog/">Blog</a> / Etiqueta</p>
+    <h1 class="etiqueta">{etiqueta}</h1>
+    <ListaPosts posts={posts} />
+  </div>
+</LayoutBase>
+
+<style>
+  .blog {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--e-8) var(--e-4) 0;
+  }
+
+  .miga {
+    font-size: var(--text-sm);
+    color: var(--fg-2);
+  }
+
+  .etiqueta {
+    font-family: var(--fuente-mono);
+  }
+</style>

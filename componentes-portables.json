@@ -1,0 +1,26 @@
+{
+  "descripcion": "Componentes que un post puede usar (I2). Cada uno documenta su equivalente en Markdown puro, para que el contenido sobreviva a un cambio de stack sin reescribirse. scripts/verificar-portabilidad.mjs rechaza cualquier otro componente, y también los import, export y expresiones {…} de MDX.",
+  "componentes": {
+    "CalloutNormativo": {
+      "uso": "<CalloutNormativo ref=\"430-22\" tipo=\"articulo\">texto</CalloutNormativo>",
+      "equivalenteMarkdown": "> **NOM-001-SEDE · Art. 430-22** — texto",
+      "nota": "La versión de la norma sale del frontmatter (normativa[].version); el cuerpo solo nombra la referencia."
+    },
+    "AvisoErrata": {
+      "uso": "Lo pinta el layout a partir de erratas[] del frontmatter; no hace falta en el cuerpo.",
+      "equivalenteMarkdown": "> **Errata (fecha):** descripción"
+    },
+    "Tabla": {
+      "uso": "<Tabla caption=\"…\"> con filas en HTML </Tabla>",
+      "equivalenteMarkdown": "Tabla GFM con el caption como párrafo inmediatamente anterior."
+    },
+    "BloqueCodigo": {
+      "uso": "<BloqueCodigo codigo=\"…\" lenguaje=\"ts\" />",
+      "equivalenteMarkdown": "Bloque de código con valla de tres acentos graves y el lenguaje."
+    },
+    "Descargo": {
+      "uso": "Lo pinta el layout al pie de cada post; no hace falta en el cuerpo.",
+      "equivalenteMarkdown": "Párrafo con el texto fijo de §9.1 del plan."
+    }
+  }
+}

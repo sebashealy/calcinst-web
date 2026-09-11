@@ -31,11 +31,14 @@ jobs:
       - name: Formato (Prettier)
         run: npm run format:check
 
-      - name: Invariantes (I1, I3, I7)
+      - name: Invariantes (verificar-invariantes.mjs)
         run: npm run verificar
 
       - name: Build
         run: npm run build
+
+      - name: Portabilidad del contenido (I2)
+        run: npm run portabilidad
 
       - name: Lighthouse CI
         run: npx lhci autorun

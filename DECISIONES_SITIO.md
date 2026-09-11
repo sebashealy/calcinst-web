@@ -70,3 +70,11 @@
 **Licencia.** La OFL exige que la licencia acompañe a la fuente al redistribuirla; el generador copia `LICENSE-IBM-Plex-OFL.txt` junto a los archivos servidos. La licencia de IBM Plex declara el nombre reservado «Plex», y la OFL restringe el uso de nombres reservados en versiones modificadas. Subconjuntar es práctica extendida —Fontsource y Google Fonts sirven subconjuntos con el mismo nombre—, pero **no se interpreta aquí cómo aplica esa cláusula**: queda anotado para la revisión legal del proyecto.
 
 **Costo de revertir:** bajo. El generador es reproducible byte a byte, y cambiar de origen es cambiar cuatro rutas.
+
+### AD5 — Las tablas GFM cuentan como Markdown portable (2026-09-11)
+
+**Contexto.** I2 exige que el contenido sea portable y el plan lo verifica «renderizando cada `.mdx` con remark puro». Remark sin extensiones sigue CommonMark: lee una tabla GFM como un párrafo con barras, mientras Astro 7 la pinta como `<table>`. La prueba de portabilidad lo detectó con un post de prueba (E4-i).
+
+**Decisión de Sebastián:** las tablas GFM —y con ellas el tachado, las notas al pie y las listas de tareas— **son portables**: las leen GitHub, pandoc y casi cualquier generador de sitios. Se aprueba `remark-gfm` 4.0.1, y el análisis de portabilidad entiende GFM. Quien redacte puede escribir tablas como tablas, sin recurrir a `<Tabla>` con filas en HTML.
+
+**Costo de revertir:** bajo. Quitar `remark-gfm` del analizador haría fallar la prueba en los posts que usen GFM, que habría que reescribir con `<Tabla>`.
