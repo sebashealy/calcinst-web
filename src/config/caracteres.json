@@ -1,0 +1,99 @@
+{
+  "descripcion": "Juego de caracteres declarado del sitio (P2, AD4). Es un dato del proyecto: no se deriva del contenido. Las fuentes se subconjuntan a este conjunto desde IBM Plex completa, el build falla si algún carácter declarado no sobrevive al subconjuntado, y falla también si un .mdx usa un carácter fuera de él.",
+  "grupos": [
+    {
+      "id": "ascii",
+      "rango": ["U+0020", "U+007E"],
+      "motivo": "ASCII imprimible: letras, dígitos, signos de puntuación, paréntesis y barras."
+    },
+    {
+      "id": "espanol",
+      "caracteres": "áéíóúüñÁÉÍÓÚÜÑ¿¡",
+      "motivo": "Letras acentuadas, eñe, diéresis y signos de apertura del español, en minúscula y mayúscula."
+    },
+    {
+      "id": "tipografia",
+      "caracteres": "–—‘’“”…·«»",
+      "motivo": "Guiones, comillas curvas y latinas, puntos suspensivos y punto medio."
+    },
+    {
+      "id": "notacion",
+      "caracteres": "°±×÷≤≥≈\u03a9\u03bc\u0394²³",
+      "motivo": "Notación técnica: grados, tolerancias, producto y cociente, comparadores, ohm (U+03A9), micro (U+03BC), delta (U+0394) y exponentes para mm² y m³."
+    },
+    {
+      "id": "moneda",
+      "caracteres": "€",
+      "motivo": "Símbolo del euro, heredado del conjunto de la Etapa 2; el peso usa $, que está en ASCII."
+    }
+  ],
+  "prohibidos": [
+    {
+      "codigo": "U+2126",
+      "nombre": "signo de ohm",
+      "usarCodigo": "U+03A9",
+      "motivo": "Unicode desaconseja el signo de ohm: su descomposición canónica es la omega griega, así que NFC ya lo sustituye."
+    },
+    {
+      "codigo": "U+00B5",
+      "nombre": "signo micro",
+      "usarCodigo": "U+03BC",
+      "motivo": "Se elige la mu griega para el prefijo micro: es coherente con la omega griega del ohm, y es la forma a la que NFKC reduce el signo micro, que solo existe por compatibilidad con Latin-1."
+    },
+    {
+      "codigo": "U+2206",
+      "nombre": "incremento",
+      "usarCodigo": "U+0394",
+      "motivo": "Se ve igual que la delta griega pero no tiene descomposición: es el único parecido que ninguna normalización Unicode detecta."
+    },
+    {
+      "codigo": "U+2713",
+      "nombre": "marca de verificación",
+      "usar": "<Icono nombre=\"correcto\" />",
+      "motivo": "Ornamento de interfaz, no notación: va como SVG (§3.1). Tampoco existe en IBM Plex Mono."
+    },
+    {
+      "codigo": "U+2717",
+      "nombre": "aspa",
+      "usar": "<Icono nombre=\"incorrecto\" />",
+      "motivo": "Ornamento de interfaz, no notación: va como SVG (§3.1). No existe en ninguna cara de IBM Plex."
+    },
+    {
+      "codigo": "U+2192",
+      "nombre": "flecha a la derecha",
+      "usar": "<Icono nombre=\"flecha-derecha\" />",
+      "motivo": "Ornamento de interfaz, no notación: va como SVG (§3.1)."
+    },
+    {
+      "codigo": "U+2190",
+      "nombre": "flecha a la izquierda",
+      "usar": "<Icono nombre=\"flecha-izquierda\" />",
+      "motivo": "Ornamento de interfaz, no notación: va como SVG (§3.1)."
+    },
+    {
+      "codigo": "U+2191",
+      "nombre": "flecha hacia arriba",
+      "usar": "<Icono nombre=\"flecha-arriba\" />",
+      "motivo": "Mismo criterio que las otras flechas, aunque sí tenía glifo en el recorte latin de la Etapa 2."
+    },
+    {
+      "codigo": "U+2193",
+      "nombre": "flecha hacia abajo",
+      "usar": "<Icono nombre=\"flecha-abajo\" />",
+      "motivo": "Mismo criterio que las otras flechas, aunque sí tenía glifo en el recorte latin de la Etapa 2."
+    }
+  ],
+  "fuentes": {
+    "texto": {
+      "familia": "IBM Plex Sans",
+      "caras": ["ibm-plex-sans-400", "ibm-plex-sans-600"],
+      "respaldo": []
+    },
+    "mono": {
+      "familia": "IBM Plex Mono",
+      "caras": ["ibm-plex-mono-400", "ibm-plex-mono-500"],
+      "respaldo": ["ibm-plex-sans-400", "ibm-plex-sans-600"],
+      "nota": "IBM Plex Mono no tiene griego ni en su versión completa. La pila --fuente-mono de tokens.css pone IBM Plex Sans como respaldo, así que esos glifos salen de la misma familia de diseño en vez de una fuente del sistema. La comprobación de glifos lo lista de forma explícita."
+    }
+  }
+}

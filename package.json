@@ -26,10 +26,13 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@ibm/plex-mono": "2.5.0",
+    "@ibm/plex-sans": "1.1.0",
     "@lhci/cli": "0.15.1",
     "axe-core": "4.13.0",
     "eslint": "10.10.0",
     "eslint-plugin-astro": "3.1.0",
+    "harfbuzzjs": "0.10.3",
     "prettier": "3.9.6",
     "prettier-plugin-astro": "0.14.1",
     "puppeteer-core": "24.43.1",

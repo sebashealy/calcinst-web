@@ -1,98 +1,100 @@
 #!/usr/bin/env node
 /**
- * generar-fuentes.mjs — descarga y subconjunta las fuentes del sitio.
+ * generar-fuentes.mjs — subconjunta IBM Plex al juego de caracteres declarado.
  *
- * El plan (§3.3) pide IBM Plex Sans 400/600 e IBM Plex Mono 400/500, autoalojadas
- * y subconjuntadas, con un presupuesto de < 60 KB en total (I4, Etapa 2).
- * Los archivos `latin` completos de Fontsource suman 74.6 KiB, así que se recortan
- * al juego de caracteres que el sitio usa de verdad.
+ * Origen: las fuentes COMPLETAS de IBM (@ibm/plex-sans, @ibm/plex-mono), no el
+ * recorte `latin` de Fontsource que usaba la Etapa 2 y que perdía en silencio el
+ * griego, los operadores y las flechas (P2). El conjunto vive en
+ * `src/config/caracteres.json`; este script no lo define, lo lee.
  *
- * Es un script de mantenimiento, no de build: se ejecuta a mano cuando cambian las
- * fuentes o el juego de caracteres, y su salida (`public/fuentes/`) se versiona.
+ * Falla —exit 1— si un carácter declarado no sobrevive en su rol o si el total
+ * supera el presupuesto. Es un script de mantenimiento: se ejecuta a mano cuando
+ * cambian las fuentes o el conjunto, y su salida (`public/fuentes/`) se versiona.
+ * En CI, la misma comprobación la corre `verificar-invariantes.mjs`.
  *
- *   node scripts/generar-fuentes.mjs
+ *   npm run fuentes
  */
-import { mkdir, writeFile } from 'node:fs/promises'
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import subsetFont from 'subset-font'
-
-const VERSION_FONTSOURCE = '5.3.0'
-const PRESUPUESTO_BYTES = 60 * 1024
+import { kib, leerConjunto, verificarGlifos } from './lib/fuentes.mjs'
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DESTINO = path.join(RAIZ, 'public', 'fuentes')
+const requerir = createRequire(import.meta.url)
 
-/** Juego de caracteres del sitio: español, notación técnica y tipografía de cita. */
-const CARACTERES = [
-  Array.from({ length: 0x7e - 0x20 + 1 }, (_, i) => String.fromCodePoint(0x20 + i)).join(''),
-  'áéíóúüñÁÉÍÓÚÜÑ¿¡',
-  '–—‘’“”…·«»',
-  '°±×÷≤≥≈ΩµμΔ²³→←↑↓',
-  '€✓✗',
-].join('')
+/** §3 fija «< 60 KB». Se adopta la lectura estricta, 60 000 B, no 61 440. */
+const PRESUPUESTO_BYTES = 60_000
 
-/** Las cuatro caras del plan §3.3. */
+/** Las cuatro caras de §3.3, con su archivo de origen dentro del paquete de IBM. */
 const CARAS = [
-  { familia: 'ibm-plex-sans', peso: 400 },
-  { familia: 'ibm-plex-sans', peso: 600 },
-  { familia: 'ibm-plex-mono', peso: 400 },
-  { familia: 'ibm-plex-mono', peso: 500 },
+  {
+    id: 'ibm-plex-sans-400',
+    origen: '@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-Regular.woff2',
+  },
+  {
+    id: 'ibm-plex-sans-600',
+    origen: '@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-SemiBold.woff2',
+  },
+  {
+    id: 'ibm-plex-mono-400',
+    origen: '@ibm/plex-mono/fonts/complete/woff2/IBMPlexMono-Regular.woff2',
+  },
+  {
+    id: 'ibm-plex-mono-500',
+    origen: '@ibm/plex-mono/fonts/complete/woff2/IBMPlexMono-Medium.woff2',
+  },
 ]
 
-const urlDe = ({ familia, peso }) =>
-  `https://cdn.jsdelivr.net/npm/@fontsource/${familia}@${VERSION_FONTSOURCE}/files/${familia}-latin-${peso}-normal.woff2`
-
-const nombreDe = ({ familia, peso }) => `${familia}-${peso}.woff2`
-
-const kib = (bytes) => `${(bytes / 1024).toFixed(1)} KiB`
+const version = (paquete) => requerir(`${paquete}/package.json`).version
 
 async function main() {
-  await mkdir(DESTINO, { recursive: true })
+  const { declarados } = leerConjunto(RAIZ)
+  const texto = String.fromCodePoint(...declarados)
+  mkdirSync(DESTINO, { recursive: true })
 
-  let totalOriginal = 0
-  let totalFinal = 0
-  const filas = []
+  console.log(
+    `Origen: @ibm/plex-sans ${version('@ibm/plex-sans')}, @ibm/plex-mono ${version('@ibm/plex-mono')}`,
+  )
+  console.log(`Conjunto declarado: ${declarados.size} caracteres (src/config/caracteres.json)\n`)
 
-  for (const cara of CARAS) {
-    const url = urlDe(cara)
-    const respuesta = await fetch(url)
-    if (!respuesta.ok) {
-      throw new Error(`No se pudo descargar ${url}: HTTP ${respuesta.status}`)
-    }
-    const original = Buffer.from(await respuesta.arrayBuffer())
-    const recortada = await subsetFont(original, CARACTERES, { targetFormat: 'woff2' })
-
-    await writeFile(path.join(DESTINO, nombreDe(cara)), recortada)
-
-    totalOriginal += original.length
-    totalFinal += recortada.length
-    filas.push({
-      archivo: nombreDe(cara),
-      original: original.length,
-      final: recortada.length,
-      reduccion: `${(100 - (recortada.length / original.length) * 100).toFixed(1)} %`,
-    })
-  }
-
-  for (const f of filas) {
+  let total = 0
+  for (const { id, origen } of CARAS) {
+    const fuente = readFileSync(requerir.resolve(origen))
+    const recortada = await subsetFont(fuente, texto, { targetFormat: 'woff2' })
+    writeFileSync(path.join(DESTINO, `${id}.woff2`), recortada)
+    total += recortada.length
     console.log(
-      `${f.archivo.padEnd(24)} ${kib(f.original).padStart(9)} -> ${kib(f.final).padStart(9)}  (-${f.reduccion})`,
+      `${id.padEnd(20)} ${kib(fuente.length).padStart(9)} -> ${String(recortada.length).padStart(6)} B`,
     )
   }
-  console.log('-'.repeat(64))
-  console.log(
-    `${'TOTAL'.padEnd(24)} ${kib(totalOriginal).padStart(9)} -> ${kib(totalFinal).padStart(9)}`,
-  )
-  console.log(`Presupuesto: ${kib(PRESUPUESTO_BYTES)} (${PRESUPUESTO_BYTES} B)`)
-  console.log(
-    `Resultado:   ${totalFinal} B - ${totalFinal < PRESUPUESTO_BYTES ? 'DENTRO' : 'EXCEDE'}`,
-  )
-  console.log(`Caracteres subconjuntados: ${[...new Set(CARACTERES)].length}`)
 
-  if (totalFinal >= PRESUPUESTO_BYTES) {
-    process.exitCode = 1
+  // La OFL exige que la licencia acompañe a la fuente cuando se redistribuye.
+  copyFileSync(
+    requerir.resolve('@ibm/plex-sans/LICENSE.txt'),
+    path.join(DESTINO, 'LICENSE-IBM-Plex-OFL.txt'),
+  )
+
+  console.log('-'.repeat(52))
+  console.log(`${'TOTAL'.padEnd(20)} ${String(total).padStart(19)} B = ${kib(total)}`)
+  console.log(
+    `Presupuesto: ${PRESUPUESTO_BYTES} B — ${total < PRESUPUESTO_BYTES ? 'DENTRO' : 'EXCEDE'}\n`,
+  )
+
+  const { fallos, deRespaldo } = await verificarGlifos({ raiz: RAIZ })
+  for (const [cara, caracteres] of Object.entries(deRespaldo)) {
+    console.log(`${cara} toma de su respaldo (IBM Plex Sans): ${caracteres.join(', ')}`)
   }
+  if (fallos.length > 0) {
+    console.error('\nCARACTERES DECLARADOS QUE NO SOBREVIVEN AL SUBCONJUNTADO:')
+    for (const f of fallos) console.error(`  - ${f}`)
+  } else {
+    console.log('Todos los caracteres declarados sobreviven en su rol.')
+  }
+
+  if (fallos.length > 0 || total >= PRESUPUESTO_BYTES) process.exitCode = 1
 }
 
 await main()

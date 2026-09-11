@@ -34,7 +34,7 @@ Criterios de aceptación (copiados del plan, §6, Etapa 4):
 
 **Precondiciones antes de empezar la Etapa 4** (detalle en «Bloqueos»):
 
-- **P2** — el juego de caracteres como dato del proyecto, con las dos comprobaciones de build. Hoy 10 caracteres declarados no tienen glifo.
+- **P2** — **resuelto** el 2026-09-11 (AD4; evidencia E4-a … E4-e). El conjunto es un dato, las fuentes salen de IBM Plex completa y el build falla si algo declarado no sobrevive.
 - **P3** — resuelto por Sebastián en la opción A (`workers_dev: true`, AD3); pendiente de comprobar que la preview del PR siguiente responde 200 (ver P3).
 - **H1** — refutada provisionalmente: la vigente sería la NOM-001-SEDE-2012. La verificación definitiva es de Sebastián y bloquea la **publicación** de T01, no la infraestructura de la Etapa 4.
 - **Contenido humano:** T01 y T03 los redacta Sebastián; el andamiaje de la Etapa 4 puede construirse antes, pero la etapa no cierra sin los dos posts.
@@ -1255,6 +1255,158 @@ verificar-invariantes: 2 verificacion(es) activas, 0 fallo(s)
 
 Al desinstalar Tailwind (AD2), npm informó `removed 13 packages, and audited 708 packages`.
 
+## Evidencia Etapa 4 (en curso, desde 2026-09-11)
+
+La Etapa 4 arranca con el bloque P2, por instrucción de Sebastián: el juego de caracteres se cierra antes de tocar la colección del blog. Decisiones en `DECISIONES_SITIO.md`, AD4.
+
+### E4-a — Bloque P2: el conjunto como dato y la fuente de entrada completa
+
+`src/config/caracteres.json` declara el conjunto por grupos (ASCII como rango, español, tipografía, notación, moneda), los prohibidos con su sustituto, y los roles de fuente. **134 caracteres.** En el archivo, las tres griegas permitidas y los nueve prohibidos se escriben como escapes `\uXXXX`, y los prohibidos se identifican solo por su código `U+XXXX`: el propio archivo no contiene ningún carácter ambiguo.
+
+Durante el trabajo apareció el riesgo en carne propia: una primera versión se redactó con los caracteres tecleados. Se comprobó uno por uno —esa vez coincidían todos con el punto de código buscado— y se rehízo por construcción, a partir de sus códigos, para no depender de lo que produzca el teclado.
+
+Dos hallazgos que corrigen la premisa de P2, medidos antes de pedir aprobación (en memoria, sin instalar nada):
+
+- Los paquetes npm oficiales de IBM **no publican TTF ni OTF**, solo WOFF/WOFF2 completos. Mismo juego de glifos, comprimido.
+- **IBM Plex Mono no tiene griego ni en su versión completa**; Sans sí. La fuente completa cierra el hueco para Sans y no para Mono.
+
+```
+ibm-plex-sans-400    origen  63020 B ->  15568 B | sin glifo: ninguno
+ibm-plex-sans-600    origen  67060 B ->  16616 B | sin glifo: ninguno
+ibm-plex-mono-400    origen  49248 B ->  12388 B | sin glifo: Ω μ Δ
+ibm-plex-mono-500    origen  50400 B ->  12672 B | sin glifo: Ω μ Δ
+```
+
+Hechos Unicode que sostienen la normalización, comprobados en ejecución:
+
+```
+ ohm    U+2126 --NFC--> U+03A9 (canónica: NFC ya la sustituye)
+ micro  U+00B5 --NFC--> U+00B5 | U+00B5 --NFKC--> U+03BC (solo compatibilidad)
+ delta  U+2206 --NFC--> U+2206 | U+2206 --NFKC--> U+2206 (sin descomposición)
+```
+
+### E4-b — Generador y presupuesto
+
+`npm run fuentes` subconjunta desde `@ibm/plex-sans` 1.1.0 y `@ibm/plex-mono` 2.5.0 y **falla si algo no sobrevive**:
+
+```
+Origen: @ibm/plex-sans 1.1.0, @ibm/plex-mono 2.5.0
+Conjunto declarado: 134 caracteres (src/config/caracteres.json)
+ibm-plex-sans-400     61.5 KiB ->  15568 B
+ibm-plex-sans-600     65.5 KiB ->  16616 B
+ibm-plex-mono-400     48.1 KiB ->  12388 B
+ibm-plex-mono-500     49.2 KiB ->  12672 B
+----------------------------------------------------
+TOTAL                              57244 B = 55.9 KiB
+Presupuesto: 60000 B — DENTRO
+ibm-plex-mono-400 toma de su respaldo (IBM Plex Sans): Ω U+03A9, μ U+03BC, Δ U+0394
+ibm-plex-mono-500 toma de su respaldo (IBM Plex Sans): Ω U+03A9, μ U+03BC, Δ U+0394
+Todos los caracteres declarados sobreviven en su rol.
+```
+
+Tamaño de cada archivo en `dist/` tras construir:
+
+```
+  ibm-plex-mono-400.woff2  12388 B
+  ibm-plex-mono-500.woff2  12672 B
+  ibm-plex-sans-400.woff2  15568 B
+  ibm-plex-sans-600.woff2  16616 B
+  TOTAL: 57244 B = 55.9 KiB  | < 60000 B: SI
+```
+
+**El presupuesto de §3 se cumple en su lectura estricta** (60 000 B). Frente a la Etapa 2 son 4 904 B más (52 340 → 57 244): el precio del griego y los operadores, que antes faltaban. `dist/fuentes/` incluye además `LICENSE-IBM-Plex-OFL.txt`, que la OFL exige al redistribuir.
+
+**Reproducible:** dos regeneraciones consecutivas producen los mismos bytes (hashes SHA-256 idénticos: `9ab9a649…`, `512444bb…`, `1ac4e8a9…`, `0821019a…`).
+
+### E4-c — Tres comprobaciones nuevas en CI, con pruebas negativas
+
+`verificar-invariantes.mjs` pasa de 2 a 5 comprobaciones activas:
+
+```
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 5 verificacion(es) activas, 0 fallo(s)
+```
+
+**NOTACION encontró una violación real en código existente** en su primera ejecución: una flecha U+2192 en un comentario de `Insignia.astro` («estado→insignia»). Se corrigió. Es justo el tipo de carácter que se cuela sin que nadie lo vea.
+
+Pruebas negativas sobre el árbol real. Códigos de salida medidos directamente, sin tuberías que los oculten; los caracteres de prueba se insertaron por punto de código:
+
+```
+################ A) GLIFOS: se declara U+263A, que ninguna cara de IBM Plex tiene
+[FALLA] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+  - ibm-plex-sans-400 (texto): U+263A no tiene glifo ni en su respaldo
+  - ibm-plex-sans-600 (texto): U+263A no tiene glifo ni en su respaldo
+  - ibm-plex-mono-400 (mono): U+263A no tiene glifo ni en su respaldo
+  - ibm-plex-mono-500 (mono): U+263A no tiene glifo ni en su respaldo
+verificar-invariantes: 5 verificacion(es) activas, 4 fallo(s)
+exit verificador: 1
+CARACTERES DECLARADOS QUE NO SOBREVIVEN AL SUBCONJUNTADO:
+  - ibm-plex-sans-400 (texto): U+263A no tiene glifo ni en su respaldo
+  - ibm-plex-sans-600 (texto): U+263A no tiene glifo ni en su respaldo
+exit generador: 1
+
+################ B) NOTACION: signo de ohm (U+2126) en un componente
+[FALLA] NOTACION — ningún punto de código prohibido por caracteres.json
+  - src/components/PruebaNotacion.astro:1:9 — U+2126 (signo de ohm); usar Ω (U+03A9)
+exit verificador: 1
+
+################ C) CARACTERES: .mdx con U+263A
+[FALLA] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+  - src/content/blog/prueba.mdx:1:11 — U+263A fuera del conjunto declarado
+exit verificador: 1
+
+################ restaurado
+verificar-invariantes: 5 verificacion(es) activas, 0 fallo(s)
+exit verificador: 0
+fuentes identicas a las previas a la prueba
+```
+
+Las tres negativas quedan además **permanentes** en `tests/invariantes.test.ts` (10 pruebas nuevas), incluida la de GLIFOS: declarar `U+2717`, que no existe en ninguna cara de IBM Plex, debe hacer fallar la verificación nombrándolo. Pruebas: **31 → 41**.
+
+Un fallo de plataforma encontrado y corregido por el camino: con harfbuzz (WASM) cargado, `process.exit()` disparaba en Windows una aserción de libuv (`Assertion failed … async.c`) y el proceso salía con 127 en lugar de 1. El verificador fija ahora `process.exitCode` y deja terminar al proceso.
+
+### E4-d — El respaldo funciona en el navegador, no solo en la comprobación
+
+GLIFOS demuestra que los glifos existen en algún archivo; no que el navegador los tome de ahí. Chrome informa por el protocolo de DevTools (`CSS.getPlatformFontsForNode`) qué fuente dibuja cada glifo de un nodo:
+
+```
+muestra mono con griego: «R = 4.7 kΩ · C = 22 μF · ΔV = 3.2 % · 8 mm² · 75 °C»
+   IBM Plex Mono     48 glifos  (fuente web del sitio)
+   IBM Plex Sans      3 glifos  (fuente web del sitio)
+muestra mono sin griego: «Mono 400 · 8 AWG · 50 A · 310-15(b)(16)»
+   IBM Plex Mono     39 glifos  (fuente web del sitio)
+```
+
+Exactamente tres glifos —Ω, μ, Δ— salen de IBM Plex Sans y **ninguno de una fuente del sistema**.
+
+### E4-e — Sistema de diseño y regresión
+
+- `/diseno/` gana la sección «Notación técnica», generada desde `caracteres.json`: los permitidos con su código, los prohibidos **solo por código** —escribir sus glifos haría fallar NOTACION—, la muestra de griego en mono y los seis iconos de `<Icono />`.
+- `src/components/Icono.astro`: SVG en línea con `currentColor` y 1em; decorativo por omisión, con `etiqueta` se anuncia como imagen.
+- `tokens.css` documenta la pila `--fuente-mono` con IBM Plex Sans de respaldo.
+
+Auditoría de la Etapa 2 repetida con las fuentes nuevas:
+
+```
+=== TEMA OSCURO ===
+axe-core: 0 violacion(es)
+teclado: 22 paradas · salto primero: si · sin foco visible: 0 · Escape cierra menu y devuelve foco: si
+prefers-reduced-motion: respetado
+=== TEMA CLARO ===
+axe-core: 0 violacion(es)
+teclado: 22 paradas · salto primero: si · sin foco visible: 0 · Escape cierra menu y devuelve foco: si
+prefers-reduced-motion: respetado
+RESULTADO: sin incumplimientos.
+```
+
+Las paradas pasan de 21 a 22 por un motivo esperado: la tabla de prohibidos es una región desplazable y, como toda `Tabla`, enfocable.
+
+Batería: `astro check` 0 errores en 30 archivos · 41 pruebas · lint limpio · formato limpio · 5 invariantes en verde · build de 2 páginas. Una nota de método: un primer `astro check` con un filtro `grep` en plural («errors») ocultó un «1 error» en singular, de tipos, en `Icono.astro`; se corrigió el error y el filtro. En las etapas anteriores la línea «0 errors» aparecía explícita y CI falla ante cualquier error de tipos, así que no queda nada pendiente hacia atrás.
+
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
@@ -1315,6 +1467,8 @@ La cobertura de **IBM Plex Mono completa no se pudo verificar** en esta sesión:
 5. Decidir qué hacer con `✗`, que no existe en IBM Plex: quitarlo del conjunto o aceptarlo documentado como carácter de otra fuente.
 6. Decidir entre `µ` (U+00B5, signo micro, sí cubierto hoy) y `μ` (U+03BC, mu griega, no cubierta): son caracteres distintos que se ven igual, y la comprobación B obligará a usar uno de forma coherente.
 7. Volver a medir el presupuesto de fuentes: añadir griego, operadores y flechas crece los archivos, que hoy suman 51.1 KiB de 60 KB.
+
+**Resolución (2026-09-11): P2 cerrado**, como primer bloque de la Etapa 4. Decisiones en `DECISIONES_SITIO.md`, AD4; evidencia en E4-a … E4-e. De los siete requisitos de arriba: (1) el conjunto vive en `src/config/caracteres.json`; (2) se subconjunta desde IBM Plex completa; (3) la comprobación GLIFOS es bloqueante en CI y en el generador; (4) CARACTERES rechaza en `.md`/`.mdx` todo carácter no declarado; (5) `✗` sale del conjunto y pasa a SVG; (6) micro = μ (U+03BC), µ (U+00B5) prohibido; (7) el presupuesto se cumple en lectura estricta, 57 244 B. Hallazgo que corrigió la premisa: IBM Plex Mono no tiene griego ni completa; se cubre con IBM Plex Sans de respaldo, comprobado en el navegador (E4-d).
 
 ### P3 — Las URL de preview por PR dejaron de generarse (corte: antes de iniciar la Etapa 4)
 

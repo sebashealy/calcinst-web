@@ -51,3 +51,22 @@
 **Condición, no opcional (P4 en `ESTADO_SITIO.md`, destino Etapa 9):** al retirar el `noindex` global se emite `X-Robots-Tag: noindex` condicionado al host para las peticiones que llegan por `*.workers.dev`, y se verifica con `curl -I` literal contra ambos hosts. **La etiqueta canónica no sustituye esa verificación**: es una señal que el buscador puede ignorar, no una directiva.
 
 **Costo de revertir:** bajo. Volver a `false` en `wrangler.jsonc`; se pierden de nuevo las previews.
+
+### AD4 — Juego de caracteres: se cambia la fuente de entrada y se prohíbe el silencio (2026-09-11)
+
+**Contexto.** P2 (`ESTADO_SITIO.md`): diez caracteres declarados no tenían glifo en ninguna de las cuatro fuentes, y `subset-font` los descartaba sin avisar. Sebastián lo formuló así: el defecto no fue que faltaran glifos, fue el silencio. Pidió resolverlo como primer bloque de la Etapa 4, antes de tocar el blog.
+
+**Decisiones:**
+
+1. **Origen: las fuentes completas de IBM**, `@ibm/plex-sans` 1.1.0 y `@ibm/plex-mono` 2.5.0 (devDependencies, OFL-1.1), en lugar del recorte `latin` de Fontsource. Los paquetes npm de IBM no publican TTF ni OTF, solo WOFF/WOFF2 completos: es el mismo juego de glifos, comprimido, y `subset-font` lo lee. Aprobado por Sebastián con esa salvedad.
+2. **El conjunto es un dato**: `src/config/caracteres.json`, con grupos, prohibidos y roles de fuente. El generador y el verificador lo leen; ninguno lo define.
+3. **Puntos de código normalizados.** Ohm: U+03A9; prohibido U+2126 (lo exigió Sebastián). Micro: **U+03BC** (mu griega); prohibido U+00B5 — elección delegada, por coherencia con la omega griega y porque es la forma a la que NFKC reduce el signo micro. Delta: U+0394; prohibido **U+2206** «incremento», añadido a la lista porque es el único parecido sin descomposición Unicode, que ninguna normalización atraparía.
+4. **Fuera del conjunto: `✓ ✗ → ← ↑ ↓`**, que pasan a SVG con `<Icono />`. Sebastián nombró los cuatro primeros; su criterio —ornamento de interfaz, no notación, y §3.1 ya pide SVG— se aplicó también a `↑ ↓`.
+5. **IBM Plex Mono no tiene griego**, ni en su versión completa: el plan de P2 suponía que la fuente completa cerraba el hueco y solo es cierto para Sans. Decisión de Sebastián: `--fuente-mono` pone IBM Plex Sans de respaldo, y la comprobación de glifos trabaja por rol e informa qué caracteres toma cada cara mono de su respaldo. Costo aceptado: en texto monoespaciado, Ω, μ y Δ son proporcionales.
+6. **Requisito bloqueante: el build falla si un carácter declarado no sobrevive al subconjuntado.** Lo aplican el generador (exit 1) y `verificar-invariantes.mjs` (comprobación GLIFOS, en CI). `harfbuzzjs` 0.10.3 se declara explícitamente para que esa comprobación no dependa de una dependencia transitiva.
+7. Dos comprobaciones más, también en CI: **NOTACION** rechaza los puntos de código prohibidos en `src/` y `content/` indicando qué usar; **CARACTERES** rechaza en `.md`/`.mdx` todo carácter fuera del conjunto, con archivo, línea y columna.
+8. **Presupuesto con lectura estricta**: «< 60 KB» se interpreta como 60 000 B, no 61 440. Resultado: 57 244 B.
+
+**Licencia.** La OFL exige que la licencia acompañe a la fuente al redistribuirla; el generador copia `LICENSE-IBM-Plex-OFL.txt` junto a los archivos servidos. La licencia de IBM Plex declara el nombre reservado «Plex», y la OFL restringe el uso de nombres reservados en versiones modificadas. Subconjuntar es práctica extendida —Fontsource y Google Fonts sirven subconjuntos con el mismo nombre—, pero **no se interpreta aquí cómo aplica esa cláusula**: queda anotado para la revisión legal del proyecto.
+
+**Costo de revertir:** bajo. El generador es reproducible byte a byte, y cambiar de origen es cambiar cuatro rutas.

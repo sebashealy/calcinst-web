@@ -16,8 +16,33 @@ import CalloutNormativo from '../components/CalloutNormativo.astro'
 import AvisoErrata from '../components/AvisoErrata.astro'
 import BloqueCodigo from '../components/BloqueCodigo.astro'
 import Descargo from '../components/Descargo.astro'
+import Icono from '../components/Icono.astro'
 import { TEXTO_VIGENTE } from '../config/lanzamiento'
 import { VERSION_NOM } from '../config/norma'
+import caracteres from '../config/caracteres.json'
+
+/** `U+03A9` para un carácter dado. */
+const codigoDe = (c: string) =>
+  'U+' + (c.codePointAt(0) ?? 0).toString(16).toUpperCase().padStart(4, '0')
+
+// Notación permitida, leída de la declaración: esta página no la repite a mano.
+const notacion = [...(caracteres.grupos.find((g) => g.id === 'notacion')?.caracteres ?? '')]
+
+// Las griegas de la muestra se construyen por punto de código para no depender
+// de qué carácter produzca el teclado: justo la ambigüedad que P2 cierra.
+const OHM = String.fromCodePoint(0x03a9)
+const MICRO = String.fromCodePoint(0x03bc)
+const DELTA = String.fromCodePoint(0x0394)
+const muestraMono = `R = 4.7 k${OHM} · C = 22 ${MICRO}F · ${DELTA}V = 3.2 % · 8 mm² · 75 °C`
+
+const iconos = [
+  'correcto',
+  'incorrecto',
+  'flecha-derecha',
+  'flecha-izquierda',
+  'flecha-arriba',
+  'flecha-abajo',
+] as const
 
 const tokensColor: Array<[string, string]> = [
   ['--bg-0', 'Fondo de página'],
@@ -146,6 +171,87 @@ const codigoDemo = [
         <span class="m4">Mono 400 · 8 AWG · 50 A · 310-15(b)(16)</span><br />
         <span class="m5">Mono 500 · 8 AWG · 50 A · 310-15(b)(16)</span>
       </p>
+    </section>
+
+    <section aria-labelledby="s-notacion">
+      <h2 id="s-notacion">Notación técnica</h2>
+      <p class="guia">
+        El juego de caracteres es un dato del proyecto: <code>src/config/caracteres.json</code>. El
+        build falla si un carácter declarado no sobrevive al subconjuntar las fuentes, si un texto
+        usa uno fuera del conjunto o si aparece uno de los prohibidos (AD4).
+      </p>
+
+      <h3>Permitidos</h3>
+      <ul class="notacion">
+        {
+          notacion.map((c) => (
+            <li>
+              <span class="glifo">{c}</span>
+              <code class="tenue">{codigoDe(c)}</code>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h3>Prohibidos</h3>
+      <p class="guia">
+        Se muestran por su código, no por su glifo: escribirlos aquí haría fallar la comprobación
+        que los prohíbe.
+      </p>
+      <Tabla caption="Puntos de código prohibidos y la forma que se usa en su lugar.">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Usar en su lugar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            caracteres.prohibidos.map((p) => (
+              <tr>
+                <td class="num">{p.codigo}</td>
+                <td>{p.nombre}</td>
+                <td>
+                  <code>
+                    {'usarCodigo' in p && p.usarCodigo
+                      ? `${String.fromCodePoint(parseInt(p.usarCodigo.slice(2), 16))} ${p.usarCodigo}`
+                      : 'usar' in p
+                        ? p.usar
+                        : ''}
+                  </code>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </Tabla>
+
+      <h3>Griego en texto monoespaciado</h3>
+      <p class="guia">
+        IBM Plex Mono no tiene griego. La pila <code>--fuente-mono</code> pone IBM Plex Sans como respaldo,
+        así que Ω, μ y Δ salen de la misma familia en vez de una fuente del sistema; en texto monoespaciado
+        esos tres glifos son proporcionales.
+      </p>
+      <p class="mono-demo">
+        <span class="m4">{muestraMono}</span>
+      </p>
+
+      <h3>Iconos</h3>
+      <p class="guia">
+        Marca, aspa y flechas son ornamento de interfaz, no notación: van como SVG con
+        <code>&lt;Icono /&gt;</code>, heredan el color y miden 1em.
+      </p>
+      <ul class="iconos">
+        {
+          iconos.map((nombre) => (
+            <li>
+              <Icono nombre={nombre} />
+              <code class="tenue">{nombre}</code>
+            </li>
+          ))
+        }
+      </ul>
     </section>
 
     <section aria-labelledby="s-botones">
@@ -377,5 +483,37 @@ const codigoDemo = [
     margin: 0;
     font-family: var(--fuente-mono);
     color: var(--fg-0);
+  }
+
+  .notacion,
+  .iconos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--e-3) var(--e-6);
+    list-style: none;
+    margin: 0 0 var(--e-6);
+    padding: 0;
+  }
+
+  .notacion li,
+  .iconos li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--e-2);
+  }
+
+  .glifo {
+    font-size: var(--text-xl);
+    color: var(--fg-0);
+  }
+
+  .iconos li {
+    align-items: center;
+    font-size: var(--text-lg);
+    color: var(--fg-0);
+  }
+
+  .iconos code {
+    font-size: var(--text-xs);
   }
 </style>
