@@ -35,8 +35,8 @@ Criterios de aceptación (copiados del plan, §6, Etapa 4):
 **Precondiciones antes de empezar la Etapa 4** (detalle en «Bloqueos»):
 
 - **P2** — el juego de caracteres como dato del proyecto, con las dos comprobaciones de build. Hoy 10 caracteres declarados no tienen glifo.
-- **P3** — URL de preview por PR funcionando. La corrección probada en el PR #4 no bastó (E3-g); falta la decisión de Sebastián entre las opciones A y B.
-- **H1** — versión vigente de la NOM-001-SEDE, antes de redactar T01.
+- **P3** — resuelto por Sebastián en la opción A (`workers_dev: true`, AD3); pendiente de comprobar que la preview del PR siguiente responde 200 (ver P3).
+- **H1** — refutada provisionalmente: la vigente sería la NOM-001-SEDE-2012. La verificación definitiva es de Sebastián y bloquea la **publicación** de T01, no la infraestructura de la Etapa 4.
 - **Contenido humano:** T01 y T03 los redacta Sebastián; el andamiaje de la Etapa 4 puede construirse antes, pero la etapa no cierra sin los dos posts.
 
 **Para cerrarla:** **P1**, las Redirect Rules con sus nueve comprobaciones.
@@ -897,7 +897,7 @@ Aprobadas por Sebastián con versión exacta: `subset-font` 2.7.0, `puppeteer-co
 
 **No se añadió React.** El plan nombraba el conmutador de tema como isla `.tsx` (§4.1), pero React + ReactDOM rondan los 45 KB comprimidos y I4 limita el JS de páginas de contenido a 5 KB. Ver addendum A2.
 
-Las cuatro caras `latin` de Fontsource suman 74.6 KiB, por encima del presupuesto de 60 KB. `scripts/generar-fuentes.mjs` las recorta a los 141 caracteres que el sitio usa (ASCII imprimible, español, tipografía de cita y notación técnica):
+Las cuatro caras `latin` de Fontsource suman 74.6 KiB, por encima del presupuesto de 60 KB. `scripts/generar-fuentes.mjs` las recorta a un conjunto de 141 caracteres **declarado a mano** (ASCII imprimible, español, tipografía de cita y notación técnica), no derivado del contenido del sitio. *[Corregido el 2026-09-11: la redacción original decía «los 141 caracteres que el sitio usa», que sugería un conjunto derivado del contenido existente y llevó a buscar el defecto en el lugar equivocado; ver P2.]*
 
 ```
 > npm run fuentes
@@ -1178,7 +1178,7 @@ Teclado: sin cambios respecto de la Etapa 2, verificado de nuevo sobre el layout
 }
 ```
 
-**Límite de esta evidencia:** es el árbol que Chrome expone a las tecnologías de asistencia, no una prueba con un lector de pantalla real. Comprueba nombre, rol y estado `aria-expanded`, que es lo que el criterio enumera, pero no cómo lo verbaliza un lector concreto. Una verificación de un minuto con Narrador de Windows (`Ctrl` + `Win` + `Enter`) sobre `/diseno/` a ancho de móvil lo cerraría: al enfocar el botón debe anunciar «Abrir menú, botón, contraído», y tras pulsarlo, «expandido».
+**Límite de esta evidencia — cerrado por Sebastián el 2026-09-11.** El árbol de accesibilidad de Chrome no equivale a una prueba con lector de pantalla real, así que se dejó sugerida una comprobación con Narrador de Windows. Sebastián la hizo: al enfocar el botón, Narrador anuncia «Abrir menú, botón, contraído». El criterio queda verificado con un lector real, no solo con el árbol que Chrome expone.
 
 ### E3-f — Control de regresión sobre la Etapa 2
 
@@ -1345,11 +1345,25 @@ Al cerrar la Etapa 1 solo se revisó que el check de Workers Builds pasara, no e
 
 Recomendación: **A**. El segundo host existió desde el primer día hasta el commit `9efa9e4`; mientras rija `noindex` no tiene efecto sobre buscadores, y la mitigación definitiva (canónicas) ya está en el plan. Se aplicaría en un commit propio y se verificaría con el primer PR siguiente.
 
+**Resolución (2026-09-11): opción A, con condición.** Decisión de Sebastián, registrada como AD3 en `DECISIONES_SITIO.md`: `"workers_dev": true` en `wrangler.jsonc`. Sebastián corrigió además la recomendación anterior: **las canónicas no resuelven esto «del todo»** — una canónica es una señal, no una directiva —, y la condición queda como P4. Verificación exigida: que la preview del PR siguiente responda 200, con la URL registrada; si sigue en 404, detenerse y reportarlo sin improvisar alternativas.
+
+<!-- P3-RESULTADO -->
+
+### P4 — `noindex` condicionado al host `*.workers.dev` (destino: Etapa 9)
+
+Condición de AD3, fijada por Sebastián el 2026-09-11. Texto literal:
+
+> Al retirar el noindex global, emitir X-Robots-Tag: noindex condicionado al host para peticiones que llegan por *.workers.dev. Verificación: `curl -I` contra el dominio canónico y contra el host workers.dev, ambas salidas literales. La canónica no sustituye esta verificación.
+
+**Viabilidad, comprobada en la documentación** (`https://developers.cloudflare.com/workers/static-assets/headers/`): `_headers` admite reglas con URL absoluta, y el ejemplo que da la propia página es exactamente este caso — `https://myworker.mysubdomain.workers.dev/*` con `X-Robots-Tag: noindex`. Se resuelve con una regla en `public/_headers`, sin código de Worker. Dos advertencias de la misma página: la URL absoluta debe empezar por `https`, y las reglas de `_headers` no se aplican a respuestas generadas por código de Worker (hoy no hay ninguna).
+
+**Lo que la Etapa 9 no debe pasar por alto:** las previews también viven en `*.workers.dev` (`<versión>-calcinst-web.instcalc.workers.dev`, `<rama>-calcinst-web.instcalc.workers.dev`), así que la regla tiene que cubrir esos hosts y no solo el de producción. **No se ha comprobado** que `_headers` acepte un comodín en el host; si no lo acepta, hará falta una alternativa, que se decidirá entonces. La verificación con `curl -I` debe incluir un host de preview además de `calcinst-web.instcalc.workers.dev` y del canónico.
+
 ### Otros pendientes
 
 - **H11** (corte vencido en Etapa 0): confirmar que D4/D5 coinciden con la memoria del proyecto; si no, se emite el addendum que corresponda. Único punto de gobierno abierto desde la Etapa 0.
 - **Correo de contacto público** (corte: Etapa 6). `SITIO.correoContacto` está en `null` a propósito: publicar una dirección es decisión de Sebastián. Lo necesitan la página de Contacto (Etapa 6) y el correo alterno que exige I1 en el formulario (Etapa 8).
-- **Revisión de `capacidades.json`** (corte: antes de la Etapa 5, que es la primera que la renderiza). Tres cosas: (1) nombres y descripciones son redacción provisional (`"redaccionProvisional": true`); (2) los `motivo` se copiaron de §4.3, que cita `ESTADO_PROYECTO.md` del 2026-07-30 — una nota de memoria de sesiones anteriores sugiere que las correcciones de los Art. 430-22 y 430-24 se aplicaron el 2026-08-06, así que esos motivos pueden estar desfasados y deben cotejarse con el estado real de CalcInst; (3) `normativa[]` está vacío en todas las capacidades: poblarlo es contenido normativo y debe cotejarse con el DOF (I3).
+- **Revisión de `capacidades.json` — de Sebastián; bloquea la Etapa 5, no la 4.** (1) Nombres y descripciones son redacción provisional (`"redaccionProvisional": true`). (2) Los `motivo` se copiaron de §4.3, que cita `ESTADO_PROYECTO.md` del 2026-07-30, y pueden estar desfasados. La revisión debe distinguir **dos cosas distintas**: (a) si las correcciones de los Art. 430-22 y 430-24 ya se aplicaron al motor de cálculo, y (b) si existe el **caso de referencia calculado a mano**. **Solo (b) permite pasar** `sizing-caso-1`, `sizing-caso-2` y `sizing-caso-3-alimentador` a `verificado`: que el código esté corregido no demuestra que calcule bien. (3) `normativa[]` está vacío en todas las capacidades: poblarlo es contenido normativo y debe cotejarse con el DOF (I3).
 - **Inicio sin `LayoutBase`** (corte: Etapa 5). `index.astro` sigue siendo la página mínima de la Etapa 1. Ponerle la barra de navegación ahora publicaría en la portada enlaces a páginas que aún no existen (`/producto/`, `/blog/`…); la Etapa 5 la reconstruye sobre el layout.
 - **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, AD1.
 

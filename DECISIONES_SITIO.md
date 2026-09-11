@@ -39,3 +39,15 @@
 **Efecto sobre D1:** el stack pasa a ser **Astro + MDX**, con el sistema de diseño en `src/styles/tokens.css`. Las versiones de Tailwind citadas en la fila D1 quedan como registro histórico de la Etapa 0.
 
 **Costo de revertir:** bajo. Reinstalar y registrar el plugin; ningún componente depende de su ausencia.
+
+### AD3 — `workers_dev: true`: se acepta un segundo host para recuperar las previews (2026-09-11)
+
+**Contexto.** P3 (`ESTADO_SITIO.md`): desde que se declaró el dominio personalizado, los PR dejaron de recibir URL de preview. En el PR #4 se probó `preview_urls: true` con `workers_dev: false` y no bastó: la URL de la versión desplegada devolvía 404 (E3-g).
+
+**Decisión de Sebastián: opción A, `workers_dev: true`.** Las previews se sirven en el subdominio `workers.dev` y no existen sin él. Perder la revisión en el entorno real costaría más en las Etapas 5, 9 y 10 —portada y producto, SEO, auditoría de accesibilidad y rendimiento— que exponer un segundo host mientras rige el `noindex` global.
+
+**Costo aceptado:** producción también responde en `https://calcinst-web.instcalc.workers.dev`, un host distinto del canónico que fija D2.
+
+**Condición, no opcional (P4 en `ESTADO_SITIO.md`, destino Etapa 9):** al retirar el `noindex` global se emite `X-Robots-Tag: noindex` condicionado al host para las peticiones que llegan por `*.workers.dev`, y se verifica con `curl -I` literal contra ambos hosts. **La etiqueta canónica no sustituye esa verificación**: es una señal que el buscador puede ignorar, no una directiva.
+
+**Costo de revertir:** bajo. Volver a `false` en `wrangler.jsonc`; se pierden de nuevo las previews.

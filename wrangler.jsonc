@@ -7,18 +7,13 @@
   "assets": {
     "directory": "./dist/",
   },
-  // Explícitos a propósito (ESTADO_SITIO.md, P3). Tras declarar `routes`, los PR
-  // dejaron de recibir URL de preview y `calcinst-web.instcalc.workers.dev` pasó a
-  // 404. La documentación dice que ninguno de los dos cambia por declarar rutas, así
-  // que no se confía en el valor por omisión: el archivo de wrangler prevalece sobre
-  // el dashboard en cada despliegue.
-  //   workers_dev: false — producción NO se sirve en workers.dev (evita un host
-  //                        duplicado del canónico; es además el estado ya observado).
-  //   preview_urls: true — NO basta por sí solo: comprobado en el PR #4, con
-  //                        workers_dev en false no se genera URL de preview (la de la
-  //                        versión devuelve 404). Las previews viven en workers.dev.
-  //                        Activarlas exige workers_dev: true; decisión pendiente (P3).
-  "workers_dev": false,
+  // Explícitos a propósito (DECISIONES_SITIO.md, AD3; ESTADO_SITIO.md, P3).
+  // Las URL de preview se sirven en el subdominio workers.dev y no existen sin él:
+  // con workers_dev en false, preview_urls: true no genera ninguna (PR #4, E3-g).
+  // Costo aceptado: producción también responde en calcinst-web.instcalc.workers.dev.
+  // Mitigación obligatoria antes de retirar el noindex global en la Etapa 9: ver P4.
+  // El archivo de wrangler prevalece sobre el dashboard en cada despliegue.
+  "workers_dev": true,
   "preview_urls": true,
   // Dominio canónico (D2). Los Custom Domains crean su propio registro DNS y no
   // requieren zone_id ni zone_name. Aquí solo va el canónico: `www.calcinst.mx`,

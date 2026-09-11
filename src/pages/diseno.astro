@@ -17,6 +17,7 @@ import AvisoErrata from '../components/AvisoErrata.astro'
 import BloqueCodigo from '../components/BloqueCodigo.astro'
 import Descargo from '../components/Descargo.astro'
 import { TEXTO_VIGENTE } from '../config/lanzamiento'
+import { VERSION_NOM } from '../config/norma'
 
 const tokensColor: Array<[string, string]> = [
   ['--bg-0', 'Fondo de página'],
@@ -236,13 +237,13 @@ const codigoDemo = [
 
     <section aria-labelledby="s-callout">
       <h2 id="s-callout">CalloutNormativo</h2>
-      <CalloutNormativo ref="430-22" version="NOM-001-SEDE-2018" tipo="articulo">
+      <CalloutNormativo ref="430-22" version={VERSION_NOM} tipo="articulo">
         <p>
           Texto de ejemplo. El contenido normativo lo redacta una persona; el andamiaje solo define
           cómo se presenta la cita y a dónde enlaza.
         </p>
       </CalloutNormativo>
-      <CalloutNormativo ref="310-15(b)(16)" version="NOM-001-SEDE-2018" tipo="tabla">
+      <CalloutNormativo ref="310-15(b)(16)" version={VERSION_NOM} tipo="tabla">
         <p>Ejemplo de cita a una tabla, con su enlace a la página de la referencia.</p>
       </CalloutNormativo>
     </section>
