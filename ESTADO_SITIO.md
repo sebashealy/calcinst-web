@@ -1347,7 +1347,27 @@ Recomendación: **A**. El segundo host existió desde el primer día hasta el co
 
 **Resolución (2026-09-11): opción A, con condición.** Decisión de Sebastián, registrada como AD3 en `DECISIONES_SITIO.md`: `"workers_dev": true` en `wrangler.jsonc`. Sebastián corrigió además la recomendación anterior: **las canónicas no resuelven esto «del todo»** — una canónica es una señal, no una directiva —, y la condición queda como P4. Verificación exigida: que la preview del PR siguiente responda 200, con la URL registrada; si sigue en 404, detenerse y reportarlo sin improvisar alternativas.
 
-<!-- P3-RESULTADO -->
+**Verificación (2026-09-11, PR #5): P3 resuelto.** Las dos URL de preview responden 200:
+
+```
+=== https://7344e1de-calcinst-web.instcalc.workers.dev/diseno/ ===
+HTTP/1.1 200 OK
+Content-Type: text/html
+x-robots-tag: noindex
+=== https://p3-previews-y-h1-calcinst-web.instcalc.workers.dev/diseno/ ===
+HTTP/1.1 200 OK
+Content-Type: text/html
+x-robots-tag: noindex
+```
+
+- **Por versión:** `https://7344e1de-calcinst-web.instcalc.workers.dev/` — el prefijo es el `Version ID` (`7344e1de-377c-4a39-b250-7e1f66c60ef9`) que publica el check de Workers Builds.
+- **Por rama:** `https://p3-previews-y-h1-calcinst-web.instcalc.workers.dev/` — estable mientras exista la rama.
+
+**Sirve el código de la rama, no una versión anterior:** su `/diseno/` ya cita «NOM-001-SEDE-2012», mientras producción seguía citando «NOM-001-SEDE-2018» en el mismo momento.
+
+**El comentario del bot no es una señal fiable.** En el PR #5 el comentario de Cloudflare se creó a las 17:09:46 con «🔵 In progress» y **nunca se actualizó**, aunque el check de Workers Builds terminó en `pass`. Desde aquí, la URL de preview se obtiene del `Version ID` del check o del alias de rama, y se verifica con `curl`; el comentario se toma como decorativo.
+
+**Efecto en producción tras fusionar:** `https://calcinst-web.instcalc.workers.dev/` pasa de 404 a servir el sitio. Es el costo aceptado en AD3, cubierto hoy por el `noindex` global y a partir de la Etapa 9 por P4.
 
 ### P4 — `noindex` condicionado al host `*.workers.dev` (destino: Etapa 9)
 
