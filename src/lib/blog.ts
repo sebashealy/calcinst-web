@@ -30,10 +30,53 @@ export const NOMBRE_CATEGORIA: Record<Categoria, string> = {
 
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
+/**
+ * En la NOM-001-SEDE-2012 el Capítulo 9 es «Instalaciones destinadas al Servicio
+ * Público» (artículos 920 a 924) y las tablas están en el Capítulo 10. Esa
+ * confusión viene de la estructura del NEC, donde las tablas sí van en el
+ * Capítulo 9. Una `ref` así siempre es un error y la `ref` alimenta una URL
+ * que D8 declara inmutable, de modo que se rechaza al construir (AD7).
+ */
+export const REF_CAPITULO_9_CON_TABLA = /^cap(?:[ií]tulo)?[-_ ]?9[-_ ]?tabla/i
+
+/**
+ * Tipos de referencia. Los apéndices se distinguen porque en la NOM-001-SEDE-2012
+ * solo el Apéndice D es normativo: A, B, C y E son informativos, y citar uno
+ * informativo como si obligara sería el error que el descargo del §9.1 promete
+ * no cometer.
+ */
+export const TIPOS_NORMATIVA = [
+  'tabla',
+  'articulo',
+  'nota',
+  'apendice-normativo',
+  'apendice-informativo',
+] as const
+
+export type TipoNormativa = (typeof TIPOS_NORMATIVA)[number]
+
+/** Cómo se nombra cada tipo al pintarlo. Una sola definición para la cita y la lista. */
+export const PREFIJO_NORMATIVA: Record<TipoNormativa, string> = {
+  articulo: 'Art.',
+  tabla: 'Tabla',
+  nota: 'Nota',
+  'apendice-normativo': 'Apéndice',
+  'apendice-informativo': 'Apéndice',
+}
+
+/** Un apéndice informativo orienta, no obliga: se marca donde se pinte. */
+export const esInformativo = (tipo: TipoNormativa) => tipo === 'apendice-informativo'
+
 export const esquemaNormativa = z.object({
-  /** Artículo, sección o tabla tal como se cita: "430-22", "310-15(b)(16)". */
-  ref: z.string().min(1),
-  tipo: z.enum(['tabla', 'articulo', 'nota']),
+  /** Artículo, sección o tabla tal como se cita: "430-22", "310-15(b)(16)", "cap10-tabla-4". */
+  ref: z
+    .string()
+    .min(1)
+    .refine(
+      (ref) => !REF_CAPITULO_9_CON_TABLA.test(ref),
+      'el Capítulo 9 de la NOM-001-SEDE-2012 no contiene tablas: las tablas están en el Capítulo 10 (AD7)',
+    ),
+  tipo: z.enum(TIPOS_NORMATIVA),
   /** Versión citada; por omisión, la que fija `src/config/norma.ts` (H1). */
   version: z.string().min(1).default(VERSION_NOM),
   /** `false` impide publicar: solo Sebastián lo pone en `true`, tras cotejar con el DOF. */

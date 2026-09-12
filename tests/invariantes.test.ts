@@ -18,7 +18,9 @@ import {
   verificarI3c,
   verificarI7,
   verificarNotacion,
+  verificarRefNorma,
   verificarTokens,
+  refsDeCapitulo9,
 } from '../scripts/verificar-invariantes.mjs'
 import { leerConjunto, verificarGlifos } from '../scripts/lib/fuentes.mjs'
 
@@ -136,12 +138,20 @@ describe('NOTACION — puntos de código prohibidos (P2)', () => {
     expect(fallos[0]).toContain('U+03A9')
   })
 
-  it('rechaza el signo micro y el incremento', () => {
+  it('rechaza la mu griega y el incremento', () => {
     const r = conDeclaracion({
-      'src/components/C.astro': `<p>22 ${SIGNO_MICRO}F</p>`,
+      'src/components/C.astro': `<p>22 ${MU}F</p>`,
       'src/components/D.astro': `<p>${INCREMENTO}V</p>`,
     })
     expect(verificarNotacion(r)).toHaveLength(2)
+  })
+
+  it('rechaza la mu griega y propone el signo micro (AD9)', () => {
+    const r = conDeclaracion({ 'src/components/M.astro': `<p>22 ${MU}F</p>` })
+    const fallos = verificarNotacion(r)
+    expect(fallos).toHaveLength(1)
+    expect(fallos[0]).toContain('U+03BC')
+    expect(fallos[0]).toContain('U+00B5')
   })
 
   it('rechaza los ornamentos que van como SVG y apunta al componente', () => {
@@ -154,9 +164,9 @@ describe('NOTACION — puntos de código prohibidos (P2)', () => {
     expect(verificarNotacion(r)).toHaveLength(1)
   })
 
-  it('acepta las formas elegidas: omega, mu y delta griegas', () => {
+  it('acepta las formas elegidas: omega griega, signo micro y delta griega', () => {
     const r = conDeclaracion({
-      'src/components/F.astro': `<p>4.7 k${OMEGA} · 22 ${MU}F · ${cp(0x0394)}V</p>`,
+      'src/components/F.astro': `<p>4.7 k${OMEGA} · 22 ${SIGNO_MICRO}F · ${cp(0x0394)}V</p>`,
     })
     expect(verificarNotacion(r)).toEqual([])
   })
@@ -175,7 +185,7 @@ describe('CARACTERES — el contenido solo usa el conjunto declarado (P2)', () =
 
   it('pasa con español, notación declarada, tabuladores y saltos de línea', () => {
     const r = conDeclaracion({
-      'src/content/blog/b.mdx': `¿Cuál?\n\t8 mm² a 75 °C, ${OMEGA} y ${MU} ≤ 3 % — «nota»\r\n`,
+      'src/content/blog/b.mdx': `¿Cuál?\n\t8 mm² a 75 °C, ${OMEGA} y ${SIGNO_MICRO} ≤ 3 % — «nota»\r\n`,
     })
     expect(verificarCaracteres(r)).toEqual([])
   })
@@ -191,7 +201,7 @@ describe('GLIFOS — nada declarado se pierde al subconjuntar (P2, bloqueante)',
     const { fallos, deRespaldo } = await verificarGlifos({ raiz: RAIZ_REAL })
     expect(fallos).toEqual([])
     // El respaldo no es silencioso: Mono declara qué toma de Plex Sans.
-    expect(deRespaldo['ibm-plex-mono-400']).toEqual(['Ω U+03A9', 'μ U+03BC', 'Δ U+0394'])
+    expect(deRespaldo['ibm-plex-mono-400']).toEqual(['Ω U+03A9', 'Δ U+0394'])
   })
 
   it('falla, sin callar, si se declara un carácter que ninguna cara tiene', async () => {
@@ -201,6 +211,60 @@ describe('GLIFOS — nada declarado se pierde al subconjuntar (P2, bloqueante)',
     const { fallos } = await verificarGlifos({ raiz: RAIZ_REAL, declarados })
     expect(fallos.length).toBeGreaterThan(0)
     expect(fallos.every((f) => f.includes('U+2717'))).toBe(true)
+  })
+})
+
+describe('REFNORMA — el Capítulo 9 no contiene tablas (AD7)', () => {
+  /**
+   * La ref equivocada se arma por partes, nunca escrita entera: si estuviera
+   * literal en posición de ref, este mismo archivo violaría el invariante que
+   * la prueba verifica. Mismo criterio que los puntos de código ambiguos.
+   */
+  const cap9 = (sufijo: string) => ['cap', '9-tabla-', sufijo].join('')
+
+  // Prueba negativa, como la de I7: se introduce la ref equivocada, el
+  // verificador falla; se corrige a Capítulo 10 y pasa. Corre en cada CI.
+  it('falla con una ref de tabla del Capítulo 9 y dice dónde está', () => {
+    const r = arbol({
+      'src/content/blog/post.mdx': `<CalloutNormativo ref="${cap9('4')}">t</CalloutNormativo>`,
+    })
+    const fallos = verificarRefNorma(r)
+    expect(fallos).toHaveLength(1)
+    expect(fallos[0]).toContain('src/content/blog/post.mdx:1')
+    expect(fallos[0]).toContain('cap9-tabla-4')
+    expect(fallos[0]).toContain('Capítulo 10')
+  })
+
+  it('pasa cuando la ref se corrige al Capítulo 10', () => {
+    const r = arbol({
+      'src/content/blog/post.mdx': '<CalloutNormativo ref="cap10-tabla-4">t</CalloutNormativo>',
+    })
+    expect(verificarRefNorma(r)).toEqual([])
+  })
+
+  it.each([
+    ['atributo JSX', `ref="${cap9('1')}"`],
+    ['propiedad de objeto', `ref: '${cap9('8')}'`],
+    ['clave JSON', `"ref": "${cap9('9')}"`],
+    ['campo YAML', `  - ref: ${cap9('10')}`],
+    ['con acento y espacio', `ref: "${['capitulo', '9', 'tabla', '4'].join(' ')}"`],
+  ])('detecta la forma en %s', (_forma, texto) => {
+    expect(refsDeCapitulo9(texto)).toHaveLength(1)
+  })
+
+  it('no confunde una mención del texto con una ref', () => {
+    // Los documentos de gobierno tienen que poder nombrar la forma equivocada
+    // para explicar por qué lo es.
+    expect(refsDeCapitulo9(`El plan escribía ${cap9('4')}; es un error.`)).toEqual([])
+  })
+
+  it('tampoco marca las referencias reales del Capítulo 9, que sí existen', () => {
+    // 920 a 924 son artículos del Capítulo 9; lo que no existe son sus tablas.
+    expect(refsDeCapitulo9('ref="920-4"')).toEqual([])
+  })
+
+  it('revisa el repositorio real, documentos de gobierno incluidos', () => {
+    expect(verificarRefNorma()).toEqual([])
   })
 })
 

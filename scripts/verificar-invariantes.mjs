@@ -14,6 +14,9 @@
  *  - GLIFOS (P2, bloqueante): ningún carácter declarado se pierde al subconjuntar.
  *  - I3c (Etapa 4): términos de credencial profesional en src/ y content/, salvo
  *    en contextos negativos declarados.
+ *  - REFNORMA (AD7): ninguna `ref` cita una tabla del Capítulo 9. En la
+ *    NOM-001-SEDE-2012 las tablas están en el Capítulo 10; el Capítulo 9 son las
+ *    instalaciones destinadas al servicio público (artículos 920 a 924).
  *
  * Pendientes, cada una en su etapa:
  *  - I1 (Etapa 8): bloques catch vacíos en src/.
@@ -272,6 +275,63 @@ export function verificarI3c(raiz = RAIZ) {
     )
 }
 
+/**
+ * REFNORMA (AD7) — la estructura del NEC pone las tablas en su Capítulo 9; la de
+ * la NOM-001-SEDE-2012, en el Capítulo 10. Su Capítulo 9 existe, pero es
+ * «Instalaciones destinadas al Servicio Público» (artículos 920 a 924) y no
+ * contiene ninguna tabla, así que una `ref` de esa forma siempre es un error.
+ *
+ * Se busca solo en posición de `ref` —atributo de JSX, clave de JSON, campo de
+ * YAML o propiedad de objeto—, no en cualquier mención del texto: los documentos
+ * de gobierno necesitan poder nombrar la forma equivocada para explicarla.
+ *
+ * Importa corregirlo antes del primer post porque `ref` alimenta las URL
+ * /normativa/{ref}/, que D8 declara inmutables.
+ */
+export const REF_CAPITULO_9_CON_TABLA =
+  /\bref\b\s*["']?\s*[:=]\s*["']?(cap(?:[ií]tulo)?[-_ ]?9[-_ ]?tabla[\w-]*)/gi
+
+/**
+ * @param {string} contenido
+ * @returns {Array<{ linea: number, ref: string }>}
+ */
+export function refsDeCapitulo9(contenido) {
+  const hallazgos = []
+  contenido.split('\n').forEach((linea, i) => {
+    for (const m of linea.matchAll(REF_CAPITULO_9_CON_TABLA)) {
+      hallazgos.push({ linea: i + 1, ref: m[1] })
+    }
+  })
+  return hallazgos
+}
+
+/** Documentos de gobierno: también se revisan, porque de ahí se copian los ejemplos. */
+const DOCUMENTOS = ['DECISIONES_SITIO.md', 'ESTADO_SITIO.md', 'HIPOTESIS_SITIO.md', 'README.md']
+
+/**
+ * @param {string} [raiz]
+ * @returns {string[]}
+ */
+export function verificarRefNorma(raiz = RAIZ) {
+  const rutas = [
+    ...['src', 'content', 'tests'].flatMap((dir) => archivos(raiz, dir, EXTENSIONES_TEXTO)),
+    ...DOCUMENTOS.filter((d) => {
+      try {
+        leer(raiz, d)
+        return true
+      } catch {
+        return false
+      }
+    }),
+  ]
+  return rutas.flatMap((relativa) =>
+    refsDeCapitulo9(leer(raiz, relativa)).map(
+      ({ linea, ref }) =>
+        `${relativa}:${linea} — «${ref}»: el Capítulo 9 de la NOM-001-SEDE-2012 no contiene tablas; las tablas están en el Capítulo 10 (AD7)`,
+    ),
+  )
+}
+
 /** @type {Array<{ invariante: string, descripcion: string, verificar: (raiz?: string) => string[] | Promise<string[]> }>} */
 export const VERIFICACIONES = [
   {
@@ -293,6 +353,11 @@ export const VERIFICACIONES = [
     invariante: 'CARACTERES',
     descripcion: 'el contenido .md/.mdx solo usa caracteres declarados',
     verificar: verificarCaracteres,
+  },
+  {
+    invariante: 'REFNORMA',
+    descripcion: 'ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)',
+    verificar: verificarRefNorma,
   },
   {
     invariante: 'I3c',

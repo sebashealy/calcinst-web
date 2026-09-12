@@ -34,11 +34,13 @@ Cotejo criterio por criterio (plan §6, Etapa 4):
 | `rss.xml` valida en el validador del W3C | cumplido | E4-j: válido, 0 errores; el único aviso es artefacto de subir el XML como texto (se confirma por URL en E4-o) |
 | El post renderizado con remark puro conserva todo el texto | cumplido | E4-i, con GFM tras la decisión de Sebastián |
 | Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB | cumplido | E4-k: 1.36 s, 1 137 B, 83 691 B sin comprimir |
-| Los dos posts con todas sus citas en `verificadoDOF: true` | **pendiente** | Contenido de Sebastián (T01 y T03). T01 exige cerrar antes H1, cuya verificación definitiva también es suya |
+| Los dos posts con todas sus citas en `verificadoDOF: true` | **pendiente** | Contenido de Sebastián (T01 y T03). H1 ya no lo bloquea: quedó cerrada el 2026-09-12 (AD6, E4-p) |
 
-**Para cerrar la Etapa 4 faltan:** (1) T01 y T03, redactados por Sebastián, con sus citas cotejadas contra el DOF; (2) la verificación definitiva de H1 antes de publicar T01; (3) **P1**, las Redirect Rules con sus nueve comprobaciones. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+**Para cerrar la Etapa 4 faltan:** (1) T01 y T03, redactados por Sebastián, con sus citas cotejadas contra el DOF; (2) **P1**, las Redirect Rules con sus nueve comprobaciones. La verificación definitiva de H1, que era el tercer pendiente, la cerró Sebastián el 2026-09-12: ver AD6 y E4-p. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
 
-Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o. Diferencias con el plan en el addendum A8.
+Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t. Diferencias con el plan en el addendum A8.
+
+**Nota de etiquetado.** El bloque del 2026-09-12 pedía registrar su evidencia como E4-j … E4-n. Esas cinco etiquetas ya estaban ocupadas por la evidencia de la infraestructura del blog (E4-a … E4-o), así que se registran como **E4-p … E4-t**, en el mismo orden pedido: E4-p = H1; E4-q = Capítulo 9 contra Capítulo 10; E4-r = norma.ts y la nota aclaratoria; E4-s = los cuatro pendientes; E4-t = batería de cierre.
 
 ## Evidencia Etapa 0
 
@@ -1652,6 +1654,340 @@ Validador del W3C, **por URL** (`https://validator.w3.org/feed/check.cgi?url=htt
 
 **Cero avisos**: validado por URL, la autorreferencia coincide con la ubicación, lo que confirma que el aviso que quedaba en E4-j era un artefacto de subir el XML como texto. Precisión: el feed de producción no tiene items porque no hay posts publicados, así que esta pasada valida el canal; el contenido de los items se validó en E4-j, con 0 errores.
 
+### E4-p — H1 cerrada: rige la NOM-001-SEDE-2012 (AD6, 2026-09-12)
+
+Verificación de Sebastián con tres comprobaciones. La fila de `HIPOTESIS_SITIO.md` queda así:
+
+```
+| H1 | La versión de la NOM-001-SEDE que rige y que el sitio citará es la 2018 | S |
+  Cerrada 2026-09-12 | REFUTADA. Rige la NOM-001-SEDE-2012, con la Nota
+  Aclaratoria del 07/02/2014. |
+```
+
+Las cuatro fuentes están íntegras en `HIPOTESIS_SITIO.md` § Evidencia de H1: la ficha del Catálogo Mexicano de Normas (estado «Vigente», DOF 29/11/2012, en vigor 29/5/2013, sin cancelaciones posteriores a 2005); el Informe de la Revisión Sistemática de la SENER (oficio 300.E487/2023), que declara que no se obtuvo el Dictamen Total Final, que la 2018 nunca se publicó como norma definitiva y que su proceso se dio de baja del SPNIC en 2022; el DOF del 06/08/2018, que la publica como **proyecto para consulta pública**; y la Nota Aclaratoria del 07/02/2014.
+
+**Efecto en el código: ninguno.** La cadena ya era `NOM-001-SEDE-2012` desde el bloque anterior. Lo que cambia es que deja de ser provisional y que **se levanta el bloqueo sobre T01**. La cuarta fuente sí tuvo efecto: obligó a AD8.
+
+### E4-q — Capítulo 9 contra Capítulo 10 (AD7)
+
+En la NOM-001-SEDE-2012 el Capítulo 9 es «Instalaciones destinadas al Servicio Público» (artículos 920 a 924); las tablas son el Capítulo 10. Verificado por Sebastián en el índice del texto publicado en el DOF.
+
+**Búsqueda antes**, en todo el repositorio salvo `node_modules`, `.git` y `dist`:
+
+```
+> grep -rn "cap9" .
+./src/components/CalloutNormativo.astro:12:  /** Referencia tal como se cita: "430-22", "310-15(b)(16)", "cap9-tabla-4". */
+
+> grep -rn "cap10" .
+(sin coincidencias)
+
+> grep -rni "capítulo 9|cap. 9|capitulo 9" .
+(sin coincidencias)
+```
+
+Una sola aparición, en el ejemplo del comentario del componente. No había posts, fixtures ni tests con esa forma, porque el ejemplo nunca llegó a usarse.
+
+**Búsqueda después:**
+
+```
+> grep -rn "cap9" .
+./DECISIONES_SITIO.md:17   (fila D8: el ejemplo corregido, que nombra la forma vieja para explicarla)
+./DECISIONES_SITIO.md:96   (AD7: «el ejemplo de ref de D8 pasa de cap9-tabla-4 a cap10-tabla-4»)
+./tests/blog-schema.test.ts:101,109      (fixture, armado por partes)
+./tests/invariantes.test.ts:223,229,234,246,247,248,249,258  (fixtures, armados por partes)
+```
+
+Las que quedan son deliberadas y de dos clases: prosa que **nombra** la forma equivocada para explicarla, y fixtures de prueba. Los fixtures se arman por partes, uniendo `'cap'` con `'9-tabla-'` y el sufijo, por la misma razón por la que los puntos de código ambiguos se construyen por número: si la ref mala estuviera escrita entera en posición de `ref`, el archivo de pruebas violaría el invariante que verifica. Esa distinción no es cosmética: el invariante busca solo en **posición de ref** (atributo JSX, clave JSON, campo YAML, propiedad de objeto), nunca cualquier mención del texto.
+
+**Prueba negativa, en los dos sitios donde se aplica.** Con un post de prueba cuya `ref` se cambió a `cap9-tabla-5`:
+
+```
+> npm run verificar
+[FALLA] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+  - src/content/blog/prueba-ad7-ad8.mdx:8 — «cap9-tabla-5»: el Capítulo 9 de la
+    NOM-001-SEDE-2012 no contiene tablas; las tablas están en el Capítulo 10 (AD7)
+  - src/content/blog/prueba-ad7-ad8.mdx:22 — «cap9-tabla-5»: (mismo mensaje)
+codigo de salida: 1
+
+> MOSTRAR_BORRADORES=1 npm run build
+[InvalidContentEntryDataError] blog -> prueba-ad7-ad8 data does not match collection schema.
+  normativa.0.ref: el Capítulo 9 de la NOM-001-SEDE-2012 no contiene tablas:
+  las tablas están en el Capítulo 10 (AD7)
+codigo de salida del build: 127
+```
+
+Lo detecta en las dos apariciones, la del frontmatter y la del cuerpo. El 127 es el artefacto de libuv en Windows ya documentado en E4-h; el build falla igual, y en Linux sale 1.
+
+Corregida la `ref` al Capítulo 10, las dos comprobaciones pasan y el build sale 0.
+
+**Un defecto real, encontrado por la propia prueba.** El primer regex que escribí exigía la «t» de «capítulo» y por tanto **no atrapaba `cap9-tabla-4`**, que es justo la forma del plan: pasaba los casos con «capitulo» escrito entero y fallaba el central. Lo destapó la prueba parametrizada, no una lectura. Corregido en los dos archivos, haciendo opcional el grupo entero «ítulo».
+
+### E4-r — La versión no identifica un texto único (AD8)
+
+`src/config/norma.ts` documenta ahora qué designa la cadena: el texto publicado el 29/11/2012 **corregido por la Nota Aclaratoria del 07/02/2014** (código 5331914), con el enlace al DOF.
+
+`src/config/nota-aclaratoria.json` es el dato; `src/lib/nota-aclaratoria.ts` lo valida con Zod **al importar**, de modo que un dato mal formado rompe el build en vez de degradarse en silencio (I1). Semilla, con la distinción pedida:
+
+| `ref` | `afectaValor` | Qué corrige |
+| --- | --- | --- |
+| `cap10-tabla-5` | sí | 10 AWG en TW/THHW/THW/THW-2: 55.68 pasa a 15.68 mm² |
+| `310-15(b)(2)(a)` | sí | Factores de corrección, filas 66-85 °C |
+| `230-95` | no | Cambia el sentido de la disposición |
+| `250-53(a)(2)` | no | Cambia el sentido de la disposición |
+| `522-25(c)(2)` | no | Cambia el sentido de la disposición |
+
+**El aviso no depende del redactor.** `CalloutNormativo` consulta el archivo en cada cita. Renderizado real del post de prueba, en `dist/`:
+
+```
+> grep -o "La Nota Aclaratoria[^<]*" dist/blog/prueba-ad7-ad8/index.html
+La Nota Aclaratoria corrige un valor de esta referencia.
+
+> grep -o "15.68 mm²" dist/blog/prueba-ad7-ad8/index.html
+15.68 mm²
+
+> grep -o "dof.gob.mx[^\"]*" dist/blog/prueba-ad7-ad8/index.html
+dof.gob.mx/nota_detalle.php?codigo=5331914&amp;fecha=07/02/2014
+```
+
+La lista de «Referencias citadas» del post lleva las mismas marcas, porque la regla vive en un solo sitio:
+
+```
+NOM-001-SEDE-2012 · Tabla cap10-tabla-5   [Corregida por la nota de 2014] [Sin cotejar con el DOF]
+NOM-001-SEDE-2012 · Art. 430-22           [Sin cotejar con el DOF]
+NOM-001-SEDE-2012 · Apéndice apendice-a   [Informativo] [Sin cotejar con el DOF]
+```
+
+**Apéndices.** `normativa[].tipo` se extiende a `tabla | articulo | nota | apendice-normativo | apendice-informativo`, y el informativo se marca como que **orienta sin obligar**, en la cita y en la lista de referencias. El mapa de prefijos vivía duplicado en `CalloutNormativo` y `LayoutPost`; al extenderlo, `astro check` lo delató —el segundo no conocía los tipos nuevos— y pasó a `src/lib/blog.ts`, que es ya la única definición.
+
+**Pruebas: 8 nuevas en `tests/nota-aclaratoria.test.ts`**, que renderizan el componente de verdad con la API de contenedor de Astro; comprobar solo `correccionDe()` no diría nada sobre lo que ve el lector. Una cita a una `ref` listada produce el aviso; una cita a `430-22` no produce ninguno. Para eso `vitest.config.ts` pasa a `getViteConfig` de Astro, que le da a Vitest el mismo compilador de `.astro` que usa el sitio.
+
+El post de prueba se borró antes del commit, como corresponde.
+
+### E4-s — Los cuatro pendientes del mensaje anterior
+
+**1. Versión de Astro: no hay discrepancia en el repositorio.** Lo que el plan asumía (5.x) sí difiere, y eso ya estaba registrado y cerrado como H12.
+
+```
+> node -p "require('./package.json').dependencies.astro"
+7.3.1
+
+> npx astro --version
+astro v7.3.1
+```
+
+`DECISIONES_SITIO.md`, fila D1, dice literalmente: «`astro` 7.3.1 (`latest`; el plan asume 5.x — ver H12 en `HIPOTESIS_SITIO.md`, la decisión de stack no se cambia)». H12 está **cerrada** desde el 2026-09-11, con las APIs que el plan asumía verificadas en uso. Declarado, instalado y documentado coinciden. La única mención a «5.x» que queda en este documento es `npm create astro@5.2.4`, que es la versión de _create-astro_, la herramienta de andamiaje, no la de Astro; queda como registro histórico de la Etapa 0.
+
+**2. La batería de cierre, sin filtrar:** E4-t.
+
+**3. `remark-gfm` está en el arnés de portabilidad; no hay exención de tablas.** Es la decisión AD5, aplicada en el analizador que comparten el build y la prueba I2:
+
+```
+> sed -n '9,22p' scripts/lib/mdx.mjs
+import { unified } from 'unified'
+import remarkParse from 'remark-parse'
+import remarkFrontmatter from 'remark-frontmatter'
+import remarkMdx from 'remark-mdx'
+import remarkGfm from 'remark-gfm'
+import { toString } from 'mdast-util-to-string'
+
+// GFM incluido: tablas, tachado y notas al pie son Markdown portable (lo leen GitHub,
+// pandoc y casi cualquier generador) y Astro 7 los renderiza. Aprobado por Sebastián.
+const procesador = unified()
+  .use(remarkParse)
+  .use(remarkFrontmatter, ['yaml'])
+  .use(remarkGfm)
+  .use(remarkMdx)
+```
+
+`verificar-portabilidad.mjs` no contiene ninguna regla que salte tablas: compara **todo** bloque de texto del archivo, celdas de tabla incluidas, contra la página construida. Una prueba lo fija (`tests/contenido.test.ts`: «recoge el texto por bloques, incluidas las celdas de las tablas GFM»).
+
+**4. U+00B5 en IBM Plex Mono: lo cubre. Micro cambia (AD9).** Medido sobre las fuentes **completas** de `node_modules`, no sobre el subconjunto:
+
+```
+ibm-plex-sans-400  (IBMPlexSans-Regular.woff2, 63020 B)
+  SI  U+00B5 signo micro (Latin-1)
+  SI  U+03BC mu griega
+  SI  U+03A9 omega griega
+  SI  U+0394 delta griega
+
+ibm-plex-sans-600  (IBMPlexSans-SemiBold.woff2, 67060 B)
+  SI  U+00B5 signo micro (Latin-1)
+  SI  U+03BC mu griega
+  SI  U+03A9 omega griega
+  SI  U+0394 delta griega
+
+ibm-plex-mono-400  (IBMPlexMono-Regular.woff2, 49248 B)
+  SI  U+00B5 signo micro (Latin-1)
+  NO  U+03BC mu griega
+  NO  U+03A9 omega griega
+  NO  U+0394 delta griega
+
+ibm-plex-mono-500  (IBMPlexMono-Medium.woff2, 50400 B)
+  SI  U+00B5 signo micro (Latin-1)
+  NO  U+03BC mu griega
+  NO  U+03A9 omega griega
+  NO  U+0394 delta griega
+```
+
+Aplicada la regla: **micro pasa a U+00B5 y U+03BC se suma a los prohibidos**. El beneficio es medible: el respaldo de la cara mono baja de tres caracteres a dos.
+
+```
+> npm run fuentes
+Origen: @ibm/plex-sans 1.1.0, @ibm/plex-mono 2.5.0
+Conjunto declarado: 134 caracteres (src/config/caracteres.json)
+
+ibm-plex-sans-400     61.5 KiB ->  15568 B
+ibm-plex-sans-600     65.5 KiB ->  16552 B
+ibm-plex-mono-400     48.1 KiB ->  12468 B
+ibm-plex-mono-500     49.2 KiB ->  12748 B
+----------------------------------------------------
+TOTAL                              57336 B = 56.0 KiB
+Presupuesto: 60000 B — DENTRO
+
+ibm-plex-mono-400 toma de su respaldo (IBM Plex Sans): Ω U+03A9, Δ U+0394
+ibm-plex-mono-500 toma de su respaldo (IBM Plex Sans): Ω U+03A9, Δ U+0394
+Todos los caracteres declarados sobreviven en su rol.
+```
+
+Antes: 57 244 B con Ω, μ y Δ de respaldo. Ahora: 57 336 B con Ω y Δ. Cada «µF» de un bloque de código o de una tabla sale ya de la propia Plex Mono en vez de Plex Sans.
+
+**Advertencia que esto deja abierta, registrada en AD9 y en `caracteres.json`.** La relación de compatibilidad Unicode va en sentido contrario al de la decisión: **NFKC convierte U+00B5 en U+03BC**. Una normalización de compatibilidad en cualquier punto de la cadena produciría el carácter ahora prohibido, en silencio. Por eso la comprobación NOTACION corre en cada build y el motivo está escrito en el propio archivo de declaración: para que nadie la «arregle» más adelante.
+
+### E4-t — Batería de cierre, sin filtrar (2026-09-12)
+
+Sin `grep`, sin `head`, sin `Select-String`. Salida literal y completa de cada comando, con su código de salida.
+
+```
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+12:04:08 [content] Syncing content
+12:04:08 [WARN] [glob-loader] No files found matching "**/*.mdx" in directory "src\content\blog"
+12:04:08 [content] Synced content
+12:04:08 [types] Generated 1.04s
+12:04:08 [check] Getting diagnostics for Astro files in C:\Users\sebas_vf1ofrv\Desktop\calcinst-web...
+Result (48 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+EXIT=0
+```
+
+```
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+
+ RUN  v5.0.0 C:/Users/sebas_vf1ofrv/Desktop/calcinst-web
+
+
+ Test Files  5 passed (5)
+      Tests  118 passed (118)
+   Start at  12:04:25
+   Duration  5.09s (import 61%, transform 29%, tests 8%, worker 1%)
+
+  Transform  transforming modules took 2.92s · 29% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
+EXIT=0
+```
+
+```
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT_LINT=0
+
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT_FORMAT=0
+```
+
+```
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT=0
+```
+
+```
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+12:05:13 [WARN] [content] data store cleared (force)
+12:05:14 [content] Syncing content
+12:05:14 [WARN] [glob-loader] No files found matching "**/*.mdx" in directory "src\content\blog"
+12:05:14 [content] Synced content
+12:05:14 [types] Generated 932ms
+12:05:14 [build] output: "static"
+12:05:14 [build] mode: "static"
+12:05:14 [build] directory: C:\Users\sebas_vf1ofrv\Desktop\calcinst-web\dist\
+12:05:14 [build] Collecting build info...
+12:05:14 [build] ✓ Completed in 1.01s.
+12:05:14 [build] Building static entrypoints...
+12:05:15 [vite] ✓ built in 698ms
+12:05:15 [vite] ✓ built in 59ms
+12:05:15 [build] Rearranging server assets...
+
+ generating static routes
+12:05:15 [WARN] [content] The collection "blog" does not exist or is empty. Please check your content config file for errors.
+12:05:15 [WARN] [content] The collection "blog" does not exist or is empty. Please check your content config file for errors.
+12:05:17 [WARN] [content] The collection "blog" does not exist or is empty. Please check your content config file for errors.
+12:05:17 [WARN] [content] The collection "blog" does not exist or is empty. Please check your content config file for errors.
+12:05:17   ├─ /blog/categoria/conductores/index.html (+26ms)
+12:05:17   ├─ /blog/categoria/motores/index.html (+6ms)
+12:05:17   ├─ /blog/categoria/canalizaciones/index.html (+6ms)
+12:05:17   ├─ /blog/categoria/puesta-a-tierra/index.html (+6ms)
+12:05:17   ├─ /blog/categoria/practica-profesional/index.html (+6ms)
+12:05:17   ├─ /blog/rss.xml12:05:18 [WARN] [content] The collection "blog" does not exist or is empty. Please check your content config file for errors.
+ (+792ms)
+12:05:18   ├─ /blog/index.html (+5ms)
+12:05:18   ├─ /diseno/index.html (+297ms)
+12:05:18   ├─ /index.html (+7ms)
+12:05:18 [build] ✓ Completed in 2.80s.
+12:05:18 [build] ✓ Completed in 3.64s.
+12:05:18 [build] 8 page(s) built in 4.66s
+12:05:18 [build] Complete!
+EXIT_BUILD=0
+
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+verificar-portabilidad: 0 post(s), 0 comparado(s) con su página, 0 fallo(s)
+EXIT_PORT=0
+```
+
+**Sobre los avisos del build.** Los cinco «The collection "blog" does not exist or is empty» y el «No files found matching» son correctos y esperados: el post de prueba se borró antes del commit y la colección queda vacía. Desaparecerán con el primer post real. No los filtro precisamente porque son la señal de que el estado es el que digo que es.
+
+**Pruebas: 91 → 118**, en cinco archivos. Las 27 nuevas son: 15 de AD7 (rechazo de la `ref`, sus variantes, las cuatro formas sintácticas, las dos pruebas negativas y la del repositorio real), 8 de AD8 (el archivo de datos y el componente renderizado) y 4 de AD9 (la inversión de micro y mu).
+
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
@@ -1788,7 +2124,7 @@ Condición de AD3, fijada por Sebastián el 2026-09-11. Texto literal:
 - **Enlaces a `/normativa/…`** (corte: Etapa 9). `CalloutNormativo` y el RSS ya enlazan a `/normativa/{ref}/`, que no existe hasta la Etapa 9: esos enlaces dan 404 mientras tanto.
 - **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, AD1.
 
-**Para iniciar la Etapa 4 deben estar resueltos P2 y P3**, y para cerrarla, P1. Además la Etapa 4 depende de contenido humano: los posts T01 y T03 los redacta Sebastián, y T01 exige cerrar antes H1 (versión vigente de la NOM).
+**Para iniciar la Etapa 4 deben estar resueltos P2 y P3**, y para cerrarla, P1. Además la Etapa 4 depende de contenido humano: los posts T01 y T03 los redacta Sebastián. **H1 dejó de ser un bloqueo el 2026-09-12**: Sebastián la cerró como refutada (AD6, E4-p), así que T01 ya no espera por la versión de la norma.
 
 ## Nota sobre E0-f
 

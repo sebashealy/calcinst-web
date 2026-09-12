@@ -14,7 +14,7 @@
 | D5 | Cobro y facturación | **Stripe México + emisión de CFDI por API de un PAC** (Facturapi o equivalente); MoR extranjero solo como canal secundario fuera de México en fase posterior. Requisitos previos fuera del sitio (RFC, e.firma, CSD, alta en PAC — ver H4). Si el CFDI falla, la licencia sí se entrega y el CFDI queda en cola con aviso explícito | Medio-alto hacia MoR (perder CFDI); bajo hacia Mercado Pago (mismo PAC, otro procesador). Abstraer "procesador de pago" y "emisor de CFDI" como módulos independientes | cerrada (no implementar hasta fase 2) |
 | D6 | Empaquetado de escritorio (efectos en el sitio) | **Tauri 2** (decisión de fondo ya tomada en CalcInst). El sitio: página de descarga por plataforma×arquitectura (beta solo Windows x64, H7), requisitos con WebView2, manifiesto de actualización en URL estable como superconjunto del formato del updater de Tauri, SHA-256 por artefacto con comando de verificación, explicación de SmartScreen/Gatekeeper sin normalizar ignorar advertencias | Casi nulo para el sitio (Tauri→Electron): cambian pesos y formato del manifiesto; el contrato de datos de la Etapa 7 se diseña genérico | cerrada |
 | D7 | Analítica respetuosa de la privacidad | **Cloudflare Web Analytics** en v1 (sin cookies, sin costo, mismo proveedor). El evento "alta en lista exitosa" se registra del lado del servidor en Buttondown, no en la analítica. Si la limitación duele en seis meses, migrar a Plausible cambiando un `<script>` | Trivial: un script tag; se pierde continuidad histórica que en v1 vale poco | cerrada |
-| D8 | Arquitectura de contenido del blog | URLs permanentes: `/blog/{slug}/` sin fecha ni categoría, slug inmutable (renombrar = 301 en `_redirects` + `slugsAnteriores[]`); una categoría exacta por post (5 categorías cerradas hasta 20 posts), etiquetas libres en kebab-case; RSS 2.0 íntegro; frontmatter validado con Zod (`normativa[]` ≥ 1, `verificadoDOF`); cruce cuerpo↔frontmatter de `CalloutNormativo` en build; `/normativa/{ref}/` generado desde `normativa[]` | Bajo para taxonomía (no está en la URL); alto para el formato de URL del post — por eso se cierra ahora y se protege con `_redirects` | cerrada |
+| D8 | Arquitectura de contenido del blog | URLs permanentes: `/blog/{slug}/` sin fecha ni categoría, slug inmutable (renombrar = 301 en `_redirects` + `slugsAnteriores[]`); una categoría exacta por post (5 categorías cerradas hasta 20 posts), etiquetas libres en kebab-case; RSS 2.0 íntegro; frontmatter validado con Zod (`normativa[]` ≥ 1, `verificadoDOF`); cruce cuerpo↔frontmatter de `CalloutNormativo` en build; `/normativa/{ref}/` generado desde `normativa[]`. Ejemplo de `ref` para una tabla: **`cap10-tabla-4`** — corregido en AD7; el plan decía «cap9», que es la estructura del NEC y no la de la norma mexicana | Bajo para taxonomía (no está en la URL); alto para el formato de URL del post — por eso se cierra ahora y se protege con `_redirects` | cerrada |
 
 ## Addenda
 
@@ -78,3 +78,52 @@
 **Decisión de Sebastián:** las tablas GFM —y con ellas el tachado, las notas al pie y las listas de tareas— **son portables**: las leen GitHub, pandoc y casi cualquier generador de sitios. Se aprueba `remark-gfm` 4.0.1, y el análisis de portabilidad entiende GFM. Quien redacte puede escribir tablas como tablas, sin recurrir a `<Tabla>` con filas en HTML.
 
 **Costo de revertir:** bajo. Quitar `remark-gfm` del analizador haría fallar la prueba en los posts que usen GFM, que habría que reescribir con `<Tabla>`.
+
+### AD6 — H1 refutada en firme: rige la NOM-001-SEDE-2012 (2026-09-12)
+
+**Contexto.** El plan asumía que regía la NOM-001-SEDE-2018. La Etapa 4 la dejó «refutada provisionalmente» y reservó a Sebastián la verificación definitiva, que bloqueaba publicar T01.
+
+**Decisión de Sebastián, con las tres comprobaciones hechas:** rige la **NOM-001-SEDE-2012**. La 2018 nunca se expidió: se publicó en el DOF el 06/08/2018 como proyecto para consulta pública y su proceso se dio de baja del SPNIC en 2022; la Revisión Sistemática de la SENER (oficio 300.E487/2023) lo declara literalmente y concluye que hay que *modificar* la de 2012. Las cuatro fuentes están en `HIPOTESIS_SITIO.md` § Evidencia de H1.
+
+**Efecto en el sitio:** ninguno estructural. La cadena de versión ya era `NOM-001-SEDE-2012` desde la Etapa 4; lo que cambia es que deja de ser provisional y que el bloqueo sobre T01 se levanta. La numeración de artículos y tablas no cambia.
+
+**Costo de revertir:** una línea en `src/config/norma.ts`, más los posts ya publicados.
+
+### AD7 — Las tablas son el Capítulo 10, no el 9: corrección de una referencia del plan (2026-09-12)
+
+**Contexto.** El plan (§7 en T06, T10 y T14, y §D8 en el ejemplo de `ref`) sitúa las tablas de relleno de tubería y de resistencia/reactancia en el «Capítulo 9». Esa es la estructura del NEC, no la de la norma mexicana. Verificado por Sebastián en el índice del texto publicado en el DOF: en la NOM-001-SEDE-2012 el **Capítulo 9** es «Instalaciones destinadas al Servicio Público» (artículos 920 a 924) y el **Capítulo 10** es «Tablas» (1, 2, 4, 5, 5A, 8, 9, 10, 11(A), 11(B), 12(A), 12(B)).
+
+**Decisión:** el ejemplo de `ref` de D8 pasa de `cap9-tabla-4` a **`cap10-tabla-4`**, y una `ref` que cite una tabla del Capítulo 9 **rompe el build**. Se aplica en dos sitios, a propósito:
+
+- el esquema del frontmatter (`src/lib/blog.ts`), que falla al construir con el mensaje de por qué;
+- el invariante **REFNORMA** de `verificar-invariantes.mjs`, que además recorre `tests/` y los documentos de gobierno. Busca solo en posición de `ref` —atributo JSX, clave JSON, campo YAML o propiedad de objeto—, para que estos documentos puedan nombrar la forma equivocada al explicarla.
+
+Las referencias de **artículo no cambian**: 110-14(c), 310-15(b)(16), 310-15(b)(2)(a), 310-15(b)(3)(a), 430-22, 430-24 y 250-122 existen con esa numeración en el texto de 2012 (verificado por Sebastián).
+
+**Por qué ahora.** `ref` alimenta las URL `/normativa/{ref}/`, que D8 declara inmutables. Corregirlo antes del primer post no cuesta nada; después cuesta redirecciones permanentes que citan mal la norma.
+
+**Costo de revertir:** bajo mientras no exista ningún post publicado; alto en cuanto exista uno.
+
+### AD8 — La versión sola no identifica un texto único (2026-09-12)
+
+**Contexto.** La Nota Aclaratoria publicada en el DOF el **07/02/2014** (código 5331914) corrige la NOM-001-SEDE-2012 en erratas de redacción «así como en algunos valores». «NOM-001-SEDE-2012» a secas es por tanto ambiguo para al menos dos tablas que CalcInst usa.
+
+**Decisión, sin añadir un campo por cita:**
+
+1. `src/config/norma.ts` documenta que la cadena designa el texto del 29/11/2012 **corregido por la nota del 07/02/2014**, con el enlace al DOF.
+2. `src/config/nota-aclaratoria.json` lista las referencias que la nota tocó (`ref`, `descripcion`, `afectaValor`), validadas con Zod en `src/lib/nota-aclaratoria.ts` al importar: un dato mal formado rompe el build, no se degrada en silencio (I1). Semilla: `cap10-tabla-5` y `310-15(b)(2)(a)` cambian valores; `230-95`, `250-53(a)(2)` y `522-25(c)(2)` cambian el sentido de la disposición.
+3. `CalloutNormativo` consulta ese archivo en cada cita y pinta el aviso con el enlace al DOF. **No depende de que el redactor se acuerde.** `LayoutPost` marca lo mismo en la lista de «Referencias citadas».
+
+**Costo de revertir:** bajo. Es un archivo de datos y una consulta; quitarlo devuelve la cita a su forma anterior.
+
+**Apéndices normativos e informativos.** En la NOM-001-SEDE-2012 solo el **Apéndice D** es normativo; A, B, C y E son informativos. `normativa[].tipo` se extiende a `tabla | articulo | nota | apendice-normativo | apendice-informativo`, y la cita marca el informativo como que **orienta sin obligar**. Presentarlo como obligatorio sería exactamente el error que el descargo del §9.1 promete no cometer.
+
+### AD9 — Micro se escribe U+00B5, no U+03BC (2026-09-12)
+
+**Contexto.** AD4 eligió la mu griega (U+03BC) para el prefijo micro, por coherencia con la omega griega del ohm y porque es la forma a la que NFKC reduce el signo micro de Latin-1. Sebastián pidió medir si IBM Plex Mono cubre U+00B5. **Lo cubre**, y no cubre ninguna letra griega (medido sobre las fuentes completas de `node_modules`, no sobre el subconjunto).
+
+**Decisión:** micro pasa a **U+00B5** y **U+03BC se suma a los prohibidos**, con la regla ya acordada. Con la mu griega, cada «µF» de un bloque de código o de una tabla salía de IBM Plex Sans; con el signo micro sale de la propia Plex Mono. El respaldo mono baja de tres caracteres a dos: quedan Ω y Δ, que ninguna cara mono de IBM Plex tiene.
+
+**Advertencia registrada.** La relación de compatibilidad va en sentido contrario al de la decisión: NFKC convierte U+00B5 en U+03BC. Una normalización de compatibilidad en cualquier punto de la cadena produciría el carácter ahora prohibido. Por eso la comprobación NOTACION corre en cada build y no solo una vez; el motivo está escrito en `caracteres.json` para que nadie la «arregle» después.
+
+**Costo de revertir:** una entrada en `caracteres.json` y regenerar las fuentes.

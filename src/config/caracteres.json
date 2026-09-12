@@ -18,8 +18,8 @@
     },
     {
       "id": "notacion",
-      "caracteres": "°±×÷≤≥≈\u03a9\u03bc\u0394²³",
-      "motivo": "Notación técnica: grados, tolerancias, producto y cociente, comparadores, ohm (U+03A9), micro (U+03BC), delta (U+0394) y exponentes para mm² y m³."
+      "caracteres": "°±×÷≤≥≈\u03a9\u00b5\u0394²³",
+      "motivo": "Notación técnica: grados, tolerancias, producto y cociente, comparadores, ohm (U+03A9), micro (U+00B5), delta (U+0394) y exponentes para mm² y m³."
     },
     {
       "id": "moneda",
@@ -35,10 +35,10 @@
       "motivo": "Unicode desaconseja el signo de ohm: su descomposición canónica es la omega griega, así que NFC ya lo sustituye."
     },
     {
-      "codigo": "U+00B5",
-      "nombre": "signo micro",
-      "usarCodigo": "U+03BC",
-      "motivo": "Se elige la mu griega para el prefijo micro: es coherente con la omega griega del ohm, y es la forma a la que NFKC reduce el signo micro, que solo existe por compatibilidad con Latin-1."
+      "codigo": "U+03BC",
+      "nombre": "mu griega",
+      "usarCodigo": "U+00B5",
+      "motivo": "Micro se escribe con el signo micro de Latin-1, no con la mu griega: IBM Plex Mono cubre U+00B5 y no cubre ninguna letra griega, así que la mu obligaría a salir de la fuente monoespaciada en cada código y cada tabla. Advertencia registrada: NFKC convierte U+00B5 en U+03BC, de modo que una normalización de compatibilidad produciría el carácter prohibido; por eso la comprobación NOTACION corre en cada build."
     },
     {
       "codigo": "U+2206",
