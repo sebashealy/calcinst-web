@@ -1,22 +1,32 @@
 ---
 /**
- * CalloutNormativo — cita a un artículo o tabla de la norma (§3.5, D8).
+ * CalloutNormativo — cita a un artículo, tabla, nota o apéndice de la norma
+ * (§3.5, D8).
  *
- * El build de la Etapa 4 cruzará las `ref` usadas en el cuerpo de cada post
- * contra el `normativa[]` de su frontmatter y fallará si algo no está declarado.
- * Aquí solo se define la presentación y el enlace estable a /normativa/{ref}/.
+ * El build cruza las `ref` usadas en el cuerpo de cada post contra el
+ * `normativa[]` de su frontmatter y falla si algo no está declarado.
+ *
+ * Dos reglas de la norma mexicana viven aquí, no en la cabeza del redactor:
+ *   - AD8: si la Nota Aclaratoria del 07/02/2014 tocó esa referencia, la cita lo
+ *     dice y enlaza al DOF. La versión sola no identifica un texto único.
+ *   - Apéndices: en la NOM-001-SEDE-2012 solo el Apéndice D es normativo; A, B,
+ *     C y E son informativos. Citar uno informativo como si obligara sería el
+ *     error que el descargo del §9.1 promete no cometer, así que el tipo lo
+ *     distingue y la cita lo pinta.
  */
 import { VERSION_NOM } from '../config/norma'
+import { PREFIJO_NORMATIVA, esInformativo, type TipoNormativa } from '../lib/blog'
+import { NOTA_ACLARATORIA, FECHA_NOTA, correccionDe } from '../lib/nota-aclaratoria'
 
 interface Props {
-  /** Referencia tal como se cita: "430-22", "310-15(b)(16)", "cap9-tabla-4". */
+  /** Referencia tal como se cita: "430-22", "310-15(b)(16)", "cap10-tabla-4". */
   ref: string
   /**
    * Versión citada. En los posts se omite: la declara el frontmatter
    * (`normativa[].version`) y por omisión rige `src/config/norma.ts`.
    */
   version?: string
-  tipo?: 'articulo' | 'tabla' | 'nota'
+  tipo?: TipoNormativa
 }
 
 const { ref, version = VERSION_NOM, tipo = 'articulo' } = Astro.props
@@ -28,14 +38,33 @@ const slug = ref
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/^-+|-+$/g, '')
 
-const prefijo = { articulo: 'Art.', tabla: 'Tabla', nota: 'Nota' }[tipo]
+const prefijo = PREFIJO_NORMATIVA[tipo]
+const informativo = esInformativo(tipo)
+const correccion = correccionDe(ref)
 ---
 
-<aside class="callout">
+<aside class="callout" class:list={{ informativo }}>
   <p class="cabecera">
     <a href={`/normativa/${slug}/`} class="ref">{version} · {prefijo} {ref}</a>
+    {informativo && <span class="marca">informativo: orienta, no obliga</span>}
   </p>
   <div class="cuerpo"><slot /></div>
+  {
+    correccion && (
+      <p class="aviso">
+        <strong>
+          {correccion.afectaValor
+            ? 'La Nota Aclaratoria corrige un valor de esta referencia.'
+            : 'La Nota Aclaratoria modifica esta referencia.'}
+        </strong>{' '}
+        {correccion.descripcion} Publicada en el DOF el {FECHA_NOTA};{' '}
+        <a href={NOTA_ACLARATORIA.fuente.url} rel="nofollow noopener">
+          texto oficial (código {NOTA_ACLARATORIA.fuente.codigoDOF})
+        </a>
+        .
+      </p>
+    )
+  }
 </aside>
 
 <style>
@@ -45,6 +74,10 @@ const prefijo = { articulo: 'Art.', tabla: 'Tabla', nota: 'Nota' }[tipo]
     padding: var(--e-3) var(--e-4);
     margin: var(--e-6) 0;
     border-radius: 0 var(--r-md) var(--r-md) 0;
+  }
+
+  .callout.informativo {
+    border-left-style: dashed;
   }
 
   .cabecera {
@@ -58,7 +91,21 @@ const prefijo = { articulo: 'Art.', tabla: 'Tabla', nota: 'Nota' }[tipo]
     color: var(--link);
   }
 
+  .marca {
+    font-size: var(--text-xs);
+    color: var(--fg-1);
+    margin-left: var(--e-2);
+  }
+
   .cuerpo :global(> :last-child) {
     margin-bottom: 0;
+  }
+
+  .aviso {
+    margin: var(--e-3) 0 0;
+    padding-top: var(--e-2);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-sm);
+    color: var(--fg-1);
   }
 </style>

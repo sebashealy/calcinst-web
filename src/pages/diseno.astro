@@ -31,7 +31,7 @@ const notacion = [...(caracteres.grupos.find((g) => g.id === 'notacion')?.caract
 // Las griegas de la muestra se construyen por punto de código para no depender
 // de qué carácter produzca el teclado: justo la ambigüedad que P2 cierra.
 const OHM = String.fromCodePoint(0x03a9)
-const MICRO = String.fromCodePoint(0x03bc)
+const MICRO = String.fromCodePoint(0x00b5)
 const DELTA = String.fromCodePoint(0x0394)
 const muestraMono = `R = 4.7 k${OHM} · C = 22 ${MICRO}F · ${DELTA}V = 3.2 % · 8 mm² · 75 °C`
 
@@ -229,9 +229,10 @@ const codigoDemo = [
 
       <h3>Griego en texto monoespaciado</h3>
       <p class="guia">
-        IBM Plex Mono no tiene griego. La pila <code>--fuente-mono</code> pone IBM Plex Sans como respaldo,
-        así que Ω, μ y Δ salen de la misma familia en vez de una fuente del sistema; en texto monoespaciado
-        esos tres glifos son proporcionales.
+        IBM Plex Mono no tiene ninguna letra griega, ni en su versión completa. La pila
+        <code>--fuente-mono</code> pone IBM Plex Sans como respaldo, así que Ω y Δ salen de la misma familia
+        en vez de una fuente del sistema; en texto monoespaciado esos dos glifos son proporcionales. Micro
+        no está en esa lista: se escribe U+00B5, que Plex Mono sí cubre (AD9).
       </p>
       <p class="mono-demo">
         <span class="m4">{muestraMono}</span>
@@ -351,6 +352,30 @@ const codigoDemo = [
       </CalloutNormativo>
       <CalloutNormativo ref="310-15(b)(16)" version={VERSION_NOM} tipo="tabla">
         <p>Ejemplo de cita a una tabla, con su enlace a la página de la referencia.</p>
+      </CalloutNormativo>
+
+      <h3>Referencias que corrigió la Nota Aclaratoria de 2014</h3>
+      <p class="guia">
+        La versión sola no identifica un texto único: la nota del 07/02/2014 corrigió valores del
+        texto de 2012. El aviso lo pone el componente al consultar
+        <code>src/config/nota-aclaratoria.json</code>, no el redactor (AD8).
+      </p>
+      <CalloutNormativo ref="cap10-tabla-5" version={VERSION_NOM} tipo="tabla">
+        <p>
+          Las tablas de la norma mexicana son el Capítulo 10; el Capítulo 9 no contiene ninguna.
+        </p>
+      </CalloutNormativo>
+
+      <h3>Apéndices: normativos e informativos</h3>
+      <p class="guia">
+        Solo el Apéndice D es normativo. Presentar como obligatorio un apéndice que solo orienta
+        sería el error que el descargo promete no cometer, así que la cita lo distingue.
+      </p>
+      <CalloutNormativo ref="apendice-d" version={VERSION_NOM} tipo="apendice-normativo">
+        <p>Un apéndice normativo obliga igual que el articulado.</p>
+      </CalloutNormativo>
+      <CalloutNormativo ref="apendice-a" version={VERSION_NOM} tipo="apendice-informativo">
+        <p>Un apéndice informativo orienta; citarlo no sostiene una obligación.</p>
       </CalloutNormativo>
     </section>
 

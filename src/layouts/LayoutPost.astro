@@ -18,7 +18,8 @@ interface Props {
 
 const { datos } = Astro.props
 const iso = (d: Date) => d.toISOString().slice(0, 10)
-const prefijo = { articulo: 'Art.', tabla: 'Tabla', nota: 'Nota' } as const
+import { PREFIJO_NORMATIVA, esInformativo } from '../lib/blog'
+import { correccionDe } from '../lib/nota-aclaratoria'
 const erratas = datos.erratas.map((e) => ({
   fecha: iso(e.fecha),
   descripcion: e.descripcion,
@@ -69,8 +70,12 @@ const erratas = datos.erratas.map((e) => ({
           datos.normativa.map((n) => (
             <li>
               <span class="ref">
-                {n.version} · {prefijo[n.tipo]} {n.ref}
+                {n.version} · {PREFIJO_NORMATIVA[n.tipo]} {n.ref}
               </span>
+              {esInformativo(n.tipo) && <Insignia tono="neutro">Informativo</Insignia>}
+              {correccionDe(n.ref) && (
+                <Insignia tono="aviso">Corregida por la nota de 2014</Insignia>
+              )}
               {!n.verificadoDOF && <Insignia tono="aviso">Sin cotejar con el DOF</Insignia>}
             </li>
           ))

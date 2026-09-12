@@ -96,6 +96,48 @@ describe('esquema del frontmatter (D8)', () => {
   })
 })
 
+describe('normativa[].ref y .tipo (AD7, apéndices)', () => {
+  /** Igual que en las pruebas del invariante: la ref mala no se escribe entera. */
+  const cap9 = (sufijo: string) => ['cap', '9-tabla-', sufijo].join('')
+
+  const conRef = (ref: string, tipo = 'tabla') => ({
+    ...base,
+    normativa: [{ ref, tipo, verificadoDOF: false }],
+  })
+
+  it('rechaza una ref que cite una tabla del Capítulo 9', () => {
+    const fallos = errores(conRef(cap9('4')))
+    expect(fallos).toHaveLength(1)
+    expect(fallos[0]).toMatch(/^normativa\.0\.ref: .*Capítulo 10/)
+  })
+
+  it.each([
+    ['cap', 'itulo-9-tabla-4'],
+    ['cap', '9tabla4'],
+    ['CAP', '9-TABLA-8'],
+  ])('rechaza también la variante «%s%s»', (a, b) => {
+    expect(errores(conRef(a + b))).toHaveLength(1)
+  })
+
+  it('acepta la misma tabla en el Capítulo 10', () => {
+    expect(errores(conRef('cap10-tabla-4'))).toEqual([])
+  })
+
+  it('no estorba a un artículo real del Capítulo 9', () => {
+    // 920 a 924 existen; lo que no existe son tablas en ese capítulo.
+    expect(errores(conRef('920-4', 'articulo'))).toEqual([])
+  })
+
+  it('distingue apéndice normativo de informativo', () => {
+    expect(errores(conRef('apendice-d', 'apendice-normativo'))).toEqual([])
+    expect(errores(conRef('apendice-a', 'apendice-informativo'))).toEqual([])
+  })
+
+  it('sigue rechazando un tipo que no existe', () => {
+    expect(errores(conRef('430-22', 'apendice')).join('\n')).toMatch(/^normativa\.0\.tipo:/m)
+  })
+})
+
 describe('slug (D8)', () => {
   it('acepta minúsculas con guiones', () => {
     expect(problemasDeSlug('columna-de-75-grados')).toEqual([])

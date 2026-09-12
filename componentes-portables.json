@@ -3,8 +3,9 @@
   "componentes": {
     "CalloutNormativo": {
       "uso": "<CalloutNormativo ref=\"430-22\" tipo=\"articulo\">texto</CalloutNormativo>",
+      "tipos": "tabla, articulo, nota, apendice-normativo, apendice-informativo. En la NOM-001-SEDE-2012 solo el Apéndice D es normativo: A, B, C y E son informativos, y la cita lo marca, para no presentar como obligatorio lo que solo orienta.",
       "equivalenteMarkdown": "> **NOM-001-SEDE · Art. 430-22** — texto",
-      "nota": "La versión de la norma sale del frontmatter (normativa[].version); el cuerpo solo nombra la referencia."
+      "nota": "La versión de la norma sale del frontmatter (normativa[].version); el cuerpo solo nombra la referencia. Si la Nota Aclaratoria del 07/02/2014 tocó esa ref, el componente añade el aviso por su cuenta (AD8); en Markdown puro ese aviso se escribe a mano, porque es una nota del contenido y no del formato."
     },
     "AvisoErrata": {
       "uso": "Lo pinta el layout a partir de erratas[] del frontmatter; no hace falta en el cuerpo.",

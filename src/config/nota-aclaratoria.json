@@ -1,0 +1,37 @@
+{
+  "descripcion": "Referencias de la NOM-001-SEDE-2012 que corrige la Nota Aclaratoria publicada en el DOF el 07/02/2014 (AD8). La cadena «NOM-001-SEDE-2012» sola no identifica un texto único: el publicado el 29/11/2012 y el corregido por esta nota difieren en valores. Este archivo es el dato; src/lib/nota-aclaratoria.ts lo valida con Zod y CalloutNormativo lo consulta, para que el aviso no dependa de que el redactor se acuerde.",
+  "fuente": {
+    "titulo": "Nota Aclaratoria a la Norma Oficial Mexicana NOM-001-SEDE-2012, Instalaciones Eléctricas (utilización)",
+    "fechaDOF": "2014-02-07",
+    "codigoDOF": "5331914",
+    "url": "https://www.dof.gob.mx/nota_detalle.php?codigo=5331914&fecha=07/02/2014",
+    "alcance": "Corrige errores gramaticales, ortográficos, de congruencia y de redacción, «así como en algunos valores»."
+  },
+  "referencias": [
+    {
+      "ref": "cap10-tabla-5",
+      "descripcion": "Sección transversal del conductor 10 AWG en TW, THHW, THW y THW-2: el texto de 2012 imprime 55.68 mm² y la nota lo corrige a 15.68 mm².",
+      "afectaValor": true
+    },
+    {
+      "ref": "310-15(b)(2)(a)",
+      "descripcion": "Factores de corrección por temperatura ambiente: la nota corrige valores en las filas de 66 a 85 °C.",
+      "afectaValor": true
+    },
+    {
+      "ref": "230-95",
+      "descripcion": "Protección por falla a tierra del equipo en acometidas: la nota cambia el sentido de la disposición, no un valor de tabla.",
+      "afectaValor": false
+    },
+    {
+      "ref": "250-53(a)(2)",
+      "descripcion": "Instalación de electrodos de puesta a tierra tipo varilla y tubo: la nota cambia el sentido de la disposición, no un valor de tabla.",
+      "afectaValor": false
+    },
+    {
+      "ref": "522-25(c)(2)",
+      "descripcion": "Control de sistemas de entretenimiento: la nota cambia el sentido de la disposición, no un valor de tabla.",
+      "afectaValor": false
+    }
+  ]
+}
