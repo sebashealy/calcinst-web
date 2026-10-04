@@ -22,7 +22,7 @@ También en esta etapa, a pedido de Sebastián: **P2** (juego de caracteres) y *
 
 ## Etapa en curso
 
-Etapa 4 — Blog completo, con dos posts reales. **P1 quedó cerrado el 2026-10-04 (E4-aj): no queda ningún bloqueo técnico.** Los siete criterios del plan §6 están cumplidos y los dos posts están integrados, pero **la etapa no se cierra todavía**: siguen en `borrador: true` hasta la pasada final de verificación de Sebastián contra el DOF, que es quien cambia la bandera y pone la fecha real de publicación.
+Etapa 4 — Blog completo, con dos posts reales. **T01 y T03 están publicados** (`borrador: false`, 2026-10-04) tras la verificación de Sebastián contra el DOF, y **P1 quedó cerrado el mismo día** (E4-aj). Los siete criterios del plan §6 se cumplen. Queda la verificación en producción tras fusionar, y con ella la etapa se cierra.
 
 Cotejo criterio por criterio (plan §6, Etapa 4):
 
@@ -34,15 +34,17 @@ Cotejo criterio por criterio (plan §6, Etapa 4):
 | `rss.xml` valida en el validador del W3C | cumplido | E4-j: válido, 0 errores; el único aviso es artefacto de subir el XML como texto (se confirma por URL en E4-o) |
 | El post renderizado con remark puro conserva todo el texto | cumplido | E4-i, con GFM tras la decisión de Sebastián |
 | Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB | cumplido | E4-k: 1.36 s, 1 137 B, 83 691 B sin comprimir |
-| Los dos posts con todas sus citas en `verificadoDOF: true` | cumplido en borrador | T01 y T03 integrados el 2026-10-04 (E4-u), con sus seis citas en `verificadoDOF: true` y el cruce cuerpo↔frontmatter verde. Siguen en `borrador: true` hasta la pasada final de Sebastián |
+| Los dos posts con todas sus citas en `verificadoDOF: true` | cumplido | T01 y T03 **publicados** el 2026-10-04 (E4-ak), con sus seis citas en `verificadoDOF: true`, el cruce cuerpo↔frontmatter verde y cero insignias «Sin cotejar» en la página |
 
-**Para cerrar la Etapa 4 falta una sola cosa, y no es técnica:** que Sebastián levante `borrador` en T01 y T03 tras su pasada final, con la fecha real de publicación. Todo lo demás está cerrado: H1 el 2026-09-12 (AD6, E4-p); los posts integrados el 2026-10-04 (E4-u); **P1 el 2026-10-04, 9 de 9 (E4-aj)**, que era el último bloqueo.
+**Todo lo que la etapa pedía está hecho:** H1 cerrada el 2026-09-12 (AD6, E4-p); los posts integrados y luego publicados el 2026-10-04 (E4-u, E4-ak); **P1 cerrado el 2026-10-04, 9 de 9** (E4-aj). Con los posts fuera de borrador, la comprobación 3 de I2 deja de omitirse en CI y se verifican 2 de 2 (E4-ak).
+
+**Publicado no es indexado.** `public/_headers` sigue emitiendo `X-Robots-Tag: noindex` para todo el sitio; se retira en la Etapa 9, que es donde vive P4.
 
 **Las dos decisiones que quedaban abiertas se resolvieron el 2026-10-04:** el `Descargo` se retiró del cuerpo de los dos posts y axe baja a cero violaciones (E4-ac); `smartypants` se apaga y la relajación de I2 se revierte (AD11, E4-ad). Se añadió además el colapso del aviso por post (AD12, E4-ae).
 
-**Lo único que sigue abierto y es de Sebastián:** levantar `borrador` en los dos posts con su fecha real. El aviso de obsolescencia de `markdown.smartypants` se **tolera**, registrado como **P6** con su condición de cierre: las tres salidas se midieron (E4-ai) y ninguna evita el aviso sin devolver el tipógrafo o sin declarar un paquete. No se instaló nada. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+El aviso de obsolescencia de `markdown.smartypants` se **tolera**, registrado como **P6** con su condición de cierre: las tres salidas se midieron (E4-ai) y ninguna evita el aviso sin devolver el tipógrafo o sin declarar un paquete. No se instaló nada. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
 
-Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab; del bloque de tipografía en E4-ac … E4-ah; de las tres salidas de smartypants en E4-ai; y del cierre de P1 en E4-aj. Diferencias con el plan en el addendum A8.
+Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab; del bloque de tipografía en E4-ac … E4-ah; de las tres salidas de smartypants en E4-ai; del cierre de P1 en E4-aj; y de la publicación de T01 y T03 en E4-ak. Diferencias con el plan en el addendum A8.
 
 **Nota de etiquetado (bloque del 2026-10-04).** El bloque de tipografía pedía E4-ac … E4-ag. Se registran como **E4-ac … E4-ah**: hay una etiqueta de más porque las fechas de publicación merecían su propia entrada (E4-ag), de modo que la batería de cierre es **E4-ah** y no E4-ag. El resto va en el orden pedido.
 
@@ -1737,7 +1739,7 @@ Corregida la `ref` al Capítulo 10, las dos comprobaciones pasan y el build sale
 | `ref` | `afectaValor` | Qué corrige |
 | --- | --- | --- |
 | `cap10-tabla-5` | sí | 10 AWG en TW/THHW/THW/THW-2: 55.68 pasa a 15.68 mm² |
-| `310-15(b)(2)(a)` | sí | Factores de corrección, filas 66-85 °C |
+| `310-15(b)(2)(a)` | ~~sí~~ **no**, corregido el 2026-10-04 | ~~Factores de corrección, filas 66-85 °C~~ → la nota corrige la **etiqueta** de un renglón (`91-75` debe decir `71-75`); los factores no cambian. Ver E4-ak |
 | `230-95` | no | Cambia el sentido de la disposición |
 | `250-53(a)(2)` | no | Cambia el sentido de la disposición |
 | `522-25(c)(2)` | no | Cambia el sentido de la disposición |
@@ -2929,6 +2931,120 @@ EXIT=0
 **La última comprobación es la que cierra el círculo del defecto original.** `calcinst.mxblog` no era un subdominio mal formado sino un hostname inexistente; por eso no basta con que el `Location` tenga buena pinta. Los dos destinos consultados responden **200**, así que la cadena completa —petición, redirección y destino— funciona.
 
 **P1 queda cerrado.** Era el último bloqueo técnico de la Etapa 4.
+
+### E4-ak — T01 y T03 publicados, y una contradicción detectada al construir (2026-10-04)
+
+Sebastián entregó los dos `.mdx` verificados contra el DOF: `borrador: false`, fecha real `2026-10-04`, sin `<Descargo />` en el cuerpo. Se reemplazaron tal cual.
+
+```
+> git diff src/content/blog/
+-fechaPublicacion: 2026-09-12      +fechaPublicacion: 2026-10-04
+-borrador: true                    +borrador: false
+-fechaPublicacion: 2026-09-12      +fechaPublicacion: 2026-10-04
+-borrador: true                    +borrador: false
+```
+
+#### La contradicción, y por qué se corrigió el dato y no el texto
+
+T01 trae una corrección de fondo de Sebastián: **la Nota Aclaratoria de 2014 no corrige los valores de la Tabla 310-15(b)(2)(a)**, corrige la etiqueta de un renglón que decía `91-75` y debe decir `71-75`. Verificado por él contra el texto publicado.
+
+Eso choca de frente con `src/config/nota-aclaratoria.json`, cuya semilla —de abril, cuando se creó AD8— marcaba esa referencia como `afectaValor: true`. **El choque no era teórico: se publicaba en la misma página, con dos líneas de separación.** Construido antes de tocar nada:
+
+```
+La Nota Aclaratoria corrige un valor de esta referencia. Factores de corrección por
+temperatura ambiente: la nota corrige valores en las filas de 66 a 85 °C.
+[...]
+La nota lo corrige a 71-75 °C, que es lo que cualquiera deduce al leerlo.
+Los factores no cambian: el error es un dígito en la etiqueta.
+```
+
+El aviso afirmaba lo contrario que el párrafo siguiente, en un sitio cuya premisa es que cada afirmación se rastrea hasta el DOF.
+
+**Se corrigió el archivo de datos, no el texto.** La regla del proyecto es que el contenido no se toca y los defectos se reportan; aquí no había nada que decidir, porque el propio mensaje de Sebastián enuncia el hecho verificado y el archivo era el único sitio que seguía con la afirmación vieja. `afectaValor` pasa a `false` y la descripción se reescribe con sus palabras. Reconstruido:
+
+```
+La Nota Aclaratoria modifica esta referencia. Factores de corrección por temperatura
+ambiente: la nota corrige la etiqueta de un renglón, que el texto de 2012 imprime como
+91-75 °C y debe decir 71-75 °C. Los factores no cambian.
+[...]
+Los factores no cambian: el error es un dígito en la etiqueta.
+```
+
+La prueba que fijaba la semilla se actualizó con el motivo escrito, para que el cambio no parezca un ajuste cosmético dentro de seis meses.
+
+**Observación que esto deja, sin inventar nada.** `nota-aclaratoria.json` es un **segundo lugar donde vive una afirmación normativa**, y no está cubierto por `verificadoDOF`: ese campo vale para las citas del frontmatter, no para este archivo. Nada cruza su contenido contra el DOF. Hoy lo detectó un ojo humano leyendo la página construida; si T01 no hubiera tocado ese tema, la afirmación equivocada seguiría ahí. Queda anotado como hecho, no como comprobación: no se añadió ninguna, porque cotejar prosa contra el DOF no es mecanizable.
+
+#### El agujero de la comprobación 3 se cerró solo
+
+Mientras los posts eran borradores, CI no los construía y la comprobación 3 de I2 se omitía —el agujero que se anotó en E4-ad—. Con `borrador: false` ya se construyen en el build de CI:
+
+```
+> npm run portabilidad        (tras el build normal, sin MOSTRAR_BORRADORES)
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+```
+
+**2 de 2 comparados**, no omitidos. Es la primera vez que I2 se verifica entera en el flujo de CI.
+
+#### Estructura de lo publicado
+
+```
+T01  callouts 3 | avisos 3 | frase completa 1 | enlaces DOF 3 | Descargo 1 | Sin cotejar 0
+T03  callouts 3 | avisos 0 | frase completa 0 | enlaces DOF 0 | Descargo 1 | Sin cotejar 0
+
+indice /blog/: enlaces a post = 2
+rss.xml: items = 2 | bytes = 24968
+```
+
+El colapso de AD12 sigue correcto —un aviso completo y dos colapsados en T01—; la prueba negativa de AD8 sigue limpia —cero avisos en T03—; un solo `Descargo` por post; y **cero insignias «Sin cotejar con el DOF»**, porque las seis citas van en `verificadoDOF: true`.
+
+#### RSS con contenido real, validado en el W3C
+
+Primera vez que el feed lleva posts publicados. Validador del W3C sobre el XML construido:
+
+```
+<m:validity>true</m:validity>
+<m:errorcount>0</m:errorcount>
+<m:warningcount>1</m:warningcount>
+```
+
+**Cero errores.** El aviso único es el artefacto ya caracterizado en E4-j y E4-o: al subir el XML como texto, la autorreferencia `atom:link rel="self"` no coincide con la ubicación de subida. Se reconfirma por URL contra producción más abajo.
+
+#### Accesibilidad y presupuestos, sobre el contenido ya publicado
+
+```
+T01-dark   violaciones: 0  reglas aprobadas: 34
+T01-light  violaciones: 0  reglas aprobadas: 34
+T03-dark   violaciones: 0  reglas aprobadas: 33
+T03-light  violaciones: 0  reglas aprobadas: 33
+```
+
+```
+========== T01 — /blog/que-version-de-la-nom-001-sede-esta-vigente/
+  performance      100
+  accessibility    100
+  best-practices   100
+  seo              100
+LCP:                         1.51 s   (presupuesto 2.0 s)  DENTRO
+Peso total transferido:      95170 B   (presupuesto 307200 B)  DENTRO
+JS total:                    1137 B   (presupuesto 5120 B)  DENTRO
+
+========== T03 — /blog/110-14c-decide-la-columna-no-el-conductor/
+  performance      100
+  accessibility    100
+  best-practices   100
+  seo              100
+LCP:                         1.51 s   (presupuesto 2.0 s)  DENTRO
+Peso total transferido:      91357 B   (presupuesto 307200 B)  DENTRO
+JS total:                    1137 B   (presupuesto 5120 B)  DENTRO
+```
+
+**El SEO pasa de 60 a 100, y conviene no malinterpretarlo.** El 60 de E4-k venía de que `LayoutPost` pinta `<meta name="robots" content="noindex, nofollow">` cuando el post es borrador (`noindex={datos.borrador}`); al publicarse, esa etiqueta desaparece. **En producción los posts siguen sin ser indexables**, porque `public/_headers` emite `X-Robots-Tag: noindex` para todo el sitio. Esa cabecera se retira en la Etapa 9, y es justo donde vive P4. Publicado no es indexado, y hoy el sitio está en lo primero.
+
+#### Dos referencias normativas nuevas que aparecen solo en prosa
+
+Los textos revisados mencionan `310-15(b)(7)` en T03 y `310-15(b)(2)(b)` en T01 sin envolverlas en `CalloutNormativo` ni declararlas en `normativa[]`. **No es un fallo:** el cruce de I3 b cubre las citas marcadas como tales, y una mención en prosa no es una cita. Se anota porque es la frontera de lo que el invariante vigila, y conviene tenerla por escrito antes de que alguien la descubra creyendo que es un hueco.
 
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 

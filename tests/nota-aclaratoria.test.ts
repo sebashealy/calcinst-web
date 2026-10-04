@@ -22,9 +22,13 @@ describe('datos de la nota aclaratoria', () => {
     expect(NOTA_ACLARATORIA.fuente.url).toContain('5331914')
   })
 
-  it('distingue las que cambian un valor de las que cambian el sentido', () => {
+  it('distingue las que cambian un valor de las que no', () => {
+    // Solo la Tabla 5 cambia un valor. 310-15(b)(2)(a) estuvo marcada así por
+    // error hasta el 2026-10-04: la nota corrige la etiqueta de un renglón
+    // (91-75 debe decir 71-75), no los factores. Verificado por Sebastián
+    // contra el texto publicado; ver E4-ak.
     const valores = NOTA_ACLARATORIA.referencias.filter((r) => r.afectaValor).map((r) => r.ref)
-    expect(valores).toEqual(['cap10-tabla-5', '310-15(b)(2)(a)'])
+    expect(valores).toEqual(['cap10-tabla-5'])
   })
 
   it('correccionDe solo responde a las referencias listadas', () => {

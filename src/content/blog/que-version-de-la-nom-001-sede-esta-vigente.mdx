@@ -1,7 +1,7 @@
 ---
 title: "¿Qué versión de la NOM-001-SEDE está vigente?"
 description: "La NOM-001-SEDE-2018 nunca se publicó como norma definitiva. Rige la de 2012, con una nota aclaratoria de 2014 que corrige valores."
-fechaPublicacion: 2026-09-12
+fechaPublicacion: 2026-10-04
 categoria: practica-profesional
 etiquetas:
   - nom-001-sede
@@ -21,7 +21,7 @@ normativa:
     tipo: "articulo"
     version: "NOM-001-SEDE-2012"
     verificadoDOF: true
-borrador: true
+borrador: false
 erratas: []
 slugsAnteriores: []
 ---
@@ -132,13 +132,13 @@ NOM-001-SEDE-2012. Su considerando segundo explica que el comité
 encontró errores gramaticales, ortográficos, de congruencia y de
 redacción, "así como en algunos valores".
 
-Esa última frase no es de relleno. La nota corrige alrededor de treinta
-y cinco entradas, y varias cambian números o invierten el sentido de
-una disposición obligatoria. El texto aplicable de la norma es el de
-2012 **con** esa nota aplicada. Si trabajas con el PDF original sin
-haberla leído, estás usando un texto que la autoridad ya corrigió.
+Esa última frase no es de relleno. La nota corrige varias decenas de
+entradas, y algunas cambian números o invierten el sentido de una
+disposición obligatoria. El texto aplicable de la norma es el de 2012
+**con** esa nota aplicada. Si trabajas con el PDF original sin haberla
+leído, estás usando un texto que la autoridad ya corrigió.
 
-Tres ejemplos, de menos a más incómodo.
+Tres ejemplos, de tres clases distintas.
 
 ### Un área de conductor con un dígito de más
 
@@ -161,20 +161,31 @@ la razón por la que puede llevar años sin que nadie lo note.
 Si tienes una hoja de cálculo que armaste tú o que heredaste de alguien
 más, esta es la primera celda que deberías revisar hoy.
 
-### Los factores de corrección por temperatura alta
+### Un rango de temperatura que no existe
 
 <CalloutNormativo ref="310-15(b)(2)(a)" version="NOM-001-SEDE-2012" tipo="tabla">
 Tabla 310-15(b)(2)(a) — Factores de corrección por temperatura ambiente
 </CalloutNormativo>
 
-La nota corrige también los renglones de temperatura ambiente alta de
-esta tabla, en el rango que va de 66 a 85 °C.
+En la tabla de factores de corrección, entre el renglón de 66 a 70 °C y
+el de 76 a 80 °C, el texto de 2012 imprime un rango de **91 a 75 °C**.
+Un rango que empieza más arriba de donde termina.
 
-Son condiciones poco frecuentes, y precisamente por eso son peligrosas:
-un proyectista que rara vez las usa no tiene el valor memorizado y
-confía en lo que le diga la tabla o la herramienta. Si tu software
-cargó esta tabla desde el PDF de 2012 sin aplicar la nota, no vas a
-detectarlo por inspección.
+La nota lo corrige a 71-75 °C, que es lo que cualquiera deduce al
+leerlo. Los factores no cambian: el error es un dígito en la etiqueta.
+
+Parece inofensivo, y para una persona lo es. Para un programa que lee
+la tabla por el nombre del renglón en vez de por su posición, no: busca
+el rango que contiene 73 °C y no lo encuentra.
+
+Y aquí está lo incómodo. La misma errata aparece en la tabla de al
+lado, la 310-15(b)(2)(b), la que se usa cuando la ampacidad de partida
+está referida a 40 °C. La nota aclaratoria no la corrige: no figura
+entre sus referencias. Doce años después, el texto vigente sigue
+diciendo 91-75 en esa tabla.
+
+Si tu herramienta usa la tabla de 40 °C, el renglón que necesitas sigue
+mal etiquetado en la fuente oficial, y nadie lo ha corregido.
 
 ### Una palabra que invierte a quién aplica la protección
 
@@ -206,8 +217,9 @@ de febrero de 2014. Toma treinta segundos y deja constancia de que
 sabes cuál es el texto aplicable.
 
 Si usas una hoja de cálculo o un programa, averigua de qué documento
-salieron sus tablas. Si la respuesta es "del PDF de la norma", revisa al
-menos la Tabla 5 y los factores de temperatura.
+salieron sus tablas. Si la respuesta es "del PDF de la norma", empieza
+por dos cosas: el área del 10 AWG en la Tabla 5, y cómo localiza los
+renglones de las tablas de corrección por temperatura.
 
 Y si encuentras una fuente, un curso o un proveedor que te asegure que
 la vigente es la 2018, no discutas: pídele la publicación en el DOF.
@@ -215,11 +227,11 @@ El título va a empezar con "PROYECTO".
 
 ## Una aclaración sobre este artículo
 
-Un dato que no verifiqué de primera mano no aparece aquí. Las tres
-fuentes de este texto son públicas y gratuitas: la ficha del Catálogo
-Mexicano de Normas, el informe de revisión sistemática de la SENER de
-2023, y las publicaciones del DOF del 29 de noviembre de 2012, del 7 de
-febrero de 2014 y del 6 de agosto de 2018.
+Un dato que no verifiqué de primera mano no aparece aquí. Las fuentes
+de este texto son públicas y gratuitas: la ficha del Catálogo Mexicano
+de Normas, el informe de revisión sistemática de la SENER de 2023, y
+las publicaciones del DOF del 29 de noviembre de 2012, del 7 de febrero
+de 2014 y del 6 de agosto de 2018.
 
-Si alguna de las tres dice hoy algo distinto de lo que aquí afirmo,
+Si alguna de ellas dice hoy algo distinto de lo que aquí afirmo,
 escríbeme. Se corrige y se registra en la sección de erratas.
