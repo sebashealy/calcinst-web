@@ -37,6 +37,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Notacion en la salida construida (AD9)
+        run: npm run verificar:salida
+
       - name: Portabilidad del contenido (I2)
         run: npm run portabilidad
 

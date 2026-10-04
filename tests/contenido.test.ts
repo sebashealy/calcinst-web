@@ -8,6 +8,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { analizarMdx, citasNoDeclaradas } from '../scripts/lib/mdx.mjs'
 import {
+  normalizarTipografia,
   problemasDePortabilidad,
   textoVisible,
   textosPerdidos,
@@ -154,6 +155,23 @@ describe('portabilidad (I2)', () => {
 
   it('detecta un texto que no llegó a la página', () => {
     expect(textosPerdidos('Uno.\n\nDos.', '<p>Uno.</p>')).toEqual(['Dos.'])
+  })
+
+  it('no confunde las comillas curvas del tipógrafo con texto perdido', () => {
+    // smartypants viene activo en Astro: el .mdx lleva comillas rectas y la
+    // página las pinta curvas. Comparar las cadenas tal cual daba un falso
+    // positivo por cada parrafo con una comilla (encontrado con T01 y T03).
+    const fuente = 'Su titulo empieza con "Proyecto" y lleva PROY- en la clave.'
+    const html = '<p>Su titulo empieza con “Proyecto” y lleva PROY- en la clave.</p>'
+    expect(textosPerdidos(fuente, html)).toEqual([])
+  })
+
+  it('iguala también raya, comillas latinas y puntos suspensivos', () => {
+    expect(normalizarTipografia('“a” ‘b’ «c» d—e f…')).toBe(`"a" 'b' "c" d-e f...`)
+  })
+
+  it('sigue detectando texto que de verdad falta, no solo variantes', () => {
+    expect(textosPerdidos('Uno con "cita".\n\nDos.', '<p>Uno con “cita”.</p>')).toEqual(['Dos.'])
   })
 
   it('decodifica entidades antes de comparar', () => {

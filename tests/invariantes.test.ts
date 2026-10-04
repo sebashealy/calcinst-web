@@ -18,6 +18,7 @@ import {
   verificarI3c,
   verificarI7,
   verificarNotacion,
+  verificarNotacionEnSalida,
   verificarRefNorma,
   verificarTokens,
   refsDeCapitulo9,
@@ -169,6 +170,50 @@ describe('NOTACION — puntos de código prohibidos (P2)', () => {
       'src/components/F.astro': `<p>4.7 k${OMEGA} · 22 ${SIGNO_MICRO}F · ${cp(0x0394)}V</p>`,
     })
     expect(verificarNotacion(r)).toEqual([])
+  })
+})
+
+describe('NOTACION-SALIDA — los prohibidos tampoco llegan a dist/ (AD9)', () => {
+  const conDeclaracion = (archivos: Record<string, string>) =>
+    arbol({ 'src/config/caracteres.json': CARACTERES_JSON, ...archivos })
+
+  it('detecta la mu griega en una página ya construida', () => {
+    // El caso que AD9 teme: fuente limpia y salida normalizada por algún paso
+    // posterior, con el invariante de fuente en verde.
+    const r = conDeclaracion({ 'dist/blog/x/index.html': `<p>22 ${MU}F</p>` })
+    const fallos = verificarNotacionEnSalida(r)
+    expect(fallos).toHaveLength(1)
+    expect(fallos[0]).toContain('dist/blog/x/index.html')
+    expect(fallos[0]).toContain('U+03BC')
+    expect(fallos[0]).toContain('U+00B5')
+  })
+
+  it('acepta el signo micro, que es la forma elegida', () => {
+    const r = conDeclaracion({ 'dist/blog/x/index.html': `<p>22 ${SIGNO_MICRO}F</p>` })
+    expect(verificarNotacionEnSalida(r)).toEqual([])
+  })
+
+  it('también revisa el RSS y los SVG, no solo el HTML', () => {
+    const r = conDeclaracion({
+      'dist/blog/rss.xml': `<description>22 ${MU}F</description>`,
+      'dist/og/a.svg': `<text>${INCREMENTO}V</text>`,
+    })
+    expect(verificarNotacionEnSalida(r)).toHaveLength(2)
+  })
+
+  it('falla en voz alta si no hay build, en vez de pasar vacía (I1)', () => {
+    // Una comprobación que da «0 fallos» porque no encontró nada que mirar es
+    // precisamente el silencio que AD9 persigue.
+    const r = conDeclaracion({})
+    expect(() => verificarNotacionEnSalida(r)).toThrow(/Ejecuta el build antes/)
+  })
+
+  it('no se deja engañar por los .woff2, que son binarios', () => {
+    const r = conDeclaracion({
+      'dist/fuentes/x.woff2': 'wOF2 binario',
+      'dist/index.html': '<p>limpio</p>',
+    })
+    expect(verificarNotacionEnSalida(r)).toEqual([])
   })
 })
 

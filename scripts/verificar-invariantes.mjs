@@ -155,25 +155,59 @@ const DIRECTORIOS_DE_CONTENIDO = ['src/content', 'content']
  * @param {string} [raiz]
  * @returns {string[]}
  */
-export function verificarNotacion(raiz = RAIZ) {
+function buscarProhibidos(raiz, rutas) {
   const { prohibidos } = leerConjunto(raiz)
   const porCodigo = new Map(prohibidos.map((p) => [p.cp, p]))
-  return ['src', 'content']
-    .flatMap((dir) => archivos(raiz, dir, EXTENSIONES_TEXTO))
-    .flatMap((relativa) =>
-      leer(raiz, relativa)
-        .split('\n')
-        .flatMap((linea, i) =>
-          [...linea].flatMap((c, col) => {
-            const p = porCodigo.get(c.codePointAt(0))
-            return p
-              ? [
-                  `${relativa}:${i + 1}:${col + 1} — ${p.codigo} (${p.nombre}); usar ${p.sugerencia}`,
-                ]
-              : []
-          }),
-        ),
+  return rutas.flatMap((relativa) =>
+    leer(raiz, relativa)
+      .split('\n')
+      .flatMap((linea, i) =>
+        [...linea].flatMap((c, col) => {
+          const p = porCodigo.get(c.codePointAt(0))
+          return p
+            ? [`${relativa}:${i + 1}:${col + 1} — ${p.codigo} (${p.nombre}); usar ${p.sugerencia}`]
+            : []
+        }),
+      ),
+  )
+}
+
+export function verificarNotacion(raiz = RAIZ) {
+  return buscarProhibidos(
+    raiz,
+    ['src', 'content'].flatMap((dir) => archivos(raiz, dir, EXTENSIONES_TEXTO)),
+  )
+}
+
+/** Lo que se sirve al navegador y puede contener texto. Los .woff2 son binarios. */
+const EXTENSIONES_SALIDA = ['.html', '.xml', '.svg', '.txt', '.json', '.css', '.js', '.mjs']
+
+/**
+ * NOTACION-SALIDA (AD9) — la misma comprobación, pero sobre `dist/`.
+ *
+ * NFKC convierte U+00B5 en U+03BC, así que la relación de compatibilidad Unicode
+ * empuja en sentido contrario a la decisión de AD9. Si algún paso posterior al
+ * check normalizara —un minificador, un plugin, una plantilla—, el carácter
+ * prohibido llegaría a producción con el código fuente limpio y el invariante en
+ * verde. Esta comprobación cierra esa ventana mirando lo que de verdad se sirve.
+ *
+ * No se registra en VERIFICACIONES porque `npm run verificar` corre **antes** del
+ * build en CI: vive en `scripts/verificar-salida.mjs`, como paso posterior.
+ *
+ * @param {string} [raiz]
+ * @param {string} [directorio]
+ * @returns {string[]}
+ */
+export function verificarNotacionEnSalida(raiz = RAIZ, directorio = 'dist') {
+  const rutas = archivos(raiz, directorio, EXTENSIONES_SALIDA)
+  if (rutas.length === 0) {
+    // No se degrada en silencio (I1): sin build no hay nada que comprobar, y
+    // callarlo seria exactamente el defecto que AD9 quiere evitar.
+    throw new Error(
+      `verificarNotacionEnSalida: no hay archivos de texto en ${directorio}/. Ejecuta el build antes.`,
     )
+  }
+  return buscarProhibidos(raiz, rutas)
 }
 
 /**
