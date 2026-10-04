@@ -4,6 +4,30 @@
 
 ## Última etapa cerrada
 
+Etapa 4 — 2026-10-04. Evidencia en E4-a … E4-al. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
+
+Cotejo criterio por criterio (plan §6, Etapa 4):
+
+| Criterio de aceptación | Estado | Evidencia |
+|---|---|---|
+| Un post sin `normativa` rompe el build | cumplido | E4-h, contra el build real; permanente en `tests/blog-schema.test.ts` |
+| `verificadoDOF: false` con `borrador: false` rompe el build | cumplido | E4-h; permanente en `tests/blog-schema.test.ts` |
+| Un `CalloutNormativo` no declarado en el frontmatter rompe el build | cumplido, y ampliado a tipo y versión | E4-h con posts de prueba; **E4-u sobre contenido real**, con la línea correcta del archivo |
+| `rss.xml` valida en el validador del W3C | cumplido | **E4-al: por URL, con items reales, 0 errores y 0 avisos** |
+| El post renderizado con remark puro conserva todo el texto | cumplido | E4-ad con comparación estricta; **E4-ak: 2 de 2 comparados en el flujo de CI**, ya sin omisiones |
+| Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB | cumplido | E4-ak: 1.51 s, 1 137 B, 95 170 y 91 357 B sin comprimir |
+| Los dos posts con todas sus citas en `verificadoDOF: true` | cumplido | E4-ak: publicados, seis citas cotejadas, cero insignias «Sin cotejar» |
+
+**Bloqueo resuelto en la etapa:** P1, las dos Redirect Rules, **9 de 9** (E4-aj). Era el último pendiente técnico y arrastraba desde la Etapa 1.
+
+**Decisiones registradas:** AD6 (H1 refutada: rige la NOM-001-SEDE-2012), AD7 (las tablas son el Capítulo 10), AD8 (la versión no identifica un texto único), AD9 (micro es U+00B5), AD10 **revertida** por AD11 (el tipógrafo se apaga; I2 vuelve a estricta) y AD12 (el aviso colapsa por post).
+
+**Lo que la etapa deja anotado para después:** P4 y P5 con destino Etapa 9, P6 al subir de versión de Astro, y la observación de E4-ak: `nota-aclaratoria.json` es un segundo lugar donde vive una afirmación normativa y `verificadoDOF` no lo cubre.
+
+**Pruebas: 41 → 126.**
+
+### Etapa 3 — 2026-09-10 (cerrada anteriormente)
+
 Etapa 3 — 2026-09-10. Evidencia presentada en E3-a … E3-h (E3-g: prueba de P3, negativa). **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
 
 Cotejo criterio por criterio (plan §6, Etapa 3):
@@ -22,33 +46,31 @@ También en esta etapa, a pedido de Sebastián: **P2** (juego de caracteres) y *
 
 ## Etapa en curso
 
-Etapa 4 — Blog completo, con dos posts reales. **T01 y T03 están publicados** (`borrador: false`, 2026-10-04) tras la verificación de Sebastián contra el DOF, y **P1 quedó cerrado el mismo día** (E4-aj). Los siete criterios del plan §6 se cumplen. Queda la verificación en producción tras fusionar, y con ella la etapa se cierra.
+**Ninguna.** La Etapa 4 se cerró el 2026-10-04 con la verificación en producción (E4-al): los dos posts publicados y servidos, el feed validado por URL con 0 errores y 0 avisos, y P1 cerrado 9 de 9. El cotejo criterio por criterio está arriba, en «Última etapa cerrada».
 
-Cotejo criterio por criterio (plan §6, Etapa 4):
+**La Etapa 5 no se inicia sin autorización de Sebastián**, y antes necesita su revisión de `capacidades.json`, que sigue pendiente y la bloquea. Esa revisión debe distinguir dos cosas distintas: (a) si las correcciones de 430-22 y 430-24 se aplicaron al motor, y (b) si existe el caso de referencia calculado a mano. **Solo (b) permite mover `sizing-caso-1..3` a `verificado`.**
 
-| Criterio de aceptación | Estado | Evidencia |
-|---|---|---|
-| Un post sin `normativa` rompe el build | cumplido | E4-h, contra el build real; permanente en `tests/blog-schema.test.ts` |
-| `verificadoDOF: false` con `borrador: false` rompe el build | cumplido | E4-h; permanente en `tests/blog-schema.test.ts` |
-| Un `CalloutNormativo` no declarado en el frontmatter rompe el build | cumplido, y ampliado a tipo y versión | E4-h; permanente en `tests/contenido.test.ts` |
-| `rss.xml` valida en el validador del W3C | cumplido | E4-j: válido, 0 errores; el único aviso es artefacto de subir el XML como texto (se confirma por URL en E4-o) |
-| El post renderizado con remark puro conserva todo el texto | cumplido | E4-i, con GFM tras la decisión de Sebastián |
-| Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB | cumplido | E4-k: 1.36 s, 1 137 B, 83 691 B sin comprimir |
-| Los dos posts con todas sus citas en `verificadoDOF: true` | cumplido | T01 y T03 **publicados** el 2026-10-04 (E4-ak), con sus seis citas en `verificadoDOF: true`, el cruce cuerpo↔frontmatter verde y cero insignias «Sin cotejar» en la página |
+### Índice de la evidencia de la Etapa 4
 
-**Todo lo que la etapa pedía está hecho:** H1 cerrada el 2026-09-12 (AD6, E4-p); los posts integrados y luego publicados el 2026-10-04 (E4-u, E4-ak); **P1 cerrado el 2026-10-04, 9 de 9** (E4-aj). Con los posts fuera de borrador, la comprobación 3 de I2 deja de omitirse en CI y se verifican 2 de 2 (E4-ak).
+| Bloque | Evidencia |
+|---|---|
+| Bloque P2: juego de caracteres y fuentes | E4-a … E4-e |
+| Infraestructura del blog | E4-f … E4-o |
+| Cierre de H1 y addendum del Capítulo 10 | E4-p … E4-t |
+| Integración de T01 y T03 | E4-u … E4-ab |
+| Bloque de tipografía | E4-ac … E4-ah |
+| Las tres salidas de smartypants | E4-ai |
+| Cierre de P1 | E4-aj |
+| Publicación de T01 y T03 | E4-ak |
+| Verificación en producción y cierre | E4-al |
 
-**Publicado no es indexado.** `public/_headers` sigue emitiendo `X-Robots-Tag: noindex` para todo el sitio; se retira en la Etapa 9, que es donde vive P4.
+Diferencias con el plan en el addendum A8.
 
-**Las dos decisiones que quedaban abiertas se resolvieron el 2026-10-04:** el `Descargo` se retiró del cuerpo de los dos posts y axe baja a cero violaciones (E4-ac); `smartypants` se apaga y la relajación de I2 se revierte (AD11, E4-ad). Se añadió además el colapso del aviso por post (AD12, E4-ae).
+**Nota de etiquetado.** Las etiquetas de evidencia las asigna Claude y se informan en el reporte, por decisión de Sebastián (2026-10-04): pedirlas de antemano era ruido, y las tres veces que hubo que renumerar fue porque las pedidas ya estaban ocupadas. Las dos renumeraciones de esta etapa quedan registradas aquí para que los números del plan y los del documento se puedan cruzar:
 
-El aviso de obsolescencia de `markdown.smartypants` se **tolera**, registrado como **P6** con su condición de cierre: las tres salidas se midieron (E4-ai) y ninguna evita el aviso sin devolver el tipógrafo o sin declarar un paquete. No se instaló nada. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+- El bloque del 2026-09-12 pedía E4-j … E4-n; esas cinco ya estaban ocupadas por la infraestructura del blog, así que se registraron como **E4-p … E4-t**, en el mismo orden pedido: E4-p = H1; E4-q = Capítulo 9 contra Capítulo 10; E4-r = `norma.ts` y la nota aclaratoria; E4-s = los cuatro pendientes; E4-t = batería de cierre.
+- El bloque de tipografía pedía E4-ac … E4-ag; se registró como **E4-ac … E4-ah**, con una etiqueta de más porque las fechas de publicación merecían entrada propia (E4-ag), de modo que la batería de cierre quedó en E4-ah.
 
-Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab; del bloque de tipografía en E4-ac … E4-ah; de las tres salidas de smartypants en E4-ai; del cierre de P1 en E4-aj; y de la publicación de T01 y T03 en E4-ak. Diferencias con el plan en el addendum A8.
-
-**Nota de etiquetado (bloque del 2026-10-04).** El bloque de tipografía pedía E4-ac … E4-ag. Se registran como **E4-ac … E4-ah**: hay una etiqueta de más porque las fechas de publicación merecían su propia entrada (E4-ag), de modo que la batería de cierre es **E4-ah** y no E4-ag. El resto va en el orden pedido.
-
-**Nota de etiquetado.** El bloque del 2026-09-12 pedía registrar su evidencia como E4-j … E4-n. Esas cinco etiquetas ya estaban ocupadas por la evidencia de la infraestructura del blog (E4-a … E4-o), así que se registran como **E4-p … E4-t**, en el mismo orden pedido: E4-p = H1; E4-q = Capítulo 9 contra Capítulo 10; E4-r = norma.ts y la nota aclaratoria; E4-s = los cuatro pendientes; E4-t = batería de cierre.
 
 ## Evidencia Etapa 0
 
@@ -3045,6 +3067,59 @@ JS total:                    1137 B   (presupuesto 5120 B)  DENTRO
 #### Dos referencias normativas nuevas que aparecen solo en prosa
 
 Los textos revisados mencionan `310-15(b)(7)` en T03 y `310-15(b)(2)(b)` en T01 sin envolverlas en `CalloutNormativo` ni declararlas en `normativa[]`. **No es un fallo:** el cruce de I3 b cubre las citas marcadas como tales, y una mención en prosa no es una cita. Se anota porque es la frontera de lo que el invariante vigila, y conviene tenerla por escrito antes de que alguien la descubra creyendo que es un hueco.
+
+### E4-al — Verificación en producción tras fusionar el PR #14 (2026-10-04)
+
+Checks del PR en verde en Linux, con todos los pasos de CI —incluida la portabilidad, que esta vez **compara los dos posts en vez de omitirlos**—.
+
+Producción, con los dos posts ya publicados:
+
+```
+https://calcinst.mx/blog/                                              200
+https://calcinst.mx/blog/que-version-de-la-nom-001-sede-esta-vigente/  200
+https://calcinst.mx/blog/110-14c-decide-la-columna-no-el-conductor/    200
+https://calcinst.mx/blog/rss.xml                                       200
+https://calcinst.mx/blog/categoria/practica-profesional/               200
+https://calcinst.mx/blog/etiqueta/dof/                                 200
+```
+
+Los 404 de la verificación anterior (E4-o) eran de posts en borrador; ahora responden 200 porque están publicados. Las páginas de categoría y de etiqueta se generan solas desde el frontmatter.
+
+**El aviso corregido, servido desde producción:**
+
+```
+La Nota Aclaratoria modifica esta referencia. Factores de corrección por temperatura
+ambiente: la nota corrige la etiqueta de un renglón, que el texto de 2012 imprime como
+91-75 °C y debe decir 71-75 °C. Los factores no cambian.
+
+avisos: 3 | frase completa: 1 | colapsados: 2
+«corrige un valor»: 1   (solo la Tabla 5, que es la única que lo hace)
+meta robots noindex en la página: 0
+```
+
+AD12 se sostiene en producción —un aviso completo y dos colapsados— y la corrección de la semilla llegó: «corrige un valor» aparece una sola vez en todo T01, en la Tabla 5.
+
+**RSS de producción, validado por URL en el W3C, con items reales por primera vez:**
+
+```
+<m:validity>true</m:validity>
+<m:errorcount>0</m:errorcount>
+<m:warningcount>0</m:warningcount>
+```
+
+**Cero errores y cero avisos.** Es la forma más fuerte en que se ha cumplido ese criterio: hasta ahora el feed se había validado con contenido de prueba (E4-j) o sin items (E4-o).
+
+**Publicado no es indexado, y sigue siendo deliberado:**
+
+```
+> curl -sSI https://calcinst.mx/blog/que-version-de-la-nom-001-sede-esta-vigente/
+HTTP/1.1 200 OK
+x-robots-tag: noindex
+```
+
+La página ya no lleva `<meta name="robots">` —eso era la marca de borrador— pero `public/_headers` sigue emitiendo la cabecera para todo el sitio. Se retira en la Etapa 9, que es donde vive **P4**: al quitarla hay que emitir `X-Robots-Tag: noindex` condicionado al host para `*.workers.dev`, verificado con `curl -I` contra el dominio canónico y contra el host de workers.dev, las dos salidas literales.
+
+**Con esto la Etapa 4 queda cerrada.** Los siete criterios del plan §6 están cumplidos con evidencia literal, P1 cerrado 9 de 9, y el contenido publicado y servido. El cierre queda sujeto a la verificación de Sebastián, conforme a la regla de puertas: la autoatestación no cuenta como evidencia.
 
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
