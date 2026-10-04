@@ -22,7 +22,7 @@ También en esta etapa, a pedido de Sebastián: **P2** (juego de caracteres) y *
 
 ## Etapa en curso
 
-Etapa 4 — Blog completo, con dos posts reales. **Infraestructura terminada y fusionable; la etapa no se cierra todavía**: le faltan los dos posts, que son de Sebastián, y P1.
+Etapa 4 — Blog completo, con dos posts reales. **Los dos posts ya están integrados y en borrador; la etapa no se cierra todavía**: falta P1, y los posts esperan la pasada final de verificación de Sebastián contra el DOF, que es quien cambia `borrador` a `false`.
 
 Cotejo criterio por criterio (plan §6, Etapa 4):
 
@@ -34,11 +34,13 @@ Cotejo criterio por criterio (plan §6, Etapa 4):
 | `rss.xml` valida en el validador del W3C | cumplido | E4-j: válido, 0 errores; el único aviso es artefacto de subir el XML como texto (se confirma por URL en E4-o) |
 | El post renderizado con remark puro conserva todo el texto | cumplido | E4-i, con GFM tras la decisión de Sebastián |
 | Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB | cumplido | E4-k: 1.36 s, 1 137 B, 83 691 B sin comprimir |
-| Los dos posts con todas sus citas en `verificadoDOF: true` | **pendiente** | Contenido de Sebastián (T01 y T03). H1 ya no lo bloquea: quedó cerrada el 2026-09-12 (AD6, E4-p) |
+| Los dos posts con todas sus citas en `verificadoDOF: true` | cumplido en borrador | T01 y T03 integrados el 2026-10-04 (E4-u), con sus seis citas en `verificadoDOF: true` y el cruce cuerpo↔frontmatter verde. Siguen en `borrador: true` hasta la pasada final de Sebastián |
 
-**Para cerrar la Etapa 4 faltan:** (1) T01 y T03, redactados por Sebastián, con sus citas cotejadas contra el DOF; (2) **P1**, las Redirect Rules con sus nueve comprobaciones. La verificación definitiva de H1, que era el tercer pendiente, la cerró Sebastián el 2026-09-12: ver AD6 y E4-p. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+**Para cerrar la Etapa 4 falta:** **P1**, las Redirect Rules con sus nueve comprobaciones, que Sebastián aplica a mano en el panel de Cloudflare; hoy pasan 3 de 9 (E4-z). Y que los dos posts salgan de borrador tras su pasada final. H1 se cerró el 2026-09-12 (AD6, E4-p) y los posts se integraron el 2026-10-04 (E4-u).
 
-Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t. Diferencias con el plan en el addendum A8.
+**Dos cosas quedan en manos de Sebastián por decisión, no por falta de trabajo:** el `Descargo` que sale duplicado en los dos posts (E4-w) y si se mantiene `smartypants` activo (E4-ab). Ninguna de las dos se tocó. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+
+Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab. Diferencias con el plan en el addendum A8.
 
 **Nota de etiquetado.** El bloque del 2026-09-12 pedía registrar su evidencia como E4-j … E4-n. Esas cinco etiquetas ya estaban ocupadas por la evidencia de la infraestructura del blog (E4-a … E4-o), así que se registran como **E4-p … E4-t**, en el mismo orden pedido: E4-p = H1; E4-q = Capítulo 9 contra Capítulo 10; E4-r = norma.ts y la nota aclaratoria; E4-s = los cuatro pendientes; E4-t = batería de cierre.
 
@@ -1988,6 +1990,378 @@ EXIT_PORT=0
 
 **Pruebas: 91 → 118**, en cinco archivos. Las 27 nuevas son: 15 de AD7 (rechazo de la `ref`, sus variantes, las cuatro formas sintácticas, las dos pruebas negativas y la del repositorio real), 8 de AD8 (el archivo de datos y el componente renderizado) y 4 de AD9 (la inversión de micro y mu).
 
+### E4-u — T01 y T03 integrados (2026-10-04)
+
+Los dos archivos se copiaron a `src/content/blog/` **sin editar un solo carácter**. Comprobado por diferencia contra el original:
+
+```
+> diff -q Downloads/que-version-de-la-nom-001-sede-esta-vigente.mdx src/content/blog/...
+que-version-de-la-nom-001-sede-esta-vigente.mdx: identico
+110-14c-decide-la-columna-no-el-conductor.mdx: identico
+```
+
+**Las tres preguntas del encargo, contestadas contra el esquema real, no de memoria:**
+
+1. **No hace falta campo `slug`.** La colección usa el cargador `glob` y el identificador es el nombre del archivo, así que los dos slugs quedan fijados tal cual llegaron. No se renombró nada.
+2. **`verificadoDOF: true` con `borrador: true` es compatible.** El `superRefine` del esquema solo exige `verificadoDOF: true` cuando `borrador` es `false`; al revés no impone nada. No es un caso imprevisto: publicar exige haber cotejado, pero haber cotejado no obliga a publicar. Los posts entran como borrador con sus citas ya marcadas.
+3. **`310-15(b)` sin subíndice entra sin problema.** El esquema solo exige que la `ref` no esté vacía y que no cite una tabla del Capítulo 9. No se modificó.
+
+Encaje del frontmatter con los límites de D8:
+
+```
+=== que-version-de-la-nom-001-sede-esta-vigente.mdx
+  title       45 caracteres (max 70)
+  description 131 caracteres (120-160)
+  declaradas  ["cap10-tabla-5","310-15(b)(2)(a)","230-95"]
+  en el cuerpo ["cap10-tabla-5","310-15(b)(2)(a)","230-95"]
+
+=== 110-14c-decide-la-columna-no-el-conductor.mdx
+  title       52 caracteres (max 70)
+  description 143 caracteres (120-160)
+  declaradas  ["110-14(c)","310-15(b)","310-15(b)(16)"]
+  en el cuerpo ["110-14(c)","310-15(b)","310-15(b)(16)"]
+```
+
+Build con los borradores visibles: **18 páginas**, incluidas las ocho de etiqueta que los dos posts crean.
+
+```
+> MOSTRAR_BORRADORES=1 npm run build
+15:17:02   ├─ /blog/etiqueta/110-14c/index.html (+8ms)
+...
+15:17:02   ├─ /blog/110-14c-decide-la-columna-no-el-conductor/index.html (+13ms)
+15:17:02   ├─ /blog/que-version-de-la-nom-001-sede-esta-vigente/index.html (+14ms)
+[build] 18 page(s) built
+EXIT_BUILD=0
+```
+
+**Cruce cuerpo↔frontmatter: los seis cuadran**, y la prueba de que el invariante funciona sobre contenido real y no solo sobre posts de prueba es la negativa. Se alteró **solo la cita del cuerpo** de T03, dejando el frontmatter intacto:
+
+```
+> (310-15(b)(16) -> 310-15(b)(17) en el cuerpo, linea 110)
+> MOSTRAR_BORRADORES=1 npm run build
+  - 110-14c-decide-la-columna-no-el-conductor.mdx, línea 110: cita «310-15(b)(17)»
+    en el cuerpo, pero no está declarada en normativa[]
+EXIT_BUILD=1
+```
+
+La línea 110 es exactamente donde está esa cita en el archivo. El post se restauró después desde el original y se verificó idéntico.
+
+**Un intento de edición que se revirtió.** La batería de cierre pasa por `prettier --write .`, y Prettier formatea `.mdx`: reescribió las comillas dobles del frontmatter como simples y **indentó dos espacios el cuerpo dentro de cada `<CalloutNormativo>`**. Catorce líneas por archivo, ninguna semántica, pero son ediciones a contenido que no es mío. Los dos archivos se restauraron desde el original y `src/content/blog/*.mdx` se añadió a `.prettierignore`, con el mismo criterio que ya excluía a los documentos de gobierno: lo que vigila al contenido son CARACTERES, I3c, el esquema del frontmatter y la prueba de portabilidad, no el formateador. Verificado después: los dos siguen siendo idénticos al original y la batería entera pasa.
+
+### E4-v — Avisos de la nota aclaratoria: prueba positiva y negativa de AD8
+
+Contado sobre el HTML construido, no sobre el código:
+
+| | T01 | T03 |
+| --- | --- | --- |
+| `CalloutNormativo` | 3 | 3 |
+| Avisos de nota aclaratoria | **3** | **0** |
+| Insignia «Corregida por la nota de 2014» | 3 | 0 |
+| Enlaces al DOF | 3 | 0 |
+
+**T01 — las tres disparan, y el texto distingue el tipo de corrección:**
+
+```
+La Nota Aclaratoria corrige un valor de esta referencia.   (cap10-tabla-5)
+La Nota Aclaratoria corrige un valor de esta referencia.   (310-15(b)(2)(a))
+La Nota Aclaratoria modifica esta referencia.              (230-95)
+```
+
+Las dos primeras son `afectaValor: true`; la tercera cambia el sentido de la disposición. No hubo que añadir nada a la semilla de AD8.
+
+**T03 — ninguna dispara. Esta es la prueba negativa que pediste explícitamente.** Cero ocurrencias de `class="aviso"`, cero de «Corregida por la nota de 2014» y cero de `dof.gob.mx` en la página. La única aparición de la cadena «Nota Aclaratoria» en T03 es la prosa del propio artículo, en «Una aclaración sobre este artículo»: no la pinta el componente. **Confirma que `110-14(c)`, `310-15(b)` y `310-15(b)(16)` no están en el archivo de datos y que no hay falso positivo.**
+
+### E4-w — T01 renderizado, y un defecto que destapó
+
+Capturas en `evidencia/etapa-4/` (fuera del repositorio, como las de etapas anteriores): `T01-avisos.png` recorta los tres avisos seguidos; `T01-dark-completa.png` y `T03-dark-completa.png` son las páginas enteras.
+
+**Sobre la saturación: no satura.** Los tres avisos están separados por varios párrafos de prosa y cada uno cierra una sección distinta. Lo que sí se repite literalmente tres veces es la cola del aviso, «Publicada en el DOF el 7 de febrero de 2014; texto oficial (código 5331914)», porque es la misma fuente en los tres casos. Es una decisión tuya si se colapsa; **no se ha tocado**.
+
+**Axe-core, en los dos posts y los dos temas, encontró una violación real:**
+
+```
+T01-dark   violaciones: 1  reglas aprobadas: 34
+   [moderate] landmark-unique — Landmarks should have a unique role or
+              role/label/title (i.e. accessible name) combination (1 nodo)
+      .cuerpo > .descargo[aria-labelledby="titulo-descargo"]
+T01-light  violaciones: 1  reglas aprobadas: 34   (idem)
+T03-dark   violaciones: 1  reglas aprobadas: 33   (idem)
+T03-light  violaciones: 1  reglas aprobadas: 33   (idem)
+```
+
+**Causa: el `Descargo` sale dos veces en cada post.** `LayoutPost.astro:100` ya lo pinta al pie, y los dos `.mdx` traen además `<Descargo />` en el cuerpo. El resultado son dos `<aside>` con el mismo `aria-labelledby="titulo-descargo"`, o sea dos landmarks indistinguibles para un lector de pantalla y un `id` duplicado en el documento.
+
+`componentes-portables.json` ya lo advertía («Lo pinta el layout al pie de cada post; no hace falta en el cuerpo»), pero la advertencia vive en un archivo de configuración, no en la guía de redacción. **No se corrigió ninguna de las dos cosas: el cuerpo es contenido de Sebastián y la decisión es suya.**
+
+**Lighthouse da 100 en accesibilidad en los dos posts y aun así esto existe.** No es contradicción: Lighthouse ejecuta un subconjunto de axe y excluye las reglas de la categoría *best-practice*, donde vive `landmark-unique`. Vale la pena anotarlo porque significa que un 100 de Lighthouse no sustituye la pasada de axe.
+
+### E4-x — Lighthouse de los dos posts
+
+Mismo método que E4-k: Lighthouse 12.6.1 por su API, Chrome lanzado por puppeteer-core, perfil móvil, `dist/` servido **sin compresión** (cota superior; Cloudflare comprime en producción).
+
+```
+========== T01 — /blog/que-version-de-la-nom-001-sede-esta-vigente/
+  performance      100
+  accessibility    100
+  best-practices   100
+  seo              60
+LCP:                         1.51 s   (presupuesto 2.0 s)  DENTRO
+Peso total transferido:      95461 B   (presupuesto 307200 B)  DENTRO
+JS transferido como archivo: 0 B
+JS en linea en el HTML:      1137 B
+JS total:                    1137 B   (presupuesto 5120 B)  DENTRO
+Fuentes transferidas:        58016 B
+
+========== T03 — /blog/110-14c-decide-la-columna-no-el-conductor/
+  performance      100
+  accessibility    100
+  best-practices   100
+  seo              60
+LCP:                         1.51 s   (presupuesto 2.0 s)  DENTRO
+Peso total transferido:      92262 B   (presupuesto 307200 B)  DENTRO
+JS transferido como archivo: 0 B
+JS en linea en el HTML:      1137 B
+JS total:                    1137 B   (presupuesto 5120 B)  DENTRO
+Fuentes transferidas:        58016 B
+```
+
+Los tres presupuestos del criterio se cumplen en los dos posts, con contenido real y más largo que el post de prueba de E4-k. El SEO de 60 es el esperado mientras son borradores: `noindex` global.
+
+### E4-y — NOTACION sobre `dist/` (AD9) y el bloqueo de la Etapa 9
+
+**Dónde va la comprobación, y por qué no donde parecía.** No puede entrar en `VERIFICACIONES`, porque `npm run verificar` corre **antes** del build en CI y no habría nada que mirar. Vive en `scripts/verificar-salida.mjs`, como paso propio después del build, y el paso está añadido al flujo de CI entre *Build* y *Portabilidad*.
+
+```
+> npm run verificar:salida
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT_SALIDA=0
+```
+
+Revisa `.html`, `.xml`, `.svg`, `.txt`, `.json`, `.css`, `.js` y `.mjs`. Los `.woff2` se excluyen por binarios.
+
+**Y no se degrada en silencio, que era el punto.** Si no hay build, no informa «0 fallos»: lanza un error. Una comprobación que pasa porque no encontró nada que mirar es exactamente el defecto que AD9 persigue. Hay cinco pruebas permanentes, entre ellas la negativa —una mu griega plantada en un `index.html` ya construido— y la de ausencia de build.
+
+**Bloqueo anotado para la Etapa 9:** las imágenes OG son el siguiente candidato a normalizar por su cuenta. Registrado como **P5**.
+
+### E4-z — P1: definición literal, las nueve comprobaciones, `_redirects` y `_headers`
+
+**Están escritas, no reconstruidas.** La definición vive en `ESTADO_SITIO.md` § Bloqueos desde el 2026-09-06, con su tabla de casos. Copiada literalmente:
+
+> ### P1 — Preservación de ruta en las dos Redirect Rules (corte: antes de cerrar la Etapa 4)
+>
+> Defecto documentado en E1-n. Corrección: cambiar ambas reglas a redirección **dinámica** con destino `concat("https://calcinst.mx", http.request.uri.path)` y _Preserve query string_ activado.
+>
+> **La Etapa 4 no se cierra sin esto**, por decisión de Sebastián (2026-09-06): desde el primer post publicado, un 301 hacia `calcinst.mxblog` sería un enlace permanente roto. No bloquea las Etapas 2 ni 3.
+>
+> **La verificación debe cubrir tres casos, no solo uno** (requisito de Sebastián, 2026-09-06). Verificar únicamente una ruta simple fue lo que dejó pasar el defecto original:
+>
+> | Caso | Petición | Resultado esperado | Qué detecta |
+> | --- | --- | --- | --- |
+> | Raíz | `https://www.calcinst.mx/` | `Location: https://calcinst.mx/` | Que `uri.path = /` **no** produzca doble barra (`https://calcinst.mx//`) al concatenar |
+> | Ruta | `https://www.calcinst.mx/blog/mi-post/` | `Location: https://calcinst.mx/blog/mi-post/` | La concatenación sin separador que rompió el hostname (`calcinst.mxblog`) |
+> | Ruta + query | `https://www.calcinst.mx/blog/?pagina=2&utm_source=x` | `Location: https://calcinst.mx/blog/?pagina=2&utm_source=x` | Que ruta y query se preserven **juntas**; el defecto 2 conservaba el query pero descartaba la ruta |
+>
+> Los tres casos se repiten contra `calcinst.com` y `www.calcinst.com`, que usan la otra regla: son nueve comprobaciones en total.
+
+**Estado actual de las nueve, medido hoy.** Los dos defectos siguen vivos y se comportan distinto en cada regla:
+
+```
+https://www.calcinst.mx/                             -> Location: https://calcinst.mx/                              OK
+https://www.calcinst.mx/blog/mi-post/                -> Location: https://calcinst.mxblog/mi-post/                  FALLA
+https://www.calcinst.mx/blog/?pagina=2&utm_source=x  -> Location: https://calcinst.mxblog/?pagina=2&utm_source=x    FALLA
+https://calcinst.com/                                -> Location: https://calcinst.mx/                              OK
+https://calcinst.com/blog/mi-post/                   -> Location: https://calcinst.mx/                              FALLA
+https://calcinst.com/blog/?pagina=2&utm_source=x     -> Location: https://calcinst.mx/?pagina=2&utm_source=x        FALLA
+https://www.calcinst.com/                            -> Location: https://calcinst.mx/                              OK
+https://www.calcinst.com/blog/mi-post/               -> Location: https://calcinst.mx/                              FALLA
+https://www.calcinst.com/blog/?pagina=2&utm_source=x -> Location: https://calcinst.mx/?pagina=2&utm_source=x        FALLA
+```
+
+**3 de 9.** Pasan solo las tres raíces, que son justamente las que se verificaron en la Etapa 1 y dejaron pasar el defecto. La regla de `.mx` concatena sin separador y produce un hostname inexistente; la de `.com` descarta la ruta y conserva el query, que es el defecto 2 de E1-n.
+
+**`public/_headers`**, completo, 27 bytes:
+
+```
+/*
+  X-Robots-Tag: noindex
+```
+
+**`_redirects`: no existe en el repositorio.** No es un olvido: las redirecciones de dominio son Redirect Rules del panel, y el proyecto nunca creó el archivo. El único archivo de configuración de borde que existe es `_headers`.
+
+### E4-aa — Batería de cierre, sin filtrar (2026-10-04)
+
+Sin `grep`, sin `head`, sin `Select-String`. Salida literal y completa, en el mismo orden en que la corre CI. El build es el de CI, **sin** `MOSTRAR_BORRADORES`: por eso no construye los dos posts y la portabilidad omite su comprobación 3, que se validó aparte en E4-u.
+
+```
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+15:15:55 [content] Syncing content
+15:15:55 [content] Synced content
+15:15:55 [types] Generated 961ms
+15:15:55 [check] Getting diagnostics for Astro files in C:\Users\sebas_vf1ofrv\Desktop\calcinst-web...
+Result (49 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+EXIT=0
+```
+
+```
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+
+ RUN  v5.0.0 C:/Users/sebas_vf1ofrv/Desktop/calcinst-web
+
+
+ Test Files  5 passed (5)
+      Tests  126 passed (126)
+   Start at  15:16:11
+   Duration  2.59s (transform 46%, import 38%, tests 15%, worker 1%)
+
+  Transform  transforming modules took 2.30s · 46% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
+EXIT=0
+```
+
+```
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT_LINT=0
+
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT_FORMAT=0
+
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT_VERIFICAR=0
+```
+
+```
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+15:17:00 [WARN] [content] data store cleared (force)
+15:17:01 [content] Syncing content
+15:17:01 [content] Synced content
+15:17:01 [types] Generated 912ms
+15:17:01 [build] output: "static"
+15:17:01 [build] mode: "static"
+15:17:01 [build] directory: C:\Users\sebas_vf1ofrv\Desktop\calcinst-web\dist\
+15:17:01 [build] Collecting build info...
+15:17:01 [build] ✓ Completed in 990ms.
+15:17:01 [build] Building static entrypoints...
+15:17:02 [vite] ✓ built in 701ms
+15:17:02 [vite] ✓ built in 46ms
+15:17:02 [build] Rearranging server assets...
+
+ generating static routes
+15:17:02   ├─ /blog/categoria/conductores/index.html (+38ms)
+15:17:02   ├─ /blog/categoria/motores/index.html (+6ms)
+15:17:02   ├─ /blog/categoria/canalizaciones/index.html (+5ms)
+15:17:02   ├─ /blog/categoria/puesta-a-tierra/index.html (+5ms)
+15:17:02   ├─ /blog/categoria/practica-profesional/index.html (+4ms)
+15:17:02   ├─ /blog/rss.xml (+116ms)
+15:17:03   ├─ /blog/index.html (+5ms)
+15:17:03   ├─ /diseno/index.html (+163ms)
+15:17:03   ├─ /index.html (+6ms)
+15:17:03 [build] ✓ Completed in 979ms.
+15:17:03 [build] ✓ Completed in 1.84s.
+15:17:03 [build] 8 page(s) built in 2.85s
+15:17:03 [build] Complete!
+EXIT_BUILD=0
+```
+
+```
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT_SALIDA=0
+
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx (no construido: borrador en un build sin MOSTRAR_BORRADORES; se omite la comprobación 3)
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx (no construido: borrador en un build sin MOSTRAR_BORRADORES; se omite la comprobación 3)
+verificar-portabilidad: 2 post(s), 0 comparado(s) con su página, 0 fallo(s)
+EXIT_PORT=0
+```
+
+**Los avisos de colección vacía desaparecieron**, porque ya hay posts. Los dos que quedan, de borrador no construido, son correctos y se vuelven informativos el día que `borrador` pase a `false`.
+
+**Pruebas: 118 → 126.** Las ocho nuevas son cinco de NOTACION-SALIDA (AD9) y tres de la normalización tipográfica (AD10).
+
+### E4-ab — El tipógrafo rompía la prueba de portabilidad (AD10)
+
+**El hallazgo más incómodo de este bloque, y es de mi código.** Con los dos posts reales construidos, la comprobación I2 dio **11 fallos**:
+
+```
+[FALLA] que-version-de-la-nom-001-sede-esta-vigente.mdx
+  - texto que no aparece en la página: «Busca "NOM-001-SEDE" y vas a encontrar dos
+    respuestas. Media industria cita la 2018...»
+  (y 8 más)
+[FALLA] 110-14c-decide-la-columna-no-el-conductor.mdx
+  - texto que no aparece en la página: «El artículo 110-14(c) se titula "Limitaciones
+    por temperatura"...»
+  (y 1 más)
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 11 fallo(s)
+```
+
+Los once tenían una cosa en común: una comilla doble. Comparado carácter a carácter:
+
+```
+--- lo que dice la pagina ---
+Busca “NOM-001-SEDE” y vas a encontrar dos respuestas. Media industria cita la 2018.
+
+--- lo que dice el .mdx ---
+Busca "NOM-001-SEDE" y vas a encontrar dos respuestas. Media industria cita la 2018.
+```
+
+**Causa: `smartypants`, que Astro trae activo por omisión.** Convierte las comillas rectas en curvas, los dos guiones en raya y los tres puntos en puntos suspensivos. Remark puro no lo hace, así que la comparación literal daba un falso positivo por cada párrafo con una comilla. Nunca había salido porque los posts de prueba no tenían comillas.
+
+**Corrección (AD10):** la comparación pasa a ser módulo tipografía. Se normalizan **los dos lados** a la forma recta antes de comparar. No se tocó ninguno de los dos posts.
+
+Esto relaja la comprobación y por eso se registra como decisión en vez de arreglarse en silencio. Hay una prueba que fija el límite de la relajación: un texto que de verdad falte sigue detectándose, porque le faltarían caracteres y no una variante tipográfica de ellos.
+
+**Decisión pendiente para ti, no urgente:** `smartypants` está activo porque es el valor por omisión de Astro, no porque alguien lo eligiera. Tus comillas rectas se publican como curvas. Si prefieres que la página muestre exactamente lo que tecleas, se apaga con una línea en `astro.config.mjs`.
+
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
@@ -2113,6 +2487,14 @@ Condición de AD3, fijada por Sebastián el 2026-09-11. Texto literal:
 **Viabilidad, comprobada en la documentación** (`https://developers.cloudflare.com/workers/static-assets/headers/`): `_headers` admite reglas con URL absoluta, y el ejemplo que da la propia página es exactamente este caso — `https://myworker.mysubdomain.workers.dev/*` con `X-Robots-Tag: noindex`. Se resuelve con una regla en `public/_headers`, sin código de Worker. Dos advertencias de la misma página: la URL absoluta debe empezar por `https`, y las reglas de `_headers` no se aplican a respuestas generadas por código de Worker (hoy no hay ninguna).
 
 **Lo que la Etapa 9 no debe pasar por alto:** las previews también viven en `*.workers.dev` (`<versión>-calcinst-web.instcalc.workers.dev`, `<rama>-calcinst-web.instcalc.workers.dev`), así que la regla tiene que cubrir esos hosts y no solo el de producción. **No se ha comprobado** que `_headers` acepte un comodín en el host; si no lo acepta, hará falta una alternativa, que se decidirá entonces. La verificación con `curl -I` debe incluir un host de preview además de `calcinst-web.instcalc.workers.dev` y del canónico.
+
+### P5 — Normalización Unicode fuera del alcance del check (destino: Etapa 9)
+
+Registrado a pedido de Sebastián (2026-10-04), como consecuencia de AD9.
+
+NFKC convierte U+00B5 en U+03BC, así que la relación de compatibilidad empuja en sentido contrario a la forma elegida para micro. `verificar-salida.mjs` ya cierra la ventana del HTML construido (E4-y), pero solo mira lo que hay en `dist/`.
+
+**Lo que queda abierto:** las **imágenes OG** son el siguiente candidato a normalizar por su cuenta. Se generan fuera de este flujo —el texto pasa por un renderizador de fuentes que puede aplicar su propia normalización— y una imagen no se revisa leyendo `dist/` como texto. Cuando la Etapa 9 las añada, hay que comprobar explícitamente qué punto de código acaba dibujado, no cuál se le pasó.
 
 ### Otros pendientes
 

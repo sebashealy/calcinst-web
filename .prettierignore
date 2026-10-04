@@ -8,3 +8,9 @@ package-lock.json
 ESTADO_SITIO.md
 DECISIONES_SITIO.md
 HIPOTESIS_SITIO.md
+
+# Contenido redactado por una persona — se publica tal como se escribio.
+# Prettier reescribia las comillas del frontmatter e indentaba el cuerpo dentro
+# de los componentes; lo que vigila al contenido son CARACTERES, I3c, el esquema
+# del frontmatter y la prueba de portabilidad, no el formateador.
+src/content/blog/*.mdx

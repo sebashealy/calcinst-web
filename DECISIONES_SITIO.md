@@ -127,3 +127,15 @@ Las referencias de **artículo no cambian**: 110-14(c), 310-15(b)(16), 310-15(b)
 **Advertencia registrada.** La relación de compatibilidad va en sentido contrario al de la decisión: NFKC convierte U+00B5 en U+03BC. Una normalización de compatibilidad en cualquier punto de la cadena produciría el carácter ahora prohibido. Por eso la comprobación NOTACION corre en cada build y no solo una vez; el motivo está escrito en `caracteres.json` para que nadie la «arregle» después.
 
 **Costo de revertir:** una entrada en `caracteres.json` y regenerar las fuentes.
+
+### AD10 — La prueba de portabilidad compara módulo tipografía (2026-10-04)
+
+**Contexto.** Al construir T01 y T03, la comprobación I2 dio 11 fallos, todos en párrafos con una comilla doble (E4-ab). Causa: Astro trae `smartypants` activo por omisión, que convierte las comillas rectas del `.mdx` en curvas en la página; remark puro no lo hace, así que la comparación literal daba un falso positivo por cada párrafo con comillas. No había salido antes porque los posts de prueba no tenían ninguna.
+
+**Decisión:** `textosPerdidos` normaliza **los dos lados** a la forma recta antes de comparar: comillas curvas y latinas, apóstrofos tipográficos, raya y semirraya, y puntos suspensivos. Los posts no se tocaron.
+
+**Esto relaja la comprobación**, y por eso se registra como decisión en vez de arreglarse en silencio. El límite de la relajación está fijado por una prueba: solo se igualan formas equivalentes del mismo carácter, de modo que un texto que de verdad desaparezca de la página sigue delatándose, porque le faltarían caracteres y no una variante tipográfica de ellos.
+
+**Decisión abierta, de Sebastián:** `smartypants` está activo porque es el valor por omisión de Astro, no porque se eligiera. Hoy las comillas rectas que se teclean se publican curvas. Si se prefiere que la página muestre exactamente lo tecleado, se apaga en `astro.config.mjs` y esta normalización pasa a ser innecesaria (aunque conviene dejarla: cuesta nada y cubre el caso de que alguien teclee comillas curvas directamente).
+
+**Costo de revertir:** bajo. Es una función de cuatro sustituciones en el verificador.

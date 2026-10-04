@@ -1,0 +1,207 @@
+---
+title: "El Art. 110-14(c) decide la columna, no el conductor"
+description: "Compraste cable de 90 °C y no puedes usar la columna de 90 °C. Pero sí la usas, para otra cosa. La regla de coordinación que casi todos saltan."
+fechaPublicacion: 2026-09-12
+categoria: conductores
+etiquetas:
+  - 110-14c
+  - ampacidad
+  - terminales
+  - temperatura
+normativa:
+  - ref: "110-14(c)"
+    tipo: "articulo"
+    version: "NOM-001-SEDE-2012"
+    verificadoDOF: true
+  - ref: "310-15(b)"
+    tipo: "articulo"
+    version: "NOM-001-SEDE-2012"
+    verificadoDOF: true
+  - ref: "310-15(b)(16)"
+    tipo: "tabla"
+    version: "NOM-001-SEDE-2012"
+    verificadoDOF: true
+borrador: true
+erratas: []
+slugsAnteriores: []
+---
+
+Pediste THW-2. El aislamiento aguanta 90 °C, lo dice la marca impresa en
+la cubierta, pagaste por eso. Abres la Tabla 310-15(b)(16), vas a la
+columna de 90 °C, lees la ampacidad y dimensionas con ella.
+
+Está mal, y el error va en la dirección peligrosa: el conductor te queda
+más chico de lo permitido.
+
+Lo incómodo es que la columna de 90 °C sí se usa. Lo que pasa es que no
+se usa para eso.
+
+## La regla en una frase
+
+El artículo 110-14(c) se titula "Limitaciones por temperatura" y empieza
+estableciendo un principio de coordinación: la temperatura nominal de
+operación del conductor, asociada con su ampacidad, debe seleccionarse
+de manera que no exceda la temperatura nominal más baja de cualquier
+terminal, conductor o dispositivo conectado.
+
+<CalloutNormativo ref="110-14(c)" version="NOM-001-SEDE-2012" tipo="articulo">
+110-14(c) — Limitaciones por temperatura
+</CalloutNormativo>
+
+Traducido: la cadena vale lo que su eslabón más débil. Si tu cable
+soporta 90 °C pero el interruptor al que lo atornillas tiene terminales
+para 75 °C, la temperatura que manda es 75 °C. No importa lo que pagaste
+por el cable.
+
+Y esto no es una nota ni una recomendación. Es el texto del artículo.
+
+## Qué columna te toca
+
+El propio 110-14(c) fija el criterio, y no depende del calibre que
+compraste sino del equipo:
+
+**Circuitos de 100 amperes o menos**, o terminales marcadas para
+conductores de 2.08 mm² a 42.4 mm² (14 AWG a 1 AWG): columna de
+**60 °C**.
+
+**Circuitos de más de 100 amperes**, o terminales marcadas para
+conductores mayores de 42.4 mm² (1 AWG): columna de **75 °C**.
+
+Dos cosas que se malinterpretan aquí.
+
+La primera: son dos condiciones alternativas, no acumulativas. Basta que
+se cumpla una.
+
+La segunda: **el equipo marcado gana**. El artículo condiciona todo lo
+anterior a que el equipo no esté aprobado y marcado de forma distinta.
+Si tu interruptor dice expresamente que acepta conductores de 75 °C,
+usas 75 °C aunque el circuito sea de 60 amperes. Antes de aplicar la
+regla general, léele la placa al equipo. Muchos la traen.
+
+El artículo añade además que la ampacidad con la que determinas las
+disposiciones de las terminales se toma de la Tabla 310-15(b)(16). No
+de la tabla de conductores al aire libre, no del Apéndice B. De esa.
+
+## Entonces, ¿para qué sirve la columna de 90 °C?
+
+Para lo único para lo que sirve: como punto de partida del cálculo de
+factores.
+
+El mismo 110-14(c) lo permite expresamente: se pueden usar conductores
+con temperatura nominal mayor que la de las terminales cuando se aplican
+factores de ajuste por temperatura o de corrección por ampacidad.
+
+Y el artículo 310-15(b) lo cierra sin dejar margen de interpretación:
+
+<CalloutNormativo ref="310-15(b)" version="NOM-001-SEDE-2012" tipo="articulo">
+310-15(b) — Tablas de ampacidad
+</CalloutNormativo>
+
+Ahí se establece que se permite aplicar los factores de ajuste y la
+corrección de temperatura sobre la ampacidad correspondiente al valor
+nominal del conductor, **siempre que la ampacidad corregida y ajustada
+no exceda** la ampacidad correspondiente al valor nominal de la
+terminal, de acuerdo con 110-14(c).
+
+Esa frase es todo el artículo que estás leyendo, comprimida.
+
+## El procedimiento correcto: dos vías y te quedas con la menor
+
+<CalloutNormativo ref="310-15(b)(16)" version="NOM-001-SEDE-2012" tipo="tabla">
+Tabla 310-15(b)(16) — Ampacidad permisible de conductores aislados
+</CalloutNormativo>
+
+Para un calibre dado, haces dos cuentas por separado:
+
+**Vía 1 — la térmica del conductor.** Tomas la ampacidad de la columna
+que corresponde a la temperatura nominal real de tu aislamiento, 90 °C
+si es THW-2 o THHW-2. La multiplicas por el factor de corrección por
+temperatura ambiente y por el factor de ajuste por agrupamiento, si
+aplican. El resultado es lo que el conductor aguanta térmicamente en
+esas condiciones.
+
+**Vía 2 — el límite de la terminal.** Tomas la ampacidad de la columna
+que te impone 110-14(c), 60 u 75 °C según el caso. **Sin aplicarle
+ningún factor.** Este número no representa una condición térmica; es un
+tope contractual del equipo.
+
+**La ampacidad utilizable es la menor de las dos.**
+
+De aquí sale la parte contraintuitiva: partir de la columna de 90 °C es
+correcto y a menudo te ayuda, porque los factores se aplican sobre un
+número mayor y el resultado ajustado termina siendo más alto que si
+hubieras partido de 75 °C. Pero por muy bien que salga la Vía 1, nunca
+puede superar a la Vía 2.
+
+Dicho de otro modo: **el aislamiento de 90 °C te compra margen frente a
+los factores, no ampacidad adicional frente al equipo.**
+
+Si no hay factores que aplicar —ambiente de 30 °C, tres conductores o
+menos en el tubo— la Vía 1 no se reduce, pero tampoco sirve de nada: la
+Vía 2 manda directamente y el resultado es idéntico a haber usado desde
+el principio la columna de la terminal. Ese es justamente el caso
+doméstico más común, y es donde el error de usar 90 °C se vuelve
+sobredimensionar la corriente permitida sin ninguna justificación.
+
+## La excepción de los motores
+
+Hay un caso que conviene tener presente porque aparece seguido en
+instalaciones industriales.
+
+Dentro del criterio de 100 amperes o menos, 110-14(c) permite que en
+motores marcados con las letras de diseño B, C, D o E se usen
+conductores con aislamiento de 75 °C o mayor, siempre que la ampacidad
+que uses no exceda la de 75 °C.
+
+Es decir: para esos motores subes de la columna de 60 a la de 75 aunque
+el circuito sea de menos de 100 amperes. La letra de diseño está en la
+placa del motor. Vale la pena mirarla antes de asumir la columna de 60.
+
+## Por qué este error importa más que otros
+
+Muchos errores de cálculo en instalaciones eléctricas son
+conservadores: te dan un conductor o un tubo más grande del necesario,
+cuestan dinero y no matan a nadie.
+
+Este no. Usar la columna de 90 °C contra una terminal de 75 °C te
+autoriza a pasar más corriente de la que el fabricante del equipo
+garantiza en sus bornes. El conductor va a estar bien. El punto que se
+calienta es la conexión, dentro del tablero, donde nadie lo ve hasta que
+huele.
+
+Y es un error silencioso: no hay ningún momento del cálculo en que algo
+falle o dé un resultado absurdo. Simplemente sale un calibre más chico y
+todo parece normal.
+
+## Cómo revisar lo que ya tienes
+
+Si usas una hoja de cálculo propia o heredada, busca dónde elige la
+columna de temperatura. Tres señales de que está mal:
+
+La columna se elige a partir del **tipo de aislamiento** del conductor y
+nada más. Es el error clásico: la hoja lee "THW-2" y va a 90 °C.
+
+No aparecen por ningún lado la **corriente del circuito ni el calibre**
+como criterio de selección de columna. Si el umbral de 100 amperes y el
+de 42.4 mm² no están en la fórmula, la regla no se está aplicando.
+
+Hay **una sola** lectura de la tabla. Si el cálculo no compara dos
+ampacidades y se queda con la menor, no está haciendo la coordinación de
+110-14(c), aunque sí aplique correctamente los factores.
+
+Esa tercera es la más frecuente en hojas que por lo demás están bien
+hechas. Aplican los factores con cuidado, documentan las fuentes, y les
+falta el tope.
+
+## Una aclaración sobre este artículo
+
+Las citas de este texto provienen del articulado de la
+NOM-001-SEDE-2012 publicado en el Diario Oficial de la Federación el 29
+de noviembre de 2012. La Nota Aclaratoria del 7 de febrero de 2014 no
+modifica 110-14(c), 310-15(b) ni la Tabla 310-15(b)(16).
+
+No reproduzco aquí los valores de la Tabla 310-15(b)(16). Consúltala en
+el texto publicado; lo que este artículo explica es cuál de sus columnas
+te corresponde leer.
+
+<Descargo />

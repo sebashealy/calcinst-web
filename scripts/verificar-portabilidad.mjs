@@ -63,15 +63,42 @@ export function problemasDePortabilidad(fuente, permitidos) {
 }
 
 /**
+ * Equivalencias que introduce el tipógrafo del sitio.
+ *
+ * Astro trae `smartypants` activo por omisión: convierte las comillas rectas en
+ * curvas, los dos guiones en raya y los tres puntos en puntos suspensivos. Remark
+ * puro no lo hace, así que comparar las cadenas tal cual daba falsos positivos en
+ * cada párrafo con una comilla. Se normalizan **los dos lados** a la forma recta,
+ * que es la que se teclea.
+ *
+ * Esto no debilita la comprobación: solo iguala formas equivalentes del mismo
+ * carácter. Un texto que desapareciera de la página sigue delatándose, porque le
+ * faltarían caracteres, no una variante tipográfica de ellos.
+ */
+const EQUIVALENCIAS = [
+  [/[\u201C\u201D\u00AB\u00BB]/g, '"'],
+  [/[\u2018\u2019]/g, "'"],
+  [/[\u2013\u2014]/g, '-'],
+  [/\u2026/g, '...'],
+]
+
+/** @param {string} texto */
+export function normalizarTipografia(texto) {
+  return EQUIVALENCIAS.reduce((acc, [patron, recto]) => acc.replace(patron, recto), texto)
+}
+
+/**
  * Comprobación 3: textos del .mdx, leídos con remark, que no aparecen en el HTML.
+ *
+ * La comparación es módulo tipografía: ver `normalizarTipografia`.
  *
  * @param {string} fuente
  * @param {string} html
  * @returns {string[]}
  */
 export function textosPerdidos(fuente, html) {
-  const visible = textoVisible(html)
-  return analizarMdx(fuente).textos.filter((t) => !visible.includes(t))
+  const visible = normalizarTipografia(textoVisible(html))
+  return analizarMdx(fuente).textos.filter((t) => !visible.includes(normalizarTipografia(t)))
 }
 
 function main() {
