@@ -40,7 +40,7 @@ Cotejo criterio por criterio (plan §6, Etapa 4):
 
 **Las dos decisiones que quedaban abiertas se resolvieron el 2026-10-04:** el `Descargo` se retiró del cuerpo de los dos posts y axe baja a cero violaciones (E4-ac); `smartypants` se apaga y la relajación de I2 se revierte (AD11, E4-ad). Se añadió además el colapso del aviso por post (AD12, E4-ae).
 
-**Lo único que sigue abierto y es de Sebastián:** P1, y levantar `borrador` en los dos posts con su fecha real. Pendiente de aprobación, sin urgencia: declarar `@astrojs/markdown-satteri` 0.4.0 para quitar el aviso de obsolescencia que `markdown.smartypants` imprime en cada build (E4-ad). La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+**Lo único que sigue abierto y es de Sebastián:** P1, y levantar `borrador` en los dos posts con su fecha real. El aviso de obsolescencia de `markdown.smartypants` se **tolera**, registrado como **P6** con su condición de cierre: las tres salidas se midieron (E4-ai) y ninguna evita el aviso sin devolver el tipógrafo o sin declarar un paquete. No se instaló nada. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
 
 Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab; del bloque de tipografía en E4-ac … E4-ah. Diferencias con el plan en el addendum A8.
 
@@ -2676,6 +2676,90 @@ EXIT_PORT=0
 
 **Pruebas: 126.** Dos de AD10 se retiraron con la normalización que probaban y dos nuevas las sustituyen, de modo que el total no cambia pero lo que vigilan sí: antes fijaban que la relajación funcionara, ahora que no exista.
 
+### E4-ai — `markdown.smartypants` obsoleto: las tres salidas, medidas (2026-10-04)
+
+Instrucción de Sebastián: averiguar si hay forma de apagar el tipógrafo **sin dependencia nueva**, antes de instalar nada. Se midieron las tres vías. **No se instaló nada.**
+
+**Vía 1 — ¿hay sustituta directa en la configuración de Astro 7, sin paquete nuevo? No.**
+
+La opción vigente es `markdown.processor`, y su esquema exige un objeto procesador completo, no una configuración plana:
+
+```
+> sed -n '191,202p' node_modules/astro/dist/core/config/schemas/base.js
+    processor: z.object({
+      name: z.string(),
+      options: z.custom(...).default(() => ({})),
+      createRenderer: z.custom((v) => typeof v === "function"),
+      createMdxRenderer: z.custom(...).optional()
+    }).default(() => satteri())
+```
+
+El único fabricante de ese objeto es `satteri()`, y **ningún punto de entrada público lo expone**. Comprobado uno por uno:
+
+```
+> astro/config  →  defineConfig envField fontProviders getViteConfig logHandlers
+                   memoryCache mergeConfig passthroughImageService sessionDrivers
+                   sharpImageService svgoOptimizer validateConfig
+> astro/markdown →  createDefaultAstroMetadata extractFrontmatter
+                    isFrontmatterValid parseFrontmatter resolvePath
+> @astrojs/mdx  →  export { mdx as default, getContainerRenderer }
+```
+
+`@astrojs/mdx` **importa** `satteri` para su uso interno, pero no lo reexporta. No hay vía sin declarar el paquete.
+
+**Vía 2 — ¿desaparece el aviso quitando la clave, porque el valor por omisión ya es el que queremos? El aviso sí; el comportamiento no.**
+
+El aviso salta cuando la clave está **definida**, con cualquier valor:
+
+```
+> sed -n '27p' node_modules/astro/dist/core/config/validate.js
+  const deprecated = ["gfm", "smartypants"].filter((k) => md[k] !== void 0);
+```
+
+Quitada la clave, el aviso desaparece —0 apariciones en el build— pero el tipógrafo vuelve, porque el procesador por omisión lo trae encendido. El propio código de Astro lo dice en un comentario: «The active processor (`satteri()`) supplies the real default (`gfm`/smart punctuation on) when these are absent».
+
+Medido, no deducido:
+
+```
+--- sin la clave, la pagina dice ---
+Busca “NOM-001-SEDE” y vas a encontrar dos respuestas. Media industria cita
+
+comillas inglesas en la pagina: 18
+
+> npm run portabilidad
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 11 fallo(s)
+```
+
+Los mismos once fallos de E4-ab. **La vía 2 cambia un aviso por el comportamiento que acabamos de rechazar.** No sirve.
+
+**Efecto colateral valioso: las guardias de AD11 saltaron las dos.** Este experimento fue, sin buscarlo, la prueba de que no son decorado:
+
+```
+> npx vitest run tests/contenido.test.ts
+ × el tipógrafo está apagado en astro.config.mjs
+AssertionError: expected '// @ts-check\nimport { defineConfig }…' to match /smartypants:\s*false/
+      Tests  1 failed | 22 passed (23)
+```
+
+La prueba de configuración falló **sin necesidad de construir nada**, que era justo su razón de ser, y la portabilidad estricta falló sobre el contenido construido. Si alguien revierte esto por descuido, se entera dos veces.
+
+**Vía 3 — tolerar el aviso.** Es una línea, **una sola vez por proceso** (`didWarnAboutDeprecatedMarkdownOptions` es un interruptor de módulo), no una por página. Aparece en `astro check`, `npm test` y `npm run build`. Salida literal:
+
+```
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+```
+
+**Un dato para la decisión, porque matiza el costo de la cuarta vía.** `@astrojs/markdown-satteri` **0.4.0** es dependencia directa **de `astro` y de `@astrojs/mdx`**, las dos declaradas en `package.json`, y las dos la fijan en esa versión exacta:
+
+```
+> astro -> "0.4.0"
+> @astrojs/mdx -> "0.4.0"
+```
+
+Declararla no descargaría nada nuevo ni añadiría un árbol de versiones propio: ya está instalada y clavada por dos dependencias que sí declaramos. Sigue siendo una dependencia más en `package.json`, y la decisión es de Sebastián.
+
+**Estado: el aviso se tolera, a la espera de su decisión. Condición registrada:** se elimina cuando toque subir de versión de Astro, que es cuando `markdown.smartypants` desaparecerá de todas formas. Anotado como **P6**.
+
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
@@ -2809,6 +2893,16 @@ Registrado a pedido de Sebastián (2026-10-04), como consecuencia de AD9.
 NFKC convierte U+00B5 en U+03BC, así que la relación de compatibilidad empuja en sentido contrario a la forma elegida para micro. `verificar-salida.mjs` ya cierra la ventana del HTML construido (E4-y), pero solo mira lo que hay en `dist/`.
 
 **Lo que queda abierto:** las **imágenes OG** son el siguiente candidato a normalizar por su cuenta. Se generan fuera de este flujo —el texto pasa por un renderizador de fuentes que puede aplicar su propia normalización— y una imagen no se revisa leyendo `dist/` como texto. Cuando la Etapa 9 las añada, hay que comprobar explícitamente qué punto de código acaba dibujado, no cuál se le pasó.
+
+### P6 — Aviso de obsolescencia de `markdown.smartypants` (corte: al subir de versión de Astro)
+
+Tolerado a propósito, no olvidado. `markdown.smartypants: false` funciona y es lo que mantiene el tipógrafo apagado (AD11), pero Astro 7 lo marca obsoleto y lo avisa **una vez por proceso** en `astro check`, `npm test` y `npm run build`.
+
+Las tres salidas se midieron antes de proponer nada (E4-ai): no hay sustituta en la configuración sin declarar un paquete, y quitar la clave silencia el aviso pero devuelve las comillas inglesas y rompe I2 con los mismos once fallos. **Se eligió el aviso antes que la dependencia.**
+
+**Condición de cierre:** se elimina cuando toque subir de versión de Astro, que es cuando `markdown.smartypants` desaparece de todas formas. En ese momento la forma vigente —`markdown.processor`— ya habrá que adoptarla, y la decisión sobre `@astrojs/markdown-satteri` se toma entonces con el cambio de major delante, no para silenciar una línea.
+
+**Mientras tanto, el aviso no se filtra de la batería de cierre.** Una batería con ruido es una que se deja de leer, así que el ruido que queda está aquí identificado y acotado: una línea, una vez por comando, de causa conocida. Si aparece cualquier otro aviso, no es este.
 
 ### Otros pendientes
 
