@@ -22,7 +22,7 @@ También en esta etapa, a pedido de Sebastián: **P2** (juego de caracteres) y *
 
 ## Etapa en curso
 
-Etapa 4 — Blog completo, con dos posts reales. **Los dos posts ya están integrados y en borrador; la etapa no se cierra todavía**: falta P1, y los posts esperan la pasada final de verificación de Sebastián contra el DOF, que es quien cambia `borrador` a `false`.
+Etapa 4 — Blog completo, con dos posts reales. **P1 quedó cerrado el 2026-10-04 (E4-aj): no queda ningún bloqueo técnico.** Los siete criterios del plan §6 están cumplidos y los dos posts están integrados, pero **la etapa no se cierra todavía**: siguen en `borrador: true` hasta la pasada final de verificación de Sebastián contra el DOF, que es quien cambia la bandera y pone la fecha real de publicación.
 
 Cotejo criterio por criterio (plan §6, Etapa 4):
 
@@ -36,13 +36,13 @@ Cotejo criterio por criterio (plan §6, Etapa 4):
 | Lighthouse del post: LCP ≤ 2.0 s, JS ≤ 5 KB, peso ≤ 300 KB | cumplido | E4-k: 1.36 s, 1 137 B, 83 691 B sin comprimir |
 | Los dos posts con todas sus citas en `verificadoDOF: true` | cumplido en borrador | T01 y T03 integrados el 2026-10-04 (E4-u), con sus seis citas en `verificadoDOF: true` y el cruce cuerpo↔frontmatter verde. Siguen en `borrador: true` hasta la pasada final de Sebastián |
 
-**Para cerrar la Etapa 4 falta:** **P1**, las Redirect Rules con sus nueve comprobaciones, que Sebastián aplica a mano en el panel de Cloudflare; hoy pasan 3 de 9 (E4-z). Y que los dos posts salgan de borrador tras su pasada final. H1 se cerró el 2026-09-12 (AD6, E4-p) y los posts se integraron el 2026-10-04 (E4-u).
+**Para cerrar la Etapa 4 falta una sola cosa, y no es técnica:** que Sebastián levante `borrador` en T01 y T03 tras su pasada final, con la fecha real de publicación. Todo lo demás está cerrado: H1 el 2026-09-12 (AD6, E4-p); los posts integrados el 2026-10-04 (E4-u); **P1 el 2026-10-04, 9 de 9 (E4-aj)**, que era el último bloqueo.
 
 **Las dos decisiones que quedaban abiertas se resolvieron el 2026-10-04:** el `Descargo` se retiró del cuerpo de los dos posts y axe baja a cero violaciones (E4-ac); `smartypants` se apaga y la relajación de I2 se revierte (AD11, E4-ad). Se añadió además el colapso del aviso por post (AD12, E4-ae).
 
-**Lo único que sigue abierto y es de Sebastián:** P1, y levantar `borrador` en los dos posts con su fecha real. El aviso de obsolescencia de `markdown.smartypants` se **tolera**, registrado como **P6** con su condición de cierre: las tres salidas se midieron (E4-ai) y ninguna evita el aviso sin devolver el tipógrafo o sin declarar un paquete. No se instaló nada. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+**Lo único que sigue abierto y es de Sebastián:** levantar `borrador` en los dos posts con su fecha real. El aviso de obsolescencia de `markdown.smartypants` se **tolera**, registrado como **P6** con su condición de cierre: las tres salidas se midieron (E4-ai) y ninguna evita el aviso sin devolver el tipógrafo o sin declarar un paquete. No se instaló nada. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
 
-Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab; del bloque de tipografía en E4-ac … E4-ah. Diferencias con el plan en el addendum A8.
+Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab; del bloque de tipografía en E4-ac … E4-ah; de las tres salidas de smartypants en E4-ai; y del cierre de P1 en E4-aj. Diferencias con el plan en el addendum A8.
 
 **Nota de etiquetado (bloque del 2026-10-04).** El bloque de tipografía pedía E4-ac … E4-ag. Se registran como **E4-ac … E4-ah**: hay una etiqueta de más porque las fechas de publicación merecían su propia entrada (E4-ag), de modo que la batería de cierre es **E4-ah** y no E4-ag. El resto va en el orden pedido.
 
@@ -2152,7 +2152,7 @@ Revisa `.html`, `.xml`, `.svg`, `.txt`, `.json`, `.css`, `.js` y `.mjs`. Los `.w
 
 **Están escritas, no reconstruidas.** La definición vive en `ESTADO_SITIO.md` § Bloqueos desde el 2026-09-06, con su tabla de casos. Copiada literalmente:
 
-> ### P1 — Preservación de ruta en las dos Redirect Rules (corte: antes de cerrar la Etapa 4)
+> ### P1 — Preservación de ruta en las dos Redirect Rules — **CERRADO el 2026-10-04**
 >
 > Defecto documentado en E1-n. Corrección: cambiar ambas reglas a redirección **dinámica** con destino `concat("https://calcinst.mx", http.request.uri.path)` y _Preserve query string_ activado.
 >
@@ -2167,6 +2167,10 @@ Revisa `.html`, `.xml`, `.svg`, `.txt`, `.json`, `.css`, `.js` y `.mjs`. Los `.w
 > | Ruta + query | `https://www.calcinst.mx/blog/?pagina=2&utm_source=x` | `Location: https://calcinst.mx/blog/?pagina=2&utm_source=x` | Que ruta y query se preserven **juntas**; el defecto 2 conservaba el query pero descartaba la ruta |
 >
 > Los tres casos se repiten contra `calcinst.com` y `www.calcinst.com`, que usan la otra regla: son nueve comprobaciones en total.
+
+**Verificación (2026-10-04): P1 resuelto, 9 de 9.** Sebastián aplicó la corrección en el panel; la verificación es independiente y está en **E4-aj** con la salida literal de `curl -sSI` de las nueve, sin filtrar. Los nueve devuelven `301` y un `Location` idéntico al esperado, comparado carácter a carácter y no a ojo. Se comprobó además que el destino **existe**: dos de los destinos responden 200, que es lo que el defecto original —`calcinst.mxblog`, un hostname inexistente— habría delatado y un `Location` de buena pinta no basta para descartar.
+
+El mismo día, antes de la corrección, pasaban 3 de 9 (E4-z): solo las tres raíces, que son justamente las que se verificaron en la Etapa 1 y dejaron pasar el defecto. Ese contraste es el argumento de por qué la verificación son nueve comprobaciones y no una.
 
 **Estado actual de las nueve, medido hoy.** Los dos defectos siguen vivos y se comportan distinto en cada regla:
 
@@ -2760,6 +2764,172 @@ Declararla no descargaría nada nuevo ni añadiría un árbol de versiones propi
 
 **Estado: el aviso se tolera, a la espera de su decisión. Condición registrada:** se elimina cuando toque subir de versión de Astro, que es cuando `markdown.smartypants` desaparecerá de todas formas. Anotado como **P6**.
 
+### E4-aj — P1 verificado contra producción: 9 de 9 (2026-10-04)
+
+Sebastián aplicó la corrección en el panel de Cloudflare. Verificación propia e independiente, con las nueve comprobaciones que P1 define desde el 2026-09-06. **Salida literal de `curl -sSI`, sin filtrar.**
+
+**Comprobaciones 1 a 3 — regla de `calcinst.mx`:**
+
+```
+########## curl -sSI "https://www.calcinst.mx/"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:14 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Ded1R6Y4bBmlVcpvw2Hwoq1B8wsOUYwsXhFflyR64zll5qCOCtSCKk9DYUBFvrp5THTo%2FWqrxTZr0Rmngi237qi3PQhg6tjXNwbIxzn5HWe1lhW7xafKdVWYCI5cbi9DQ9d5eCZjkCNXXU2unZQ%3D"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b1637f79464d-DFW
+
+########## exit=0
+
+########## curl -sSI "https://www.calcinst.mx/blog/mi-post/"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:14 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/blog/mi-post/
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=9ttgMSc4JGrof6JO6hWfvhkqXxBuKSJufbIKwAbH%2BFNvrkF4hS%2FS9Msokp3C9R5Nv4cERR5necKuNiHc4KvIaFecAg7GPWq5FNslAPQ8T3brCtVw%2FoVk4bGgIgKoJRG4GITxjegn%2FLzhQPmE0cA%3D"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b164bfc9f042-DFW
+
+########## exit=0
+
+########## curl -sSI "https://www.calcinst.mx/blog/?pagina=2&utm_source=x"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:15 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/blog/?pagina=2&utm_source=x
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=RRU2wArZzfBHo%2F2NP9nS11BXkVwvRze2OrqdXNHIOjKfFqszEhwkJnxQ1glAy23U35Cq0p8ZTijggqkzeSk3bDQ3qRTUO8grItFgl7ysqIbnw4h4Br5z9mgu%2FOQIz9802hIUom9SY9XOa7565Tw%3D"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b165efd523f2-DFW
+
+########## exit=0
+```
+
+**Comprobaciones 4 a 6 — regla de `calcinst.com`:**
+
+```
+########## curl -sSI "https://calcinst.com/"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:21 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=M5oez0nA%2BUA8rTviQz%2FpNmygmTCDpeJw2cc7cG1VJWwIiGOCi4ZzbylV%2FjhGuea8G4AottSnfO%2FLySEIsSXRLp9gaWX7AoFetGxlEyeI42%2BLIihn%2BoyN2yns0NzpTxxo7OakuKMMcYVG5bQ%3D"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b1907e69e573-DFW
+
+########## exit=0
+
+########## curl -sSI "https://calcinst.com/blog/mi-post/"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:22 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/blog/mi-post/
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=a%2Bxz40UbYrEE%2FBAiYp84v9GIpauar0pPt0m1bNSGqd9L7I2ZHjuydDUXhQWtAmkMrCv5Fg2d7dqlItvLqY6IS9YLuzb6TtmFq8o9%2BdojTA1fBGAnJpUptDO3asDZd454%2FmeyKBmS9QS5rcc%3D"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b1919931f0ba-DFW
+
+########## exit=0
+
+########## curl -sSI "https://calcinst.com/blog/?pagina=2&utm_source=x"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:22 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/blog/?pagina=2&utm_source=x
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=hrlsxkQh4SxBRFxDm4fAIA99h1vGFL91n%2BRXTWWJS3vPUN%2BlnQDF8OYXvehQkIoXWSNQgikxmwuyM64KXXpXZi29xliQIUlhSmjNrrN33yqHjknzEVBIADIrRlgyfGuHfgLB1JDhxuOkt88%3D"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b192bc77686c-DFW
+
+########## exit=0
+```
+
+**Comprobaciones 7 a 9 — `www.calcinst.com`, que usa la regla del `.com`:**
+
+```
+########## curl -sSI "https://www.calcinst.com/"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:28 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=DI6XRodmx%2FDNLhor%2BNNCu%2BYXA4hHNvASW1BoXqR%2F8WFgTsbEToENORigUB9Ye4m41Bff5J2GwxhmbsO%2FCY0%2FzELvEJf2QCc6%2Bvq1PRbIsAd0n84f5jHhbHVA2aNE6fYWeAfjT93S5OOjJp62BUGR"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b1b668caf070-DFW
+
+########## exit=0
+
+########## curl -sSI "https://www.calcinst.com/blog/mi-post/"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:28 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/blog/mi-post/
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=aSl4aKLwa7ggiKw7Ihl3DZMmrQtvg3%2Bf%2FAPcQlaJQOVyW%2BHN%2FTnXv3yt2IiMfpipUSD4W5yJq6d%2FcGUhMXwMIh82paYXzifSfcyhInDa7I6cYYs1oi4BBHBnygthetu6jlrSJqXV8dfpSaSPkFSp"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b1b79dc0ded6-DFW
+
+########## exit=0
+
+########## curl -sSI "https://www.calcinst.com/blog/?pagina=2&utm_source=x"
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 04 Oct 2026 22:41:28 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: keep-alive
+Location: https://calcinst.mx/blog/?pagina=2&utm_source=x
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=3kWvQzSK8bALjTIM1q3zIer9o%2BWWLMP%2BhdVJNo%2Byr2U%2BtwRQpvgJiEL0yTNmYRVN%2B7mEfwvYluNY9f5ggfvA0ms8CixNuDG0Ye8xUAOVWzEPIFrKuchQ1gLOBj9LRekTPirk9Mcv9J7MIT3IsmzA"}]}
+Nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+Server: cloudflare
+CF-RAY: a457b1b8b957677a-DFW
+
+########## exit=0
+```
+
+**Comparación estricta de los nueve `Location` contra el esperado**, para no darlo por bueno a ojo. Se exige además que el estado sea `301` y no otro redirección:
+
+```
+ 1  OK     301  https://calcinst.mx/
+ 2  OK     301  https://calcinst.mx/blog/mi-post/
+ 3  OK     301  https://calcinst.mx/blog/?pagina=2&utm_source=x
+ 4  OK     301  https://calcinst.mx/
+ 5  OK     301  https://calcinst.mx/blog/mi-post/
+ 6  OK     301  https://calcinst.mx/blog/?pagina=2&utm_source=x
+ 7  OK     301  https://calcinst.mx/
+ 8  OK     301  https://calcinst.mx/blog/mi-post/
+ 9  OK     301  https://calcinst.mx/blog/?pagina=2&utm_source=x
+
+P1: 9 de 9 comprobaciones pasan
+
+--- el destino existe de verdad ---
+200  https://calcinst.mx/
+200  https://calcinst.mx/blog/?pagina=2&utm_source=x
+EXIT=0
+```
+
+**Los tres defectos originales, muertos.** Cada terna comprueba uno:
+
+| Terna | Qué detectaba | Antes (medido el 2026-10-04, antes de la corrección) | Ahora |
+| --- | --- | --- | --- |
+| 1, 4, 7 | Doble barra al concatenar con `uri.path = /` | `https://calcinst.mx/` — ya pasaba | `https://calcinst.mx/`, una sola barra |
+| 2, 5, 8 | Concatenación sin separador que rompía el hostname | `https://calcinst.mxblog/mi-post/` en `.mx`; ruta descartada en `.com` | ruta íntegra en los tres orígenes |
+| 3, 6, 9 | Ruta y query preservadas **juntas** | query conservado, ruta perdida | las dos juntas |
+
+**La última comprobación es la que cierra el círculo del defecto original.** `calcinst.mxblog` no era un subdominio mal formado sino un hostname inexistente; por eso no basta con que el `Location` tenga buena pinta. Los dos destinos consultados responden **200**, así que la cadena completa —petición, redirección y destino— funciona.
+
+**P1 queda cerrado.** Era el último bloqueo técnico de la Etapa 4.
+
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 
 D2 establece: *"Cloudflare solo despliega lo que pasó CI"*. La integración Git de Workers Builds no satisface ese enunciado por sí sola, porque Cloudflare construye al recibir un push, en paralelo con GitHub Actions y sin conocer su resultado.
@@ -2914,7 +3084,7 @@ Las tres salidas se midieron antes de proponer nada (E4-ai): no hay sustituta en
 - **Enlaces a `/normativa/…`** (corte: Etapa 9). `CalloutNormativo` y el RSS ya enlazan a `/normativa/{ref}/`, que no existe hasta la Etapa 9: esos enlaces dan 404 mientras tanto.
 - **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, AD1.
 
-**Para iniciar la Etapa 4 deben estar resueltos P2 y P3**, y para cerrarla, P1. Además la Etapa 4 depende de contenido humano: los posts T01 y T03 los redacta Sebastián. **H1 dejó de ser un bloqueo el 2026-09-12**: Sebastián la cerró como refutada (AD6, E4-p), así que T01 ya no espera por la versión de la norma.
+**Para iniciar la Etapa 4 debían estar resueltos P2 y P3**, y para cerrarla, P1. **Los tres lo están**: P2 y P3 el 2026-09-11, P1 el 2026-10-04 (E4-aj). Además la Etapa 4 depende de contenido humano: los posts T01 y T03 los redacta Sebastián. **H1 dejó de ser un bloqueo el 2026-09-12**: Sebastián la cerró como refutada (AD6, E4-p), así que T01 ya no espera por la versión de la norma.
 
 ## Nota sobre E0-f
 
