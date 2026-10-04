@@ -15,8 +15,8 @@
     },
     {
       "ref": "310-15(b)(2)(a)",
-      "descripcion": "Factores de corrección por temperatura ambiente: la nota corrige valores en las filas de 66 a 85 °C.",
-      "afectaValor": true
+      "descripcion": "Factores de corrección por temperatura ambiente: la nota corrige la etiqueta de un renglón, que el texto de 2012 imprime como 91-75 °C y debe decir 71-75 °C. Los factores no cambian.",
+      "afectaValor": false
     },
     {
       "ref": "230-95",

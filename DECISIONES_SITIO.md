@@ -111,7 +111,7 @@ Las referencias de **artículo no cambian**: 110-14(c), 310-15(b)(16), 310-15(b)
 **Decisión, sin añadir un campo por cita:**
 
 1. `src/config/norma.ts` documenta que la cadena designa el texto del 29/11/2012 **corregido por la nota del 07/02/2014**, con el enlace al DOF.
-2. `src/config/nota-aclaratoria.json` lista las referencias que la nota tocó (`ref`, `descripcion`, `afectaValor`), validadas con Zod en `src/lib/nota-aclaratoria.ts` al importar: un dato mal formado rompe el build, no se degrada en silencio (I1). Semilla: `cap10-tabla-5` y `310-15(b)(2)(a)` cambian valores; `230-95`, `250-53(a)(2)` y `522-25(c)(2)` cambian el sentido de la disposición.
+2. `src/config/nota-aclaratoria.json` lista las referencias que la nota tocó (`ref`, `descripcion`, `afectaValor`), validadas con Zod en `src/lib/nota-aclaratoria.ts` al importar: un dato mal formado rompe el build, no se degrada en silencio (I1). Semilla: `cap10-tabla-5` y `310-15(b)(2)(a)` cambian valores; `230-95`, `250-53(a)(2)` y `522-25(c)(2)` cambian el sentido de la disposición. — _Corregido el 2026-10-04 (E4-ak): **`310-15(b)(2)(a)` no cambia valores**. La nota corrige la etiqueta de un renglón —el texto de 2012 imprime `91-75 °C` donde debe decir `71-75 °C`— y los factores no cambian. Verificado por Sebastián contra el texto publicado al redactar T01. La semilla se escribió antes de esa verificación; queda aquí para que se vea de dónde venía el dato._
 3. `CalloutNormativo` consulta ese archivo en cada cita y pinta el aviso con el enlace al DOF. **No depende de que el redactor se acuerde.** `LayoutPost` marca lo mismo en la lista de «Referencias citadas».
 
 **Costo de revertir:** bajo. Es un archivo de datos y una consulta; quitarlo devuelve la cita a su forma anterior.
