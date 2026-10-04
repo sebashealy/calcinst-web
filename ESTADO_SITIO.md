@@ -38,9 +38,13 @@ Cotejo criterio por criterio (plan §6, Etapa 4):
 
 **Para cerrar la Etapa 4 falta:** **P1**, las Redirect Rules con sus nueve comprobaciones, que Sebastián aplica a mano en el panel de Cloudflare; hoy pasan 3 de 9 (E4-z). Y que los dos posts salgan de borrador tras su pasada final. H1 se cerró el 2026-09-12 (AD6, E4-p) y los posts se integraron el 2026-10-04 (E4-u).
 
-**Dos cosas quedan en manos de Sebastián por decisión, no por falta de trabajo:** el `Descargo` que sale duplicado en los dos posts (E4-w) y si se mantiene `smartypants` activo (E4-ab). Ninguna de las dos se tocó. La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+**Las dos decisiones que quedaban abiertas se resolvieron el 2026-10-04:** el `Descargo` se retiró del cuerpo de los dos posts y axe baja a cero violaciones (E4-ac); `smartypants` se apaga y la relajación de I2 se revierte (AD11, E4-ad). Se añadió además el colapso del aviso por post (AD12, E4-ae).
 
-Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab. Diferencias con el plan en el addendum A8.
+**Lo único que sigue abierto y es de Sebastián:** P1, y levantar `borrador` en los dos posts con su fecha real. Pendiente de aprobación, sin urgencia: declarar `@astrojs/markdown-satteri` 0.4.0 para quitar el aviso de obsolescencia que `markdown.smartypants` imprime en cada build (E4-ad). La infraestructura no depende de nada de eso: cuando existan los posts, el build aplicará todas las reglas.
+
+Evidencia del bloque P2 en E4-a … E4-e; de la infraestructura del blog en E4-f … E4-o; del bloque de cierre de H1 y del addendum del Capítulo 10 en E4-p … E4-t; de la integración de T01 y T03 en E4-u … E4-ab; del bloque de tipografía en E4-ac … E4-ah. Diferencias con el plan en el addendum A8.
+
+**Nota de etiquetado (bloque del 2026-10-04).** El bloque de tipografía pedía E4-ac … E4-ag. Se registran como **E4-ac … E4-ah**: hay una etiqueta de más porque las fechas de publicación merecían su propia entrada (E4-ag), de modo que la batería de cierre es **E4-ah** y no E4-ag. El resto va en el orden pedido.
 
 **Nota de etiquetado.** El bloque del 2026-09-12 pedía registrar su evidencia como E4-j … E4-n. Esas cinco etiquetas ya estaban ocupadas por la evidencia de la infraestructura del blog (E4-a … E4-o), así que se registran como **E4-p … E4-t**, en el mismo orden pedido: E4-p = H1; E4-q = Capítulo 9 contra Capítulo 10; E4-r = norma.ts y la nota aclaratoria; E4-s = los cuatro pendientes; E4-t = batería de cierre.
 
@@ -2361,6 +2365,316 @@ Busca "NOM-001-SEDE" y vas a encontrar dos respuestas. Media industria cita la 2
 Esto relaja la comprobación y por eso se registra como decisión en vez de arreglarse en silencio. Hay una prueba que fija el límite de la relajación: un texto que de verdad falte sigue detectándose, porque le faltarían caracteres y no una variante tipográfica de ellos.
 
 **Decisión pendiente para ti, no urgente:** `smartypants` está activo porque es el valor por omisión de Astro, no porque alguien lo eligiera. Tus comillas rectas se publican como curvas. Si prefieres que la página muestre exactamente lo que tecleas, se apaga con una línea en `astro.config.mjs`.
+
+### E4-ac — Descargo retirado del cuerpo: axe baja a cero (2026-10-04)
+
+Se eliminó `<Descargo />` de los dos `.mdx`. **Nada más**: la diferencia contra los archivos originales son exactamente dos líneas por post, la del componente y la línea en blanco que lo separaba.
+
+```
+> diff Downloads/que-version-de-la-nom-001-sede-esta-vigente.mdx src/content/blog/...
+226,227d225
+<
+< <Descargo />
+
+> diff Downloads/110-14c-decide-la-columna-no-el-conductor.mdx src/content/blog/...
+206,207d205
+<
+< <Descargo />
+```
+
+`LayoutPost` queda como dueño único del descargo. Axe, en los dos posts y los dos temas:
+
+```
+T01-dark   violaciones: 0  reglas aprobadas: 34
+T01-light  violaciones: 0  reglas aprobadas: 34
+T03-dark   violaciones: 0  reglas aprobadas: 33
+T03-light  violaciones: 0  reglas aprobadas: 33
+```
+
+Antes eran cuatro violaciones `landmark-unique` (una por combinación). Contado sobre el HTML construido, los bloques `id="titulo-descargo"` pasan de **2 a 1** por post.
+
+> **Lighthouse dio 100 en accesibilidad con el landmark duplicado presente.**
+>
+> No es un fallo de Lighthouse: ejecuta un subconjunto de axe y **excluye las reglas de la categoría _best-practice_**, donde vive `landmark-unique`. El defecto existía, era de impacto moderado, afectaba a los dos posts y a los dos temas, y el 100 no lo mencionó.
+>
+> **Un 100 de Lighthouse en accesibilidad no sustituye la pasada de axe.** Las dos hay que correrlas, y cuando discrepen, la que manda es axe. Esto se anota aquí, en la evidencia que se relee antes de confiarse, porque es justo el dato que se olvida en seis meses.
+
+### E4-ad — I2 vuelve a comparación estricta (AD11)
+
+`smartypants` apagado en `astro.config.mjs`; `textosPerdidos` compara carácter a carácter, sin normalización. **La normalización tipográfica de AD10 se eliminó del verificador**, no se dejó desactivada.
+
+La página ahora publica lo que se teclea:
+
+```
+--- antes (AD10) ---
+Busca “NOM-001-SEDE” y vas a encontrar dos respuestas.
+--- ahora ---
+Busca &quot;NOM-001-SEDE&quot; y vas a encontrar dos respuestas.
+
+comillas inglesas en toda la pagina: 0
+```
+
+**I2 estricta sobre el contenido real, con los dos posts construidos:**
+
+```
+> MOSTRAR_BORRADORES=1 npm run build && npm run portabilidad
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+Dos de dos comparados, cero fallos. Los mismos once que AD10 había tapado con una normalización, resueltos en su origen.
+
+**Las tres pruebas que fijan la decisión**, para que nadie vuelva a relajar I2 sin notarlo:
+
+1. _«sigue detectando texto que de verdad falta, no solo variantes»_ — la que escribí para AD10 y Sebastián pidió conservar. Sirve igual con comparación estricta.
+2. _«la comparación es estricta: una comilla transformada cuenta como texto perdido»_ — nueva. Es la que falla si alguien vuelve a encender un tipógrafo. Detecta el **efecto**.
+3. _«el tipógrafo está apagado en astro.config.mjs»_ — nueva. Detecta la **causa**, y es la importante: no depende de que haya posts construidos, y en CI los borradores no se construyen, así que hoy la comprobación 3 se omite allí. Sin esta prueba, encender `smartypants` pasaría el CI entero sin que nada protestara.
+
+**Deuda técnica, con decisión pendiente.** `markdown.smartypants` está obsoleto en Astro 7. Funciona —toda la evidencia de arriba lo demuestra— pero **avisa en cada build, cada `astro check` y cada pasada de pruebas**, y ese aviso aparece ahora en la batería de cierre:
+
+```
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead
+(e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, o
+`unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`).
+Will be removed in a future major.
+```
+
+La forma vigente es `markdown.processor: satteri({ features: { smartPunctuation: false } })`. **`@astrojs/markdown-satteri` 0.4.0** está hoy en `node_modules` solo como dependencia transitiva de `@astrojs/mdx`; usarla desde `astro.config.mjs` obliga a declararla, y eso es añadir una dependencia. Queda a la espera de aprobación con esa versión exacta. No se tocó.
+
+### E4-ae — El aviso colapsa por post (AD12)
+
+**El ámbito se midió, no se supuso.** Astro no ofrece un «índice de aparición» a un componente, así que hacía falta un objeto que identificara el render. Se instrumentó el componente con una sonda temporal y se leyó el build:
+
+```
+SONDA /blog/110-14c-decide-la-columna-no-el-conductor/ ref=110-14(c)      locals=2 request=2
+SONDA /blog/110-14c-decide-la-columna-no-el-conductor/ ref=310-15(b)      locals=2 request=2
+SONDA /blog/110-14c-decide-la-columna-no-el-conductor/ ref=310-15(b)(16)  locals=2 request=2
+SONDA /blog/que-version-de-la-nom-001-sede-esta-vigente/ ref=cap10-tabla-5     locals=3 request=3
+SONDA /blog/que-version-de-la-nom-001-sede-esta-vigente/ ref=310-15(b)(2)(a)   locals=3 request=3
+SONDA /blog/que-version-de-la-nom-001-sede-esta-vigente/ ref=230-95            locals=3 request=3
+SONDA /diseno/ ref=430-22        locals=4 request=4
+SONDA /diseno/ ref=310-15(b)(16) locals=4 request=4
+...
+SONDA / ref=110-14(c)     locals=0 request=0      (RSS, item de T03)
+SONDA / ref=cap10-tabla-5 locals=1 request=1      (RSS, item de T01)
+```
+
+Tres hechos, los tres necesarios: `Astro.locals` es **el mismo objeto** en todos los componentes de una página; es **distinto** entre páginas; y la API de contenedor del RSS da **uno por item**. El índice se registra en un `WeakMap` para no escribir en un objeto que es de Astro y para que se limpie solo. La sonda se retiró.
+
+**Resultado, contado sobre el HTML construido:**
+
+```
+=== T01 ===
+  avisos                        3
+  frase "Publicada en el DOF"   1
+  enlaces al DOF                3
+  enlace colapsado              2
+  bloques Descargo              1
+
+=== /diseno/ (una sola cita corregida: debe salir completa) ===
+  frase "Publicada en el DOF"   1
+
+=== RSS: cada item colapsa por su cuenta ===
+  frase "Publicada en el DOF"   1
+  enlace colapsado              2
+```
+
+**El enlace sigue en las tres**, como pediste. La forma colapsada carga la identidad del documento en el propio enlace, «Nota Aclaratoria del 07/02/2014 en el DOF», de modo que un aviso al que se llegue desde un ancla compartida se sostiene solo: dice qué corrige, de qué documento y adónde ir.
+
+Que `/diseno/` muestre su única cita corregida **en forma completa** es la prueba de que el colapso es por página y no global: es un render independiente del de T01.
+
+Captura en `evidencia/etapa-4/T01-avisos.png`; la de antes del cambio queda en `evidencia/etapa-4/antes/` para comparar.
+
+### E4-af — Las nueve comprobaciones de P1, literales
+
+Copiadas de `ESTADO_SITIO.md` § Bloqueos, donde están desde el 2026-09-06. El documento las define como **tres casos por dos reglas más la de `www` del `.com`**; la tabla literal es esta:
+
+> | Caso | Petición | Resultado esperado | Qué detecta |
+> | --- | --- | --- | --- |
+> | Raíz | `https://www.calcinst.mx/` | `Location: https://calcinst.mx/` | Que `uri.path = /` **no** produzca doble barra (`https://calcinst.mx//`) al concatenar |
+> | Ruta | `https://www.calcinst.mx/blog/mi-post/` | `Location: https://calcinst.mx/blog/mi-post/` | La concatenación sin separador que rompió el hostname (`calcinst.mxblog`) |
+> | Ruta + query | `https://www.calcinst.mx/blog/?pagina=2&utm_source=x` | `Location: https://calcinst.mx/blog/?pagina=2&utm_source=x` | Que ruta y query se preserven **juntas**; el defecto 2 conservaba el query pero descartaba la ruta |
+>
+> Los tres casos se repiten contra `calcinst.com` y `www.calcinst.com`, que usan la otra regla: son nueve comprobaciones en total.
+
+**Las nueve, desplegadas una por una.** Esto es el producto de la tabla por los tres orígenes, no un requisito nuevo: el documento dice «los tres casos se repiten contra `calcinst.com` y `www.calcinst.com`» y aquí queda escrito en vez de implícito.
+
+| # | Origen | Petición | `Location` esperado |
+| --- | --- | --- | --- |
+| 1 | `www.calcinst.mx` | `https://www.calcinst.mx/` | `https://calcinst.mx/` |
+| 2 | `www.calcinst.mx` | `https://www.calcinst.mx/blog/mi-post/` | `https://calcinst.mx/blog/mi-post/` |
+| 3 | `www.calcinst.mx` | `https://www.calcinst.mx/blog/?pagina=2&utm_source=x` | `https://calcinst.mx/blog/?pagina=2&utm_source=x` |
+| 4 | `calcinst.com` | `https://calcinst.com/` | `https://calcinst.mx/` |
+| 5 | `calcinst.com` | `https://calcinst.com/blog/mi-post/` | `https://calcinst.mx/blog/mi-post/` |
+| 6 | `calcinst.com` | `https://calcinst.com/blog/?pagina=2&utm_source=x` | `https://calcinst.mx/blog/?pagina=2&utm_source=x` |
+| 7 | `www.calcinst.com` | `https://www.calcinst.com/` | `https://calcinst.mx/` |
+| 8 | `www.calcinst.com` | `https://www.calcinst.com/blog/mi-post/` | `https://calcinst.mx/blog/mi-post/` |
+| 9 | `www.calcinst.com` | `https://www.calcinst.com/blog/?pagina=2&utm_source=x` | `https://calcinst.mx/blog/?pagina=2&utm_source=x` |
+
+Las tres cosas que cada columna detecta, en el mismo orden que la tabla original: que `uri.path = /` **no** produzca doble barra al concatenar (1, 4, 7); la concatenación sin separador que rompió el hostname (2, 5, 8); y que ruta y query se preserven **juntas** (3, 6, 9).
+
+Medidas hoy, antes de la corrección: pasan **3 de 9**, y son exactamente las tres raíces —las que se verificaron en la Etapa 1 y dejaron pasar el defecto—. Estado completo en E4-z.
+
+### E4-ag — Fechas de publicación: no se añadió comprobación
+
+`fechaPublicacion: 2026-09-12` sigue en los dos posts. **No se cambió**: la fecha real la pone Sebastián al levantar `borrador`.
+
+Sobre la comprobación que avisaría de un borrador con fecha anterior a hoy: **no existe ninguna en el proyecto**, y no se inventó, conforme a la instrucción. El esquema trata `fechaPublicacion` como fecha y la usa para ordenar, nada más:
+
+```
+> grep -rn "fechaPublicacion" src/lib/blog.ts
+99:    fechaPublicacion: z.coerce.date(),
+162:  data: { borrador: boolean; fechaPublicacion: Date }
+169:    .sort((a, b) => b.data.fechaPublicacion.getTime() - a.data.fechaPublicacion.getTime())
+
+> (comparaciones con la fecha de hoy en src/, scripts/ y tests/)
+src/components/Pie.astro:16:const anio = new Date().getFullYear()
+scripts/auditar-diseno.mjs:202:const informe = { generado: new Date().toISOString(), temas: {} }
+```
+
+Las dos únicas apariciones de `new Date()` son el año del pie y la marca de tiempo del informe de auditoría. Ninguna valida contenido.
+
+### E4-ah — Batería de cierre, sin filtrar (2026-10-04, bloque de tipografía)
+
+Sin `grep`, sin `head`, sin `Select-String`. En el orden en que la corre CI. **El aviso de obsolescencia de `markdown.smartypants` aparece en tres de las salidas: es el costo registrado en AD11 y no se filtra.**
+
+```
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+15:41:15 [content] Syncing content
+15:41:15 [content] Synced content
+15:41:15 [types] Generated 950ms
+15:41:15 [check] Getting diagnostics for Astro files in C:\Users\sebas_vf1ofrv\Desktop\calcinst-web...
+Result (49 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+EXIT=0
+```
+
+```
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/sebas_vf1ofrv/Desktop/calcinst-web
+
+
+ Test Files  5 passed (5)
+      Tests  126 passed (126)
+   Start at  15:41:28
+   Duration  2.85s (transform 49%, import 37%, tests 13%, worker 1%)
+
+  Transform  transforming modules took 2.56s · 49% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns
+
+EXIT=0
+```
+
+```
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT_LINT=0
+
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT_FORMAT=0
+
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT_VERIFICAR=0
+```
+
+```
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+15:41:56 [WARN] [content] data store cleared (force)
+15:41:57 [content] Syncing content
+15:41:57 [content] Synced content
+15:41:57 [types] Generated 905ms
+15:41:57 [build] output: "static"
+15:41:57 [build] mode: "static"
+15:41:57 [build] directory: C:\Users\sebas_vf1ofrv\Desktop\calcinst-web\dist\
+15:41:57 [build] Collecting build info...
+15:41:57 [build] ✓ Completed in 976ms.
+15:41:57 [build] Building static entrypoints...
+15:41:58 [vite] ✓ built in 702ms
+15:41:58 [vite] ✓ built in 40ms
+15:41:58 [build] Rearranging server assets...
+
+ generating static routes
+15:41:58   ├─ /blog/categoria/conductores/index.html (+27ms)
+15:41:58   ├─ /blog/categoria/motores/index.html (+8ms)
+15:41:58   ├─ /blog/categoria/canalizaciones/index.html (+7ms)
+15:41:58   ├─ /blog/categoria/puesta-a-tierra/index.html (+34ms)
+15:41:58   ├─ /blog/categoria/practica-profesional/index.html (+4ms)
+15:41:58   ├─ /blog/rss.xml (+112ms)
+15:41:59   ├─ /blog/index.html (+5ms)
+15:41:59   ├─ /diseno/index.html (+159ms)
+15:41:59   ├─ /index.html (+7ms)
+15:41:59 [build] ✓ Completed in 1.01s.
+15:41:59 [build] ✓ Completed in 1.83s.
+15:41:59 [build] 8 page(s) built in 2.83s
+15:41:59 [build] Complete!
+EXIT_BUILD=0
+```
+
+```
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT_SALIDA=0
+
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx (no construido: borrador en un build sin MOSTRAR_BORRADORES; se omite la comprobación 3)
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx (no construido: borrador en un build sin MOSTRAR_BORRADORES; se omite la comprobación 3)
+verificar-portabilidad: 2 post(s), 0 comparado(s) con su página, 0 fallo(s)
+EXIT_PORT=0
+```
+
+**Pruebas: 126.** Dos de AD10 se retiraron con la normalización que probaban y dos nuevas las sustituyen, de modo que el total no cambia pero lo que vigilan sí: antes fijaban que la relajación funcionara, ahora que no exista.
 
 ## Decisión resuelta — D2 y "Cloudflare solo despliega lo que pasó CI"
 

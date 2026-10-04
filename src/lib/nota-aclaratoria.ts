@@ -53,3 +53,28 @@ export const FECHA_NOTA = new Intl.DateTimeFormat('es-MX', {
   dateStyle: 'long',
   timeZone: 'UTC',
 }).format(new Date(NOTA_ACLARATORIA.fuente.fechaDOF))
+
+/** Fecha corta, para el aviso colapsado: «07/02/2014». */
+export const FECHA_NOTA_CORTA = NOTA_ACLARATORIA.fuente.fechaDOF.split('-').reverse().join('/')
+
+/**
+ * Primer aviso de la nota aclaratoria en este render, o no.
+ *
+ * El aviso completo lleva la frase de publicación; las apariciones siguientes
+ * del mismo post la omiten y conservan el aviso y el enlace, para que una cita
+ * a la que se llegue desde un ancla compartida siga sosteniéndose sola.
+ *
+ * El ámbito es un objeto por render —en la práctica `Astro.locals`, medido: el
+ * mismo en todos los componentes de una página, distinto entre páginas, y uno
+ * por item en el RSS—. Se usa un WeakMap para no escribir en un objeto que es
+ * de Astro y para que se limpie solo.
+ *
+ * @param {object} ambito
+ */
+const avisoYaVisto = new WeakMap<object, true>()
+
+export function esPrimerAviso(ambito: object): boolean {
+  if (avisoYaVisto.has(ambito)) return false
+  avisoYaVisto.set(ambito, true)
+  return true
+}

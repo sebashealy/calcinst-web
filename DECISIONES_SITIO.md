@@ -128,7 +128,9 @@ Las referencias de **artículo no cambian**: 110-14(c), 310-15(b)(16), 310-15(b)
 
 **Costo de revertir:** una entrada en `caracteres.json` y regenerar las fuentes.
 
-### AD10 — La prueba de portabilidad compara módulo tipografía (2026-10-04)
+### AD10 — La prueba de portabilidad compara módulo tipografía (2026-10-04) — **REVERTIDA el mismo día por AD11**
+
+> Se conserva a propósito. Duró un día y es la decisión equivocada de la que se aprende: ante una comprobación que falla, relajé la comprobación en vez de mirar qué la hacía fallar. Lo que sigue es el texto original; la reversión y sus motivos están en AD11.
 
 **Contexto.** Al construir T01 y T03, la comprobación I2 dio 11 fallos, todos en párrafos con una comilla doble (E4-ab). Causa: Astro trae `smartypants` activo por omisión, que convierte las comillas rectas del `.mdx` en curvas en la página; remark puro no lo hace, así que la comparación literal daba un falso positivo por cada párrafo con comillas. No había salido antes porque los posts de prueba no tenían ninguna.
 
@@ -136,6 +138,35 @@ Las referencias de **artículo no cambian**: 110-14(c), 310-15(b)(16), 310-15(b)
 
 **Esto relaja la comprobación**, y por eso se registra como decisión en vez de arreglarse en silencio. El límite de la relajación está fijado por una prueba: solo se igualan formas equivalentes del mismo carácter, de modo que un texto que de verdad desaparezca de la página sigue delatándose, porque le faltarían caracteres y no una variante tipográfica de ellos.
 
-**Decisión abierta, de Sebastián:** `smartypants` está activo porque es el valor por omisión de Astro, no porque se eligiera. Hoy las comillas rectas que se teclean se publican curvas. Si se prefiere que la página muestre exactamente lo tecleado, se apaga en `astro.config.mjs` y esta normalización pasa a ser innecesaria (aunque conviene dejarla: cuesta nada y cubre el caso de que alguien teclee comillas curvas directamente).
+**Decisión abierta, de Sebastián:** `smartypants` está activo porque es el valor por omisión de Astro, no porque se eligiera. Hoy las comillas rectas que se teclean se publican curvas. Si se prefiere que la página muestre exactamente lo tecleado, se apaga en `astro.config.mjs` y esta normalización pasa a ser innecesaria (aunque conviene dejarla: cuesta nada y cubre el caso de que alguien teclee comillas curvas directamente). — _Resuelto en AD11: se apaga el tipógrafo **y** se retira la normalización. La última frase era el error: dejarla «porque cuesta nada» es cómo un invariante relajado se vuelve permanente._
 
 **Costo de revertir:** bajo. Es una función de cuatro sustituciones en el verificador.
+
+### AD11 — Reversión de AD10: el tipógrafo se apaga; I2 vuelve a ser estricta (2026-10-04)
+
+**AD10 se mantiene en el historial a propósito.** Duró un día y es la decisión equivocada de la que se aprende: ante una comprobación que falla, relajé la comprobación en vez de mirar qué la hacía fallar.
+
+**Decisión de Sebastián:** se desactiva `smartypants` en `astro.config.mjs` y `textosPerdidos` vuelve a comparar carácter a carácter, sin normalización tipográfica.
+
+**Razones, por orden de peso:**
+
+1. **Relajar un invariante es permanente; el beneficio era cosmético.** La normalización se queda en el verificador para siempre, y lo que compraba eran comillas más bonitas.
+2. **Lo que se transformaba era texto citado.** En un sitio cuya premisa es que cada afirmación se rastrea hasta el DOF, que la página muestre caracteres distintos de los de la fuente es exactamente el silencio que el proyecto no acepta, por pequeño que sea.
+3. **Nadie lo eligió:** venía activo por omisión de Astro. Es el mismo criterio por el que se desinstaló Tailwind (AD2).
+4. **Ni siquiera acertaba.** `smartypants` produce comillas inglesas; la convención del español son las angulares. Quien quiera comillas tipográficas teclea « » en el `.mdx` y pasan intactas, porque están en el conjunto declarado de caracteres.
+
+**Lo que se conserva de AD10:** la prueba que fija el límite —un texto que de verdad falte sigue delatándose— sirve igual con comparación estricta, y es la que impide que alguien vuelva a relajar I2 sin notarlo. Se añadieron dos más: una comprueba que una comilla transformada **cuenta como texto perdido**, y otra que `astro.config.mjs` mantiene el tipógrafo apagado. La segunda no depende de que haya posts construidos, que es importante porque en CI los borradores no se construyen y la comprobación 3 se omite.
+
+**Deuda técnica conocida, con decisión pendiente de Sebastián.** `markdown.smartypants` está obsoleto en Astro 7: funciona, pero avisa en cada build. La forma vigente es `markdown.processor: satteri({ features: { smartPunctuation: false } })`, y `@astrojs/markdown-satteri` **0.4.0** hoy solo está en `node_modules` como dependencia transitiva. Declararla es añadir una dependencia, así que queda a la espera de aprobación.
+
+**Costo de revertir:** una línea en `astro.config.mjs`. La normalización, en cambio, ya no está.
+
+### AD12 — El aviso de la nota aclaratoria se colapsa por post (2026-10-04)
+
+**Contexto.** T01 cita tres referencias corregidas por la nota de 2014, así que la cola del aviso —«Publicada en el DOF el 7 de febrero de 2014; texto oficial (código 5331914)»— salía idéntica tres veces (E4-w).
+
+**Decisión de Sebastián:** la primera aparición en un post va completa; las siguientes conservan el aviso y el enlace, y omiten la frase de publicación. **El enlace se queda en las tres**, porque alguien puede llegar a mitad de página desde un ancla compartida y ese aviso tiene que sostenerse solo. En la forma colapsada el enlace carga la identidad del documento: «Nota Aclaratoria del 07/02/2014 en el DOF».
+
+**Es colapso por post, no global.** El ámbito es `Astro.locals`, y no se supuso: se midió con una sonda temporal en el build (E4-ae). Es el mismo objeto en todos los componentes de una página, distinto entre páginas, y la API de contenedor del RSS da uno por item, así que cada entrada del feed colapsa por su cuenta. Se registra con un `WeakMap` para no escribir en un objeto que es de Astro.
+
+**Costo de revertir:** bajo. Es una condición en el componente y una función de cuatro líneas.

@@ -16,7 +16,13 @@
  */
 import { VERSION_NOM } from '../config/norma'
 import { PREFIJO_NORMATIVA, esInformativo, type TipoNormativa } from '../lib/blog'
-import { NOTA_ACLARATORIA, FECHA_NOTA, correccionDe } from '../lib/nota-aclaratoria'
+import {
+  NOTA_ACLARATORIA,
+  FECHA_NOTA,
+  FECHA_NOTA_CORTA,
+  correccionDe,
+  esPrimerAviso,
+} from '../lib/nota-aclaratoria'
 
 interface Props {
   /** Referencia tal como se cita: "430-22", "310-15(b)(16)", "cap10-tabla-4". */
@@ -41,6 +47,13 @@ const slug = ref
 const prefijo = PREFIJO_NORMATIVA[tipo]
 const informativo = esInformativo(tipo)
 const correccion = correccionDe(ref)
+
+// La frase de publicación solo va en el primer aviso de cada post; las
+// siguientes conservan el aviso y el enlace. El ámbito es `Astro.locals`, que
+// medimos: es el mismo objeto en todos los componentes de una página y distinto
+// entre páginas, y en el RSS la API de contenedor da uno por item, así que cada
+// post colapsa por su cuenta.
+const primerAviso = correccion ? esPrimerAviso(Astro.locals) : false
 ---
 
 <aside class="callout" class:list={{ informativo }}>
@@ -57,11 +70,23 @@ const correccion = correccionDe(ref)
             ? 'La Nota Aclaratoria corrige un valor de esta referencia.'
             : 'La Nota Aclaratoria modifica esta referencia.'}
         </strong>{' '}
-        {correccion.descripcion} Publicada en el DOF el {FECHA_NOTA};{' '}
-        <a href={NOTA_ACLARATORIA.fuente.url} rel="nofollow noopener">
-          texto oficial (código {NOTA_ACLARATORIA.fuente.codigoDOF})
-        </a>
-        .
+        {correccion.descripcion}{' '}
+        {primerAviso ? (
+          <>
+            Publicada en el DOF el {FECHA_NOTA};{' '}
+            <a href={NOTA_ACLARATORIA.fuente.url} rel="nofollow noopener">
+              texto oficial (código {NOTA_ACLARATORIA.fuente.codigoDOF})
+            </a>
+            .
+          </>
+        ) : (
+          <>
+            <a href={NOTA_ACLARATORIA.fuente.url} rel="nofollow noopener">
+              Nota Aclaratoria del {FECHA_NOTA_CORTA} en el DOF
+            </a>
+            .
+          </>
+        )}
       </p>
     )
   }
