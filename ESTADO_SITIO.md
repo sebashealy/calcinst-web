@@ -44,6 +44,25 @@ Sebastián autorizó `npm ci` con las versiones exactas de `package.json` y el l
 existente. Node disponible: v24.22.1. `npm` y `gh` no están en PATH; se autorizó
 descargar npm 11.13.0 en el espacio de trabajo, sin instalación global.
 
+### HC-b — H1 y descripción general de la Nota Aclaratoria alineadas
+
+Se corrigen la fuente 4 y la conclusión de H1 en `HIPOTESIS_SITIO.md`: la Tabla 5
+del Capítulo 10 cambia el valor citado; la Tabla 310-15(b)(2)(a) cambia la etiqueta
+91-75 a 71-75, no sus factores. Se registra la errata no corregida en la tabla de
+base 40 °C, 310-15(b)(2)(b), atribuyéndola al traspaso de Sebastián (§1.2), sin
+presentarla como un cotejo nuevo del DOF. Se conservan las frases sustituidas en
+una nota de trazabilidad y se cita E4-ak como evidencia que prevalece.
+
+En `src/config/nota-aclaratoria.json` se cambia exclusivamente `descripcion` de
+nivel superior. Comparación ejecutada con Node `assert.deepEqual` contra la versión
+de HEAD, retirando solo esa propiedad de ambos objetos:
+
+```text
+JSON válido: solo cambió descripcion de nivel superior; fuente y referencias idénticas.
+```
+
+`git diff --check`: sin salida, exit 0. La batería de cierre sigue pendiente.
+
 ## Última etapa cerrada
 
 Etapa 4 — 2026-10-04. Evidencia en E4-a … E4-al. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.

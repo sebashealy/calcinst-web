@@ -38,10 +38,20 @@ la autorización de la Etapa 4; aquí queda registrada con sus fuentes.
    para consulta pública, no expedición.
 4. **Nota Aclaratoria, DOF 07/02/2014** (código 5331914): corrige errores gramaticales,
    ortográficos, de congruencia y de redacción, «así como en algunos valores». Afecta a
-   CalcInst en la Tabla 5 (10 AWG TW/THHW/THW/THW-2: 55.68 pasa a 15.68 mm²) y en la
-   Tabla 310-15(b)(2)(a) (factores de corrección, filas 66-85 °C). **No toca** 310-15(b)(16),
+   CalcInst en la Tabla 5 del Capítulo 10 (10 AWG TW/THHW/THW/THW-2: 55.68 pasa a
+   15.68 mm²) y en la Tabla 310-15(b)(2)(a), donde corrige únicamente la **etiqueta
+   de un renglón**: «91-75» pasa a «71-75». Los factores de las filas 66-70, 71-75,
+   76-80 y 81-85 °C no cambian. **No toca** 310-15(b)(16),
    310-15(b)(3)(a), 430-22, 430-24, 250-122 ni 110-14(c).
 
 La fuente 4 es la que obligó a AD8: la cadena «NOM-001-SEDE-2012» sola no identifica un
-texto único, porque el publicado en 2012 y el corregido en 2014 difieren en valores de al
-menos dos tablas que CalcInst usa.
+texto único. Entre las dos tablas citadas, **solo la Tabla 5 del Capítulo 10 difiere
+en valores**; en la Tabla 310-15(b)(2)(a) cambia la etiqueta, no los factores.
+
+**Corrección de continuidad (2026-10-24, HC-b):** esta redacción sustituye las frases
+«factores de corrección, filas 66-85 °C» y «difieren en valores de al menos dos tablas».
+Prevalece la verificación de Sebastián registrada en E4-ak (2026-10-04), ratificada en
+`TRASPASO_ETAPA5.md` §1.2. Ese traspaso registra además que la misma errata «91-75»
+**sigue sin corregir en la Tabla 310-15(b)(2)(b), de base 40 °C**: la Nota Aclaratoria
+de 2014 no la toca. Es evidencia aportada por Sebastián, no un nuevo cotejo del DOF
+ejecutado durante este bloque de mantenimiento.
