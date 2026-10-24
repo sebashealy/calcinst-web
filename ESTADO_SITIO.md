@@ -63,6 +63,21 @@ JSON válido: solo cambió descripcion de nivel superior; fuente y referencias i
 
 `git diff --check`: sin salida, exit 0. La batería de cierre sigue pendiente.
 
+### HC-c — Conservación de informes Lighthouse: cambio aplicado, run pendiente
+
+`.github/workflows/ci.yml`: se activa `include-hidden-files: true` únicamente para
+la ruta `.lighthouseci`, que es donde `lighthouserc.json` ya escribe los informes.
+`if-no-files-found` pasa de `ignore` a `error`: la ausencia de evidencia no puede
+producir una subida aparentemente exitosa. Se conserva `if: always()` para recuperar
+informes también cuando una aserción de Lighthouse falle. No se cambia el umbral
+de Lighthouse ni se añade una dependencia.
+
+El diagnóstico anterior comprobó en el run 37243439794 que se generaron cinco
+informes pero no se subió ninguno. Esto corrige la afirmación histórica de E1-h
+sobre la conservación del artefacto: ejecutar Lighthouse y conservar su informe
+son verificaciones distintas. **Pendiente:** ejecutar el CI del PR y comprobar el
+artefacto descargable; el cambio de YAML por sí solo no cumple esa verificación.
+
 ## Última etapa cerrada
 
 Etapa 4 — 2026-10-04. Evidencia en E4-a … E4-al. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
