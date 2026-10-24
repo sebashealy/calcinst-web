@@ -78,9 +78,64 @@ sobre la conservación del artefacto: ejecutar Lighthouse y conservar su informe
 son verificaciones distintas. **Pendiente:** ejecutar el CI del PR y comprobar el
 artefacto descargable; el cambio de YAML por sí solo no cumple esa verificación.
 
+### HC-d — Continuidad histórica y decisiones recibidas
+
+Se alinea el encabezado de la Etapa 4 con E4-al y se registra su ratificación humana
+en el traspaso §4.1. Se conservan los antecedentes y se señala qué prevalece:
+E3-e para la prueba de Narrador; E4-aj para P1 (incluida la medición previa de E4-z);
+AD9/E4-s para micro en P2; PR #5/AD3 para P3; E4-al para la existencia de `/blog/`.
+P4, P5 y P6 permanecen abiertos, con sus condiciones y destinos intactos.
+
+H10 pasa a **replanteada**, conforme al traspaso §4.4, conservando el planteamiento
+original. A9 registra la modificación autorizada del plan y la decisión de CTA sin
+reescribir el original. La implementación del CTA no forma parte de las cuatro
+tareas enumeradas en este encargo: `lanzamiento.ts` no se cambia en este bloque.
+El criterio de referencia independiente y el cotejo visual de tablas se conservan
+en el traspaso §5, que ya está versionado; no se duplican sus reglas aquí.
+
+Entrega en PR #16: https://github.com/sebashealy/calcinst-web/pull/16 (rama propia,
+sin fusión). Pendientes al escribir esta entrada: batería local completa, resultado
+del CI y descarga del artefacto. Ninguna prueba se declara exitosa por anticipado.
+
+**Entorno:** Node v24.22.1, npm 11.13.0 local autorizado; sin `gh` instalado.
+Se usa la API del conector GitHub para el PR. El acceso de red del sandbox impidió
+clonar/descargar/publicar; se repitieron con aprobación de ejecución fuera del sandbox.
+El lanzador `npm.cmd` del tarball espera una instalación estándar y falló con
+`MODULE_NOT_FOUND`; se usa `node ../.tools/package/bin/npm-cli.js` directamente.
+El primer `npm ci` sin acceso de red se interrumpió sin resultado; el segundo,
+con acceso autorizado, terminó con exit 0. No se cambiaron manifest ni lockfile.
+
+Salida literal completa de ese `npm ci` (dos fragmentos de la misma ejecución):
+
+```text
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated rimraf@2.7.1: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+
+added 791 packages, and audited 792 packages in 55s
+
+218 packages are looking for funding
+  run `npm fund` for details
+
+34 vulnerabilities (2 low, 9 moderate, 22 high, 1 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+```
+
+Son avisos distintos de P6. Se reportan sin atribuirles alcance de producción sin
+un análisis del árbol; no se ejecuta `npm audit fix` ni se actualizan dependencias.
+
 ## Última etapa cerrada
 
-Etapa 4 — 2026-10-04. Evidencia en E4-a … E4-al. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
+Etapa 4 — 2026-10-04. Evidencia en E4-a … E4-al. **Cierre ratificado por Sebastián en `TRASPASO_ETAPA5.md` §4.1 (2026-10-24)**: ese documento aporta el rastro humano que faltaba. No se reabre. La condición de verificación de la redacción anterior se conserva en E4-al como antecedente.
 
 Cotejo criterio por criterio (plan §6, Etapa 4):
 
@@ -113,6 +168,10 @@ Cotejo criterio por criterio (plan §6, Etapa 3):
 | Cambiar `ESTADO_LANZAMIENTO` a cada valor cambia el botón de acción y el pie sin tocar otro archivo (`git diff --stat` = 1 archivo) | cumplido | E3-b: tres transiciones, `1 file changed` en cada una; pruebas e invariantes pasan sin modificarse en los tres estados |
 | El script I7 falla con un literal prohibido y vuelve a pasar al quitarlo (prueba negativa documentada) | cumplido | E3-d: exit 1 señalando archivo y línea, exit 0 al retirarlo; además permanente en CI |
 | Menú móvil operable con teclado y lector de pantalla (`aria-expanded`, `Escape` cierra) | cumplido con límite | E3-e: teclado verificado y árbol de accesibilidad correcto en los tres momentos. **No** se probó con un lector real; queda sugerida una comprobación de un minuto con Narrador |
+
+Actualización de continuidad (HC-d, 2026-10-24): el límite de la última fila quedó
+resuelto por Sebastián con Narrador el 2026-09-11, según la ampliación de E3-e.
+La fila conserva el estado de la primera entrega; prevalece esa evidencia posterior.
 
 Evidencia pedida: tres `git diff --stat` y captura de cada estado (E3-b, E3-c), salida del script en fallo y en éxito (E3-d), conteo de pruebas antes y después (E3-h: 0 → 31).
 
@@ -1360,7 +1419,7 @@ verificar-invariantes: 2 verificacion(es) activas, 0 fallo(s)
 
 Al desinstalar Tailwind (AD2), npm informó `removed 13 packages, and audited 708 packages`.
 
-## Evidencia Etapa 4 (en curso, desde 2026-09-11)
+## Evidencia Etapa 4 (2026-09-11 a 2026-10-04; cerrada, E4-al)
 
 La Etapa 4 arranca con el bloque P2, por instrucción de Sebastián: el juego de caracteres se cierra antes de tocar la colección del blog. Decisiones en `DECISIONES_SITIO.md`, AD4.
 
@@ -2272,7 +2331,7 @@ Revisa `.html`, `.xml`, `.svg`, `.txt`, `.json`, `.css`, `.js` y `.mjs`. Los `.w
 
 El mismo día, antes de la corrección, pasaban 3 de 9 (E4-z): solo las tres raíces, que son justamente las que se verificaron en la Etapa 1 y dejaron pasar el defecto. Ese contraste es el argumento de por qué la verificación son nueve comprobaciones y no una.
 
-**Estado actual de las nueve, medido hoy.** Los dos defectos siguen vivos y se comportan distinto en cada regla:
+**Medición histórica anterior a la corrección, del 2026-10-04.** Los dos defectos seguían vivos y se comportaban distinto en cada regla. Se conserva la salida original; prevalece el resultado posterior de E4-aj (9 de 9):
 
 ```
 https://www.calcinst.mx/                             -> Location: https://calcinst.mx/                              OK
@@ -3209,6 +3268,9 @@ La opción B descartada era desplegar desde GitHub Actions con `wrangler deploy`
 
 ### P1 — Preservación de ruta en las dos Redirect Rules (corte: antes de cerrar la Etapa 4)
 
+**CERRADO el 2026-10-04, E4-aj: 9 de 9 comprobaciones.** El corte y los requisitos
+que siguen son el antecedente histórico; no constituyen un bloqueo vigente (HC-d).
+
 Defecto documentado en E1-n. Corrección: cambiar ambas reglas a redirección **dinámica** con destino `concat("https://calcinst.mx", http.request.uri.path)` y *Preserve query string* activado.
 
 **La Etapa 4 no se cierra sin esto**, por decisión de Sebastián (2026-09-06): desde el primer post publicado, un 301 hacia `calcinst.mxblog` sería un enlace permanente roto. No bloquea las Etapas 2 ni 3.
@@ -3224,6 +3286,10 @@ Defecto documentado en E1-n. Corrección: cambiar ambas reglas a redirección **
 Los tres casos se repiten contra `calcinst.com` y `www.calcinst.com`, que usan la otra regla: son nueve comprobaciones en total.
 
 ### P2 — Juego de caracteres declarado como dato del proyecto (corte: antes de iniciar la Etapa 4)
+
+**CERRADO el 2026-09-11, E4-a … E4-e.** Para micro prevalece la revisión posterior
+AD9/E4-s del 2026-09-12: U+00B5 permitido, U+03BC prohibido; fuentes 57 336 B.
+La resolución inicial que se conserva más abajo describe el estado anterior (HC-d).
 
 Registrado a pedido de Sebastián (2026-09-10). **Requisito:** el juego de caracteres de las fuentes se declara explícitamente como dato versionado del proyecto, no se deriva del contenido existente, y **el build falla si un `.mdx` usa un carácter fuera del conjunto declarado**.
 
@@ -3261,6 +3327,9 @@ La cobertura de **IBM Plex Mono completa no se pudo verificar** en esta sesión:
 **Resolución (2026-09-11): P2 cerrado**, como primer bloque de la Etapa 4. Decisiones en `DECISIONES_SITIO.md`, AD4; evidencia en E4-a … E4-e. De los siete requisitos de arriba: (1) el conjunto vive en `src/config/caracteres.json`; (2) se subconjunta desde IBM Plex completa; (3) la comprobación GLIFOS es bloqueante en CI y en el generador; (4) CARACTERES rechaza en `.md`/`.mdx` todo carácter no declarado; (5) `✗` sale del conjunto y pasa a SVG; (6) micro = μ (U+03BC), µ (U+00B5) prohibido; (7) el presupuesto se cumple en lectura estricta, 57 244 B. Hallazgo que corrigió la premisa: IBM Plex Mono no tiene griego ni completa; se cubre con IBM Plex Sans de respaldo, comprobado en el navegador (E4-d).
 
 ### P3 — Las URL de preview por PR dejaron de generarse (corte: antes de iniciar la Etapa 4)
+
+**CERRADO el 2026-09-11, PR #5 y AD3.** Prevalece la resolución y verificación
+registrada al final de este bloque; las alternativas pendientes anteriores son historia (HC-d).
 
 Registrado a pedido de Sebastián (2026-09-10): la Etapa 4 depende de poder revisar cada PR en su preview.
 
@@ -3347,6 +3416,9 @@ Las tres salidas se midieron antes de proponer nada (E4-ai): no hay sustituta en
 - **Correo de contacto público** (corte: Etapa 6). `SITIO.correoContacto` está en `null` a propósito: publicar una dirección es decisión de Sebastián. Lo necesitan la página de Contacto (Etapa 6) y el correo alterno que exige I1 en el formulario (Etapa 8).
 - **Revisión de `capacidades.json` — de Sebastián; bloquea la Etapa 5, no la 4.** (1) Nombres y descripciones son redacción provisional (`"redaccionProvisional": true`). (2) Los `motivo` se copiaron de §4.3, que cita `ESTADO_PROYECTO.md` del 2026-07-30, y pueden estar desfasados. La revisión debe distinguir **dos cosas distintas**: (a) si las correcciones de los Art. 430-22 y 430-24 ya se aplicaron al motor de cálculo, y (b) si existe el **caso de referencia calculado a mano**. **Solo (b) permite pasar** `sizing-caso-1`, `sizing-caso-2` y `sizing-caso-3-alimentador` a `verificado`: que el código esté corregido no demuestra que calcule bien. (3) `normativa[]` está vacío en todas las capacidades: poblarlo es contenido normativo y debe cotejarse con el DOF (I3).
 - **Inicio sin `LayoutBase`** (corte: Etapa 5). `index.astro` sigue siendo la página mínima de la Etapa 1. Ponerle la barra de navegación ahora publicaría en la portada enlaces a páginas que aún no existen (`/producto/`, `/blog/`…); la Etapa 5 la reconstruye sobre el layout.
+
+  Aclaración HC-d: `/blog/` ya existe y está publicado (E4-al); ese ejemplo es
+  histórico. Siguen pendientes `/producto/` y las páginas de sus etapas respectivas.
 - **Icono del sitio** (decisión de marca; corte: Etapa 10, cuyo criterio exige Lighthouse ≥ 95 en buenas prácticas). Hoy `LayoutBase` declara `<link rel="icon" href="data:,">` solo para que el navegador no pida `/favicon.ico` y registre un 404 en cada página (E4-k).
 - **Enlaces a `/normativa/…`** (corte: Etapa 9). `CalloutNormativo` y el RSS ya enlazan a `/normativa/{ref}/`, que no existe hasta la Etapa 9: esos enlaces dan 404 mientras tanto.
 - **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, AD1.
@@ -3462,4 +3534,26 @@ Ninguna cambia una decisión D1–D8; se registran porque el código difiere de 
 7. **`trailingSlash: 'always'`** en `astro.config.mjs`, para que todas las URL que genera Astro terminen en barra, como fija D8.
 8. **`npm run build` usa `astro build --force`**, por un caso límite de Astro 7: al borrar el último post, el caché de contenido rompe el build (E4-m).
 9. **I3 c admite contextos negativos como frases exactas**, no por heurística: hoy, la del `Descargo` y el ejemplo del propio plan.
+
+### A9 — Decisiones de continuidad recibidas antes de la Etapa 5 (2026-10-24)
+
+Autoridad: `TRASPASO_ETAPA5.md` §4, aportado por Sebastián como instrucción de esta
+sesión. No autoriza iniciar la Etapa 5 ni cambiar `capacidades.json`.
+
+1. **H10 se replantea:** la comparación de Inicio/Producto contrasta proceso y
+   controles, sin atribuir errores a la hoja de un tercero. Sustituye el enfoque del
+   plan §6, Etapa 5, y §8 H10. Puede apoyarse en la corrección pública de la Tabla 5
+   por el DOF; no afirma superioridad no medida ni generaliza defectos de una hoja.
+   El plan original permanece íntegro; H10 conserva su texto histórico y registra
+   el estado «replanteada». La redacción y publicación se realizarán en su etapa.
+2. **CTA decidido:** en `proximamente` llevará al blog con texto descriptivo; en
+   la Etapa 8 volverá «Únete a la lista» con un destino real. La lógica seguirá en
+   `lanzamiento.ts` (I7). Decisión registrada, implementación pendiente fuera de
+   las cuatro tareas de este bloque. No se crean descarga ni formulario.
+3. **Verificación de capacidades:** se realiza en el repositorio del motor con
+   los cuatro elementos de referencia de §5 del traspaso. El sitio consume el
+   inventario confirmado; no certifica el motor. Antes de modificarlo, Sebastián
+   debe indicar dónde está el trabajo posterior al 18 de agosto o si no está
+   publicado. El diagnóstico de octubre es contexto autoritativo del producto,
+   no una lista de tareas del sitio ni una invitación a auditar de nuevo `main`.
 
