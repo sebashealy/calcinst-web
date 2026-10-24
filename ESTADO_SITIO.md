@@ -2,6 +2,48 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
+## Bloque de higiene y continuidad previo a la Etapa 5 (2026-10-24)
+
+Encargo de Sebastián: incorporar el plan y el traspaso, corregir H1 y la descripción
+general de la Nota Aclaratoria, conservar Lighthouse y alinear pendientes históricos.
+No inicia ni autoriza la Etapa 5. `capacidades.json` y el repositorio CalcInst quedan
+fuera de este bloque. `TRASPASO_ETAPA5.md` es la instrucción recibida y prevalece sobre
+las inferencias del diagnóstico anterior. `DIAGNOSTICO_PRELANZAMIENTO.md`, fechado
+2026-10-17 con anotaciones al 23, es contexto del producto; no se copia al sitio ni
+se convierte en tareas del motor. Pendiente preguntar en qué rama está el trabajo
+posterior al 18 de agosto, o si no está publicado.
+
+Las etiquetas E0–E4 existentes se conservan (Etapa 4 hasta E4-al). Se reserva el
+prefijo **HC-** para este bloque de mantenimiento, sin ocupar E5-a ni reabrir etapas.
+
+### HC-a — Base de trabajo y conservación de documentos
+
+Clon nuevo en `C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web`.
+Antes de escribir, `git status --short --branch` devolvió `## main...origin/main`,
+sin cambios; `git rev-parse HEAD` y `git rev-parse origin/main` devolvieron ambos
+`e7728a4d6fc4c9b9c3680475a8e546889dd5bbf0`. Remoto fetch/push:
+`https://github.com/sebashealy/calcinst-web.git`. La base no avanzó. Se creó la rama
+`mantenimiento/continuidad-pre-etapa5`; no se empuja a `main`.
+
+Se leyeron las 3 389 líneas de este documento, las decisiones, hipótesis y adjuntos.
+Se incorpora `PLAN_SITIO_WEB.md` con una nota inicial que remite a los addenda,
+AD7 (Capítulo 10) y H12 (Astro 7.3.1). El cuerpo original se conserva byte a byte:
+SHA-256 del original `74456178EDF8F390773F17D225AD2010C9DC5AFF0F9BD462E2CDFEAC0E3334CE`.
+`TRASPASO_ETAPA5.md` se copia íntegro; SHA-256 de origen y destino:
+`29B9D67E2F55A903F061E6D2A2D2D981FEFD4794C4F786BF8A054C81F4943CCD`.
+Ambos quedan en `.prettierignore` para que el formateador no reescriba los originales,
+igual que los documentos de gobierno ya excluidos. Comprobación ejecutada:
+
+```text
+Plan: cuerpo original idéntico byte a byte después de la nota.
+```
+
+Verificación: comparación de bytes del cuerpo después del prefijo y hashes del
+traspaso. No se ejecutó todavía la batería de cierre. El clon no trae dependencias;
+Sebastián autorizó `npm ci` con las versiones exactas de `package.json` y el lockfile
+existente. Node disponible: v24.22.1. `npm` y `gh` no están en PATH; se autorizó
+descargar npm 11.13.0 en el espacio de trabajo, sin instalación global.
+
 ## Última etapa cerrada
 
 Etapa 4 — 2026-10-04. Evidencia en E4-a … E4-al. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
