@@ -2,14 +2,13 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
-## Etapa 5 — Inicio y Producto: en curso (2026-10-27)
+## Etapa 5 — Inicio y Producto: aprobación humana recibida (2026-10-28)
 
-**Último corte:** corrección de rendimiento E5-j–E5-l. Inicio y Producto:
-LCP 1,20–1,22 s, CLS 0 en los perfiles medidos; 134 pruebas y auditoría en 12
-variantes pasan. Código y evidencias del bloque anterior en PR #17 (borrador,
-dependiente de #16). La Etapa 5 sigue en curso, pendiente de revisión humana de
-diseño, redacción e inventario; no fusionada ni declarada cerrada.
-Para retomar, leer E5-l y los Checks del PR. El traspaso del 24 es histórico.
+**Último corte:** criterios técnicos satisfechos (E5-j–E5-l), revisión de la vista
+previa aprobada por Sebastián y fusión de PR #16/#17 expresamente autorizada
+(E5-n). Integración en curso, condicionada al CI. No confundir la aprobación del
+sitio con certificación normativa del motor. Próxima etapa: 6, preparada en E5-n;
+identidad personal pendiente de decisión y textos legales sin aprobar.
 
 ### E5-a — Autorización, base y fuente del producto
 
@@ -4676,3 +4675,55 @@ no repetir la implementación ni iniciar otra etapa. Después de esa revisión s
 podrá decidir el cierre y la integración de los PR #16 y #17. Main no se modificó.
 Esta entrada es documental; el éxito citado corresponde exactamente a `31f882e`,
 no se atribuye anticipadamente al commit que incorpora esta nota.
+
+### E5-n — Aprobación humana y preparación de continuidad (2026-10-28)
+
+Tras la entrega de Inicio/Producto para revisar diseño, textos, captura y funciones,
+Sebastián responde: «excelente me gusto mucho, continuemos». Se registra su
+aprobación de la vista previa de `31f882e`. Después autoriza expresamente:
+«Sí, fusionar ambos PR cuando sus comprobaciones pasen». No es autorización para
+publicar textos legales de otra etapa ni para cambiar capacidades normativas.
+
+| Criterio Etapa 5 | Evidencia y resultado |
+| --- | --- |
+| Inicio/Producto consumen inventario y lanzamiento | E5-d; componentes compartidos y CTA al blog |
+| Promoción limitada a verificadas; pendientes diferenciadas | E5-e/k, 134 pruebas; verificador de HTML en ambas rutas |
+| Hero sin fechas ni promesas fuera de insignia | prueba negativa y validación HTML E5-f/l |
+| Captura real sintética a 2×, dimensiones y estabilidad | E5-c/f; 2560×1600; CLS 0 en perfiles finales E5-j/l |
+| Inicio ≤600 KB | E5-l: 239006 B sin compresión |
+| Capturas 360/768/1280 e informe Lighthouse | dos paquetes de evidencia versionados; auditoría 12 variantes |
+| Revisión humana | respuesta anterior sobre la preview entregada; no sustituye verificación del motor |
+
+CI de `edf5a0d`: completed/success, run 40739615554:
+https://github.com/sebashealy/calcinst-web/actions/runs/40739615554 .
+PR #16 fusionado con merge commit `f64448720799dc7af5f9eaddf64411a34e076d9a`;
+se conservó la historia. PR #17 se redirigió a main y salió de borrador. Antes de
+fusionarlo debe pasar la comprobación de esta última nota sobre la base definitiva.
+El resultado de integración se registrará sin atribuirlo por anticipado.
+
+Preparación de Etapa 6 (plan, todavía sin implementar páginas nuevas):
+
+1. Configuración: correo público elegido expresamente `instcalc@gmail.com`.
+   Identidad personal no decidida: Sebastián indica «No se si usar mi nombre».
+   Presentar CalcInst como marca; no inventar nombre ni generar Person ficticio.
+2. Crear Quiénes somos y Contacto sobre LayoutBase, con descripción honesta del
+   proyecto y enlace mailto. No añadir formulario, reservas de descarga ni listas.
+3. Crear 404 con Inicio/Blog y lista de artículos publicados, reutilizando colección.
+4. Modelar legales MDX con version, fechaVigencia y publicado; borradores excluidos
+   de publicación hasta revisión humana. Resolver identidad/domicilio del responsable,
+   tratamientos y proveedores reales antes de dar por válido el aviso. Person con
+   jobTitle del plan y sin hasCredential queda pendiente de identidad aprobada.
+5. Probar estados publicado/no publicado y fechas, I3(c), enlaces, teclado/axe,
+   capturas a 360 px y batería habitual. Registrar evidencia E6 solo al iniciar el bloque.
+
+H2: consulta preparatoria a la fuente oficial de Cámara de Diputados el 2026-10-28,
+https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf . El documento consultado
+indica ley nueva del 20-03-2025, última reforma del 14-11-2025; artículo 2 XV identifica
+la Secretaría Anticorrupción y Buen Gobierno. No se cierra H2: falta revisión del
+aviso concreto por Sebastián y, de ser posible, su asesor. No se publica texto legal
+ni se trata la marca por sí sola como identidad legal confirmada.
+
+Para retomar: completar integración #17 y comprobar despliegue; continuar el plan
+anterior en rama de Etapa 6. Mantener identidad como pendiente. La configuración
+actual todavía conserva correoContacto=null; el valor elegido se aplicará en esa
+etapa. Plan original, decisiones aprobadas y restricciones de etapas futuras intactos.
