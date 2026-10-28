@@ -1,5 +1,5 @@
 {
-  "descripcion": "Referencias de la NOM-001-SEDE-2012 que corrige la Nota Aclaratoria publicada en el DOF el 07/02/2014 (AD8). La cadena «NOM-001-SEDE-2012» sola no identifica un texto único: el publicado el 29/11/2012 y el corregido por esta nota difieren en valores. Este archivo es el dato; src/lib/nota-aclaratoria.ts lo valida con Zod y CalloutNormativo lo consulta, para que el aviso no dependa de que el redactor se acuerde.",
+  "descripcion": "Referencias de la NOM-001-SEDE-2012 que corrige la Nota Aclaratoria publicada en el DOF el 07/02/2014 (AD8). La cadena «NOM-001-SEDE-2012» sola no identifica un texto único: entre las tablas aquí citadas, solo la Tabla 5 del Capítulo 10 cambia un valor; en la Tabla 310-15(b)(2)(a) cambia la etiqueta de un renglón, no los factores (E4-ak). Este archivo es el dato; src/lib/nota-aclaratoria.ts lo valida con Zod y CalloutNormativo lo consulta, para que el aviso no dependa de que el redactor se acuerde.",
   "fuente": {
     "titulo": "Nota Aclaratoria a la Norma Oficial Mexicana NOM-001-SEDE-2012, Instalaciones Eléctricas (utilización)",
     "fechaDOF": "2014-02-07",

@@ -2,9 +2,141 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
+## Bloque de higiene y continuidad previo a la Etapa 5 (2026-10-24)
+
+Encargo de Sebastián: incorporar el plan y el traspaso, corregir H1 y la descripción
+general de la Nota Aclaratoria, conservar Lighthouse y alinear pendientes históricos.
+No inicia ni autoriza la Etapa 5. `capacidades.json` y el repositorio CalcInst quedan
+fuera de este bloque. `TRASPASO_ETAPA5.md` es la instrucción recibida y prevalece sobre
+las inferencias del diagnóstico anterior. `DIAGNOSTICO_PRELANZAMIENTO.md`, fechado
+2026-10-17 con anotaciones al 23, es contexto del producto; no se copia al sitio ni
+se convierte en tareas del motor. Pendiente preguntar en qué rama está el trabajo
+posterior al 18 de agosto, o si no está publicado.
+
+Las etiquetas E0–E4 existentes se conservan (Etapa 4 hasta E4-al). Se reserva el
+prefijo **HC-** para este bloque de mantenimiento, sin ocupar E5-a ni reabrir etapas.
+
+### HC-a — Base de trabajo y conservación de documentos
+
+Clon nuevo en `C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web`.
+Antes de escribir, `git status --short --branch` devolvió `## main...origin/main`,
+sin cambios; `git rev-parse HEAD` y `git rev-parse origin/main` devolvieron ambos
+`e7728a4d6fc4c9b9c3680475a8e546889dd5bbf0`. Remoto fetch/push:
+`https://github.com/sebashealy/calcinst-web.git`. La base no avanzó. Se creó la rama
+`mantenimiento/continuidad-pre-etapa5`; no se empuja a `main`.
+
+Se leyeron las 3 389 líneas de este documento, las decisiones, hipótesis y adjuntos.
+Se incorpora `PLAN_SITIO_WEB.md` con una nota inicial que remite a los addenda,
+AD7 (Capítulo 10) y H12 (Astro 7.3.1). El cuerpo original se conserva byte a byte:
+SHA-256 del original `74456178EDF8F390773F17D225AD2010C9DC5AFF0F9BD462E2CDFEAC0E3334CE`.
+`TRASPASO_ETAPA5.md` se copia íntegro; SHA-256 de origen y destino:
+`29B9D67E2F55A903F061E6D2A2D2D981FEFD4794C4F786BF8A054C81F4943CCD`.
+Ambos quedan en `.prettierignore` para que el formateador no reescriba los originales,
+igual que los documentos de gobierno ya excluidos. Comprobación ejecutada:
+
+```text
+Plan: cuerpo original idéntico byte a byte después de la nota.
+```
+
+Verificación: comparación de bytes del cuerpo después del prefijo y hashes del
+traspaso. No se ejecutó todavía la batería de cierre. El clon no trae dependencias;
+Sebastián autorizó `npm ci` con las versiones exactas de `package.json` y el lockfile
+existente. Node disponible: v24.22.1. `npm` y `gh` no están en PATH; se autorizó
+descargar npm 11.13.0 en el espacio de trabajo, sin instalación global.
+
+### HC-b — H1 y descripción general de la Nota Aclaratoria alineadas
+
+Se corrigen la fuente 4 y la conclusión de H1 en `HIPOTESIS_SITIO.md`: la Tabla 5
+del Capítulo 10 cambia el valor citado; la Tabla 310-15(b)(2)(a) cambia la etiqueta
+91-75 a 71-75, no sus factores. Se registra la errata no corregida en la tabla de
+base 40 °C, 310-15(b)(2)(b), atribuyéndola al traspaso de Sebastián (§1.2), sin
+presentarla como un cotejo nuevo del DOF. Se conservan las frases sustituidas en
+una nota de trazabilidad y se cita E4-ak como evidencia que prevalece.
+
+En `src/config/nota-aclaratoria.json` se cambia exclusivamente `descripcion` de
+nivel superior. Comparación ejecutada con Node `assert.deepEqual` contra la versión
+de HEAD, retirando solo esa propiedad de ambos objetos:
+
+```text
+JSON válido: solo cambió descripcion de nivel superior; fuente y referencias idénticas.
+```
+
+`git diff --check`: sin salida, exit 0. La batería de cierre sigue pendiente.
+
+### HC-c — Conservación de informes Lighthouse: cambio aplicado; verificado en HC-g
+
+`.github/workflows/ci.yml`: se activa `include-hidden-files: true` únicamente para
+la ruta `.lighthouseci`, que es donde `lighthouserc.json` ya escribe los informes.
+`if-no-files-found` pasa de `ignore` a `error`: la ausencia de evidencia no puede
+producir una subida aparentemente exitosa. Se conserva `if: always()` para recuperar
+informes también cuando una aserción de Lighthouse falle. No se cambia el umbral
+de Lighthouse ni se añade una dependencia.
+
+El diagnóstico anterior comprobó en el run 37243439794 que se generaron cinco
+informes pero no se subió ninguno. Esto corrige la afirmación histórica de E1-h
+sobre la conservación del artefacto: ejecutar Lighthouse y conservar su informe
+son verificaciones distintas. **Pendiente:** ejecutar el CI del PR y comprobar el
+artefacto descargable; el cambio de YAML por sí solo no cumple esa verificación.
+**Actualización:** la descarga se comprobó después y quedó registrada en HC-g.
+
+### HC-d — Continuidad histórica y decisiones recibidas
+
+Se alinea el encabezado de la Etapa 4 con E4-al y se registra su ratificación humana
+en el traspaso §4.1. Se conservan los antecedentes y se señala qué prevalece:
+E3-e para la prueba de Narrador; E4-aj para P1 (incluida la medición previa de E4-z);
+AD9/E4-s para micro en P2; PR #5/AD3 para P3; E4-al para la existencia de `/blog/`.
+P4, P5 y P6 permanecen abiertos, con sus condiciones y destinos intactos.
+
+H10 pasa a **replanteada**, conforme al traspaso §4.4, conservando el planteamiento
+original. A9 registra la modificación autorizada del plan y la decisión de CTA sin
+reescribir el original. La implementación del CTA no forma parte de las cuatro
+tareas enumeradas en este encargo: `lanzamiento.ts` no se cambia en este bloque.
+El criterio de referencia independiente y el cotejo visual de tablas se conservan
+en el traspaso §5, que ya está versionado; no se duplican sus reglas aquí.
+
+Entrega en PR #16: https://github.com/sebashealy/calcinst-web/pull/16 (rama propia,
+sin fusión). Pendientes al escribir esta entrada: batería local completa, resultado
+del CI y descarga del artefacto. Ninguna prueba se declara exitosa por anticipado.
+
+**Entorno:** Node v24.22.1, npm 11.13.0 local autorizado; sin `gh` instalado.
+Se usa la API del conector GitHub para el PR. El acceso de red del sandbox impidió
+clonar/descargar/publicar; se repitieron con aprobación de ejecución fuera del sandbox.
+El lanzador `npm.cmd` del tarball espera una instalación estándar y falló con
+`MODULE_NOT_FOUND`; se usa `node ../.tools/package/bin/npm-cli.js` directamente.
+El primer `npm ci` sin acceso de red se interrumpió sin resultado; el segundo,
+con acceso autorizado, terminó con exit 0. No se cambiaron manifest ni lockfile.
+
+Salida literal completa de ese `npm ci` (dos fragmentos de la misma ejecución):
+
+```text
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated rimraf@2.7.1: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+
+added 791 packages, and audited 792 packages in 55s
+
+218 packages are looking for funding
+  run `npm fund` for details
+
+34 vulnerabilities (2 low, 9 moderate, 22 high, 1 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+```
+
+Son avisos distintos de P6. Se reportan sin atribuirles alcance de producción sin
+un análisis del árbol; no se ejecuta `npm audit fix` ni se actualizan dependencias.
+
 ## Última etapa cerrada
 
-Etapa 4 — 2026-10-04. Evidencia en E4-a … E4-al. **El cierre queda sujeto a la verificación de Sebastián**, conforme a la regla de puertas del plan; la autoatestación no cuenta como evidencia.
+Etapa 4 — 2026-10-04. Evidencia en E4-a … E4-al. **Cierre ratificado por Sebastián en `TRASPASO_ETAPA5.md` §4.1 (2026-10-24)**: ese documento aporta el rastro humano que faltaba. No se reabre. La condición de verificación de la redacción anterior se conserva en E4-al como antecedente.
 
 Cotejo criterio por criterio (plan §6, Etapa 4):
 
@@ -37,6 +169,10 @@ Cotejo criterio por criterio (plan §6, Etapa 3):
 | Cambiar `ESTADO_LANZAMIENTO` a cada valor cambia el botón de acción y el pie sin tocar otro archivo (`git diff --stat` = 1 archivo) | cumplido | E3-b: tres transiciones, `1 file changed` en cada una; pruebas e invariantes pasan sin modificarse en los tres estados |
 | El script I7 falla con un literal prohibido y vuelve a pasar al quitarlo (prueba negativa documentada) | cumplido | E3-d: exit 1 señalando archivo y línea, exit 0 al retirarlo; además permanente en CI |
 | Menú móvil operable con teclado y lector de pantalla (`aria-expanded`, `Escape` cierra) | cumplido con límite | E3-e: teclado verificado y árbol de accesibilidad correcto en los tres momentos. **No** se probó con un lector real; queda sugerida una comprobación de un minuto con Narrador |
+
+Actualización de continuidad (HC-d, 2026-10-24): el límite de la última fila quedó
+resuelto por Sebastián con Narrador el 2026-09-11, según la ampliación de E3-e.
+La fila conserva el estado de la primera entrega; prevalece esa evidencia posterior.
 
 Evidencia pedida: tres `git diff --stat` y captura de cada estado (E3-b, E3-c), salida del script en fallo y en éxito (E3-d), conteo de pruebas antes y después (E3-h: 0 → 31).
 
@@ -1284,7 +1420,7 @@ verificar-invariantes: 2 verificacion(es) activas, 0 fallo(s)
 
 Al desinstalar Tailwind (AD2), npm informó `removed 13 packages, and audited 708 packages`.
 
-## Evidencia Etapa 4 (en curso, desde 2026-09-11)
+## Evidencia Etapa 4 (2026-09-11 a 2026-10-04; cerrada, E4-al)
 
 La Etapa 4 arranca con el bloque P2, por instrucción de Sebastián: el juego de caracteres se cierra antes de tocar la colección del blog. Decisiones en `DECISIONES_SITIO.md`, AD4.
 
@@ -2196,7 +2332,7 @@ Revisa `.html`, `.xml`, `.svg`, `.txt`, `.json`, `.css`, `.js` y `.mjs`. Los `.w
 
 El mismo día, antes de la corrección, pasaban 3 de 9 (E4-z): solo las tres raíces, que son justamente las que se verificaron en la Etapa 1 y dejaron pasar el defecto. Ese contraste es el argumento de por qué la verificación son nueve comprobaciones y no una.
 
-**Estado actual de las nueve, medido hoy.** Los dos defectos siguen vivos y se comportan distinto en cada regla:
+**Medición histórica anterior a la corrección, del 2026-10-04.** Los dos defectos seguían vivos y se comportaban distinto en cada regla. Se conserva la salida original; prevalece el resultado posterior de E4-aj (9 de 9):
 
 ```
 https://www.calcinst.mx/                             -> Location: https://calcinst.mx/                              OK
@@ -3133,6 +3269,9 @@ La opción B descartada era desplegar desde GitHub Actions con `wrangler deploy`
 
 ### P1 — Preservación de ruta en las dos Redirect Rules (corte: antes de cerrar la Etapa 4)
 
+**CERRADO el 2026-10-04, E4-aj: 9 de 9 comprobaciones.** El corte y los requisitos
+que siguen son el antecedente histórico; no constituyen un bloqueo vigente (HC-d).
+
 Defecto documentado en E1-n. Corrección: cambiar ambas reglas a redirección **dinámica** con destino `concat("https://calcinst.mx", http.request.uri.path)` y *Preserve query string* activado.
 
 **La Etapa 4 no se cierra sin esto**, por decisión de Sebastián (2026-09-06): desde el primer post publicado, un 301 hacia `calcinst.mxblog` sería un enlace permanente roto. No bloquea las Etapas 2 ni 3.
@@ -3148,6 +3287,10 @@ Defecto documentado en E1-n. Corrección: cambiar ambas reglas a redirección **
 Los tres casos se repiten contra `calcinst.com` y `www.calcinst.com`, que usan la otra regla: son nueve comprobaciones en total.
 
 ### P2 — Juego de caracteres declarado como dato del proyecto (corte: antes de iniciar la Etapa 4)
+
+**CERRADO el 2026-09-11, E4-a … E4-e.** Para micro prevalece la revisión posterior
+AD9/E4-s del 2026-09-12: U+00B5 permitido, U+03BC prohibido; fuentes 57 336 B.
+La resolución inicial que se conserva más abajo describe el estado anterior (HC-d).
 
 Registrado a pedido de Sebastián (2026-09-10). **Requisito:** el juego de caracteres de las fuentes se declara explícitamente como dato versionado del proyecto, no se deriva del contenido existente, y **el build falla si un `.mdx` usa un carácter fuera del conjunto declarado**.
 
@@ -3185,6 +3328,9 @@ La cobertura de **IBM Plex Mono completa no se pudo verificar** en esta sesión:
 **Resolución (2026-09-11): P2 cerrado**, como primer bloque de la Etapa 4. Decisiones en `DECISIONES_SITIO.md`, AD4; evidencia en E4-a … E4-e. De los siete requisitos de arriba: (1) el conjunto vive en `src/config/caracteres.json`; (2) se subconjunta desde IBM Plex completa; (3) la comprobación GLIFOS es bloqueante en CI y en el generador; (4) CARACTERES rechaza en `.md`/`.mdx` todo carácter no declarado; (5) `✗` sale del conjunto y pasa a SVG; (6) micro = μ (U+03BC), µ (U+00B5) prohibido; (7) el presupuesto se cumple en lectura estricta, 57 244 B. Hallazgo que corrigió la premisa: IBM Plex Mono no tiene griego ni completa; se cubre con IBM Plex Sans de respaldo, comprobado en el navegador (E4-d).
 
 ### P3 — Las URL de preview por PR dejaron de generarse (corte: antes de iniciar la Etapa 4)
+
+**CERRADO el 2026-09-11, PR #5 y AD3.** Prevalece la resolución y verificación
+registrada al final de este bloque; las alternativas pendientes anteriores son historia (HC-d).
 
 Registrado a pedido de Sebastián (2026-09-10): la Etapa 4 depende de poder revisar cada PR en su preview.
 
@@ -3271,6 +3417,9 @@ Las tres salidas se midieron antes de proponer nada (E4-ai): no hay sustituta en
 - **Correo de contacto público** (corte: Etapa 6). `SITIO.correoContacto` está en `null` a propósito: publicar una dirección es decisión de Sebastián. Lo necesitan la página de Contacto (Etapa 6) y el correo alterno que exige I1 en el formulario (Etapa 8).
 - **Revisión de `capacidades.json` — de Sebastián; bloquea la Etapa 5, no la 4.** (1) Nombres y descripciones son redacción provisional (`"redaccionProvisional": true`). (2) Los `motivo` se copiaron de §4.3, que cita `ESTADO_PROYECTO.md` del 2026-07-30, y pueden estar desfasados. La revisión debe distinguir **dos cosas distintas**: (a) si las correcciones de los Art. 430-22 y 430-24 ya se aplicaron al motor de cálculo, y (b) si existe el **caso de referencia calculado a mano**. **Solo (b) permite pasar** `sizing-caso-1`, `sizing-caso-2` y `sizing-caso-3-alimentador` a `verificado`: que el código esté corregido no demuestra que calcule bien. (3) `normativa[]` está vacío en todas las capacidades: poblarlo es contenido normativo y debe cotejarse con el DOF (I3).
 - **Inicio sin `LayoutBase`** (corte: Etapa 5). `index.astro` sigue siendo la página mínima de la Etapa 1. Ponerle la barra de navegación ahora publicaría en la portada enlaces a páginas que aún no existen (`/producto/`, `/blog/`…); la Etapa 5 la reconstruye sobre el layout.
+
+  Aclaración HC-d: `/blog/` ya existe y está publicado (E4-al); ese ejemplo es
+  histórico. Siguen pendientes `/producto/` y las páginas de sus etapas respectivas.
 - **Icono del sitio** (decisión de marca; corte: Etapa 10, cuyo criterio exige Lighthouse ≥ 95 en buenas prácticas). Hoy `LayoutBase` declara `<link rel="icon" href="data:,">` solo para que el navegador no pida `/favicon.ico` y registre un 404 en cada página (E4-k).
 - **Enlaces a `/normativa/…`** (corte: Etapa 9). `CalloutNormativo` y el RSS ya enlazan a `/normativa/{ref}/`, que no existe hasta la Etapa 9: esos enlaces dan 404 mientras tanto.
 - **`enforce_admins`: cerrado, no pendiente.** Permanece en `false` por decisión consciente de Sebastián; queda registrado en `DECISIONES_SITIO.md`, AD1.
@@ -3387,3 +3536,397 @@ Ninguna cambia una decisión D1–D8; se registran porque el código difiere de 
 8. **`npm run build` usa `astro build --force`**, por un caso límite de Astro 7: al borrar el último post, el caché de contenido rompe el build (E4-m).
 9. **I3 c admite contextos negativos como frases exactas**, no por heurística: hoy, la del `Descargo` y el ejemplo del propio plan.
 
+### A9 — Decisiones de continuidad recibidas antes de la Etapa 5 (2026-10-24)
+
+Autoridad: `TRASPASO_ETAPA5.md` §4, aportado por Sebastián como instrucción de esta
+sesión. No autoriza iniciar la Etapa 5 ni cambiar `capacidades.json`.
+
+1. **H10 se replantea:** la comparación de Inicio/Producto contrasta proceso y
+   controles, sin atribuir errores a la hoja de un tercero. Sustituye el enfoque del
+   plan §6, Etapa 5, y §8 H10. Puede apoyarse en la corrección pública de la Tabla 5
+   por el DOF; no afirma superioridad no medida ni generaliza defectos de una hoja.
+   El plan original permanece íntegro; H10 conserva su texto histórico y registra
+   el estado «replanteada». La redacción y publicación se realizarán en su etapa.
+2. **CTA decidido:** en `proximamente` llevará al blog con texto descriptivo; en
+   la Etapa 8 volverá «Únete a la lista» con un destino real. La lógica seguirá en
+   `lanzamiento.ts` (I7). Decisión registrada, implementación pendiente fuera de
+   las cuatro tareas de este bloque. No se crean descarga ni formulario.
+3. **Verificación de capacidades:** se realiza en el repositorio del motor con
+   los cuatro elementos de referencia de §5 del traspaso. El sitio consume el
+   inventario confirmado; no certifica el motor. Antes de modificarlo, Sebastián
+   debe indicar dónde está el trabajo posterior al 18 de agosto o si no está
+   publicado. El diagnóstico de octubre es contexto autoritativo del producto,
+   no una lista de tareas del sitio ni una invitación a auditar de nuevo `main`.
+
+
+## Evidencia de cierre del bloque de higiene
+
+### HC-e — Batería local completa (2026-10-24)
+
+Comandos en el orden solicitado. `npm` se ejecuta mediante Node y el CLI local
+11.13.0 autorizado, sin modificar scripts del proyecto. `NO_COLOR=1` solicita
+salida sin color; no se filtran líneas. Cada salida se guarda inmediatamente.
+
+```text
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+EPERM: operation not permitted, mkdir 'C:\Users\Sebastian\AppData\Roaming\astro\Config'
+  Location:
+    C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\node_modules\@astrojs\telemetry\dist\config.js:56:8
+  Stack trace:
+    at Object.mkdirSync (node:fs:1410:26)
+    at get store (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/node_modules/@astrojs/telemetry/dist/config.js:38:10)
+    at AstroTelemetry.getConfigWithFallback (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/node_modules/@astrojs/telemetry/dist/index.js:40:38)
+    at get isDisabled (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/node_modules/@astrojs/telemetry/dist/index.js:69:17)
+    at notify (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/node_modules/astro/dist/cli/telemetry/index.js:5:19)
+EXIT=1
+```
+
+```text
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web
+
+
+ Test Files  5 passed (5)
+      Tests  126 passed (126)
+   Start at  10:11:50
+   Duration  3.18s (import 56%, transform 29%, tests 14%, worker 1%)
+
+EXIT=0
+```
+
+```text
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT=0
+```
+
+```text
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0
+```
+
+```text
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+EPERM: operation not permitted, mkdir 'C:\Users\Sebastian\AppData\Roaming\astro\Config'
+  Location:
+    C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\node_modules\@astrojs\telemetry\dist\config.js:56:8
+  Stack trace:
+    at Object.mkdirSync (node:fs:1410:26)
+    at get store (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/node_modules/@astrojs/telemetry/dist/config.js:38:10)
+    at AstroTelemetry.getConfigWithFallback (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/node_modules/@astrojs/telemetry/dist/index.js:40:38)
+    at get isDisabled (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/node_modules/@astrojs/telemetry/dist/index.js:69:17)
+    at notify (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/node_modules/astro/dist/cli/telemetry/index.js:5:19)
+EXIT=1
+```
+
+```text
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/scripts/verificar-invariantes.mjs:206
+    throw new Error(
+          ^
+
+Error: verificarNotacionEnSalida: no hay archivos de texto en dist/. Ejecuta el build antes.
+    at verificarNotacionEnSalida (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/scripts/verificar-invariantes.mjs:206:11)
+    at main (file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/scripts/verificar-salida.mjs:21:18)
+    at file:///C:/Users/Sebastian/Documents/ChatGPT/Calc%20Inst/calcinst-web/scripts/verificar-salida.mjs:33:3
+
+Node.js v24.22.1
+EXIT=1
+```
+
+```text
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx (no construido: borrador en un build sin MOSTRAR_BORRADORES; se omite la comprobación 3)
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx (no construido: borrador en un build sin MOSTRAR_BORRADORES; se omite la comprobación 3)
+verificar-portabilidad: 2 post(s), 0 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+
+### HC-f — Repetición de la batería con permisos de ejecución (2026-10-24)
+
+HC-e conserva el intento completo: check/build fallaron con EPERM al crear
+AppData/Roaming/astro/Config; verificar:salida falló por ausencia de dist.
+Portabilidad salió 0 pero comparó 0 páginas: no acredita el criterio. Se repite
+la batería completa con aprobación fuera del sandbox, sin cambiar código ni
+filtrar salidas. Se configura stdout de Python como UTF-8 para mostrar los
+acentos; el archivo de evidencia ya se escribía en UTF-8.
+
+```text
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+▶ Astro collects anonymous usage data.
+  This information helps us improve Astro.
+  Run "astro telemetry disable" to opt-out.
+  https://astro.build/telemetry
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+10:12:31 [content] Syncing content
+10:12:31 [content] Synced content
+10:12:31 [types] Generated 684ms
+10:12:31 [check] Getting diagnostics for Astro files in C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web...
+Result (49 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+
+EXIT=0
+```
+
+```text
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web
+
+
+ Test Files  5 passed (5)
+      Tests  126 passed (126)
+   Start at  10:12:40
+   Duration  3.24s (import 55%, transform 36%, tests 9%, worker 1%)
+
+EXIT=0
+```
+
+```text
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT=0
+```
+
+```text
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0
+```
+
+```text
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+10:12:50 [WARN] [content] data store cleared (force)
+10:12:51 [content] Syncing content
+10:12:51 [content] Synced content
+10:12:51 [types] Generated 490ms
+10:12:51 [build] output: "static"
+10:12:51 [build] mode: "static"
+10:12:51 [build] directory: C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\dist\
+10:12:51 [build] Collecting build info...
+10:12:51 [build] ✓ Completed in 546ms.
+10:12:51 [build] Building static entrypoints...
+10:12:51 [vite] ✓ built in 408ms
+10:12:51 [vite] ✓ built in 26ms
+10:12:51 [build] Rearranging server assets...
+
+ generating static routes 
+10:12:52   ├─ /blog/categoria/conductores/index.html (+24ms) 
+10:12:52   ├─ /blog/categoria/motores/index.html (+3ms) 
+10:12:52   ├─ /blog/categoria/canalizaciones/index.html (+3ms) 
+10:12:52   ├─ /blog/categoria/puesta-a-tierra/index.html (+3ms) 
+10:12:52   ├─ /blog/categoria/practica-profesional/index.html (+3ms) 
+10:12:52   ├─ /blog/etiqueta/110-14c/index.html (+5ms) 
+10:12:52   ├─ /blog/etiqueta/ampacidad/index.html (+4ms) 
+10:12:52   ├─ /blog/etiqueta/dof/index.html (+5ms) 
+10:12:52   ├─ /blog/etiqueta/nom-001-sede/index.html (+7ms) 
+10:12:52   ├─ /blog/etiqueta/temperatura/index.html (+5ms) 
+10:12:52   ├─ /blog/etiqueta/terminales/index.html (+7ms) 
+10:12:52   ├─ /blog/etiqueta/verificacion/index.html (+6ms) 
+10:12:52   ├─ /blog/etiqueta/vigencia/index.html (+4ms) 
+10:12:52   ├─ /blog/rss.xml (+91ms) 
+10:12:52   ├─ /blog/110-14c-decide-la-columna-no-el-conductor/index.html (+7ms) 
+10:12:52   ├─ /blog/que-version-de-la-nom-001-sede-esta-vigente/index.html (+6ms) 
+10:12:52   ├─ /blog/index.html (+4ms) 
+10:12:52   ├─ /diseno/index.html (+121ms) 
+10:12:52   ├─ /index.html (+3ms) 
+10:12:52 ✓ Completed in 663ms.
+
+10:12:52 [build] ✓ Completed in 1.16s.
+10:12:52 [build] 18 page(s) built in 1.71s
+10:12:52 [build] Complete!
+EXIT=0
+```
+
+```text
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+
+### HC-g — CI y descarga efectiva del artefacto Lighthouse (2026-10-24)
+
+Run: https://github.com/sebashealy/calcinst-web/actions/runs/40110247188
+Job: https://github.com/sebashealy/calcinst-web/actions/runs/40110247188/job/120920273434
+Head de la rama probado: `699cc452cfda17291eb310d5c2c10ebce511f124`.
+Checkout de integración que ejecutó Actions: `9a896db263ac83f6e99afcbe08525b9f18f6a335`.
+Resultado consultado por API: `completed`, `success`; subida de Lighthouse `success`.
+
+Se comprobó el listado de artefactos y **se ejecutó la descarga del ZIP** mediante
+el conector GitHub (`download_workflow_artifact`), no solo la existencia del enlace.
+La herramienta devolvió el archivo `lighthouse-HC-c.zip`, MIME `application/zip`,
+referencia `file_00000000970881f59a9cfc14c4265695`, sin error. El enlace temporal de
+esa descarga no se versiona; la ruta estable de GitHub es:
+
+https://github.com/sebashealy/calcinst-web/actions/runs/40110247188/artifacts/12566057136
+
+| Dato comprobado | Valor |
+|---|---|
+| Nombre | lighthouse |
+| ID | 12566057136 |
+| Tamaño | 7 238 503 bytes |
+| Archivos subidos, según el log del job | 22 |
+| Informes Lighthouse generados, según el log | 5 |
+| Expirado al consultar | false |
+| Creado | 2026-10-24T16:11:21Z |
+| Expira | 2027-01-22T16:09:29Z |
+| SHA-256 del ZIP, API y log coincidentes | 14000a78c2df4b29597e81588b21c895c5f4f84c3653434c8423f2c0a47b55ad |
+
+Esto cumple la prueba de conservación de HC-c. No cambia los umbrales de Lighthouse
+ni acredita criterios de una Etapa 5 todavía no autorizada. El run corresponde al
+cambio funcional; los commits posteriores solo completan documentación. El CI del
+último commit del PR debe comprobarse antes de fusionar.
+
+### HC-h — Resultado de cierre y transferencia
+
+HC-f terminó con **exit 0 en los ocho comandos**, en el orden solicitado: check
+49 archivos, 0 errores/avisos/hints; 126 pruebas en 5 archivos; lint y formato limpios;
+7 verificaciones sin fallos; 18 páginas; notación de salida sin fallos; portabilidad
+2 posts, 2 comparados, 0 fallos. Coincide con todos los números de la línea base.
+Las salidas completas están arriba, sin filtrado; HC-e conserva el intento fallido
+por permisos. No se sustituye ese intento por el resultado posterior.
+
+Avisos distintos de P6 que se observaron y no se ocultan:
+
+- Local: aviso inicial de telemetría de Astro y `[WARN] [content] data store cleared
+  (force)` por el build con `--force` ya decidido en A8/E4-m.
+- Instalación: deprecaciones y 34 vulnerabilidades (detalle literal en HC-d).
+- CI: `punycode` (DEP0040), `url.parse()` (DEP0169), acciones v4 dirigidas a Node 20
+  ejecutadas por el runner con Node 24; aviso de scripts de instalación de IBM Plex
+  no cubiertos por `allowScripts`; `GitHub token not set` de Lighthouse. El upload
+  del artefacto sí pasó. No se cambiaron acciones, permisos, scripts ni dependencias
+  para silenciar estos avisos. CI usa Node 24.21.0/npm 11.19.0; local usa
+  Node 24.22.1/npm 11.13.0. Las dependencias siguen fijadas por el mismo lockfile.
+
+**Continuidad:** el bloque contiene plan y traspaso preservados, corrección H1/JSON,
+conservación de Lighthouse verificada y notas históricas alineadas. Etapa 4 cerrada
+y ratificada por el traspaso; Etapa 5 no iniciada ni autorizada. P4/P5/P6 siguen en
+sus destinos originales. No se tocó `capacidades.json`, la aplicación, Cloudflare
+ni las páginas de etapas futuras. La decisión de CTA al blog está registrada en A9
+pero su implementación no se ejecutó dentro de estas cuatro tareas de higiene.
+
+**Siguiente paso:** revisar el PR #16 sin fusionarlo automáticamente. Antes del
+inventario, Sebastián debe responder: ¿en qué rama del repositorio privado
+`calcinst` está el trabajo posterior al 18 de agosto, o no está publicado? No inferir
+la respuesta desde `main` ni ejecutar tareas del diagnóstico de la aplicación.
+Después, solicitar el bloque concreto que corresponda; la Etapa 5 requiere su
+propia autorización expresa. Leer `TRASPASO_ETAPA5.md`, este bloque HC-a … HC-h,
+`HIPOTESIS_SITIO.md`, `DECISIONES_SITIO.md` y el plan original antes de continuar.
+
+Comprobación final de conservación sobre los blobs ya versionados (no solo sobre
+los archivos del checkout): el cuerpo de `PLAN_SITIO_WEB.md` coincide byte a byte
+con el adjunto tras retirar la nota inicial, y `TRASPASO_ETAPA5.md` coincide íntegro.
+La comparación contra la base de `capacidades.json`, `package.json`,
+`package-lock.json`, `wrangler.jsonc` y `lanzamiento.ts` no produjo diferencias.
+Git avisó de la conversión CRLF a LF al incorporar salidas capturadas en Windows;
+es la política existente de `.gitattributes`, no un cambio de contenido ni un aviso
+que se atribuya a P6.

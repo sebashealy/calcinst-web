@@ -15,7 +15,7 @@
 | H7 | La beta se publica solo para Windows x64 | S | Etapa 7 | Se agregan artefactos; requiere resolver firma/notarización macOS | abierta |
 | H8 | Existe una vía de firma de código Windows accesible a una persona física a costo razonable (CA con certificado OV, o Azure Trusted Signing si admite personas físicas). Se verifica en el momento de la beta, no ahora | S | Antes de `beta` | La beta sale sin firma con la explicación de SmartScreen redactada en la Etapa 7 | abierta |
 | H9 | Buttondown ofrece un endpoint público de suscripción utilizable desde un formulario propio sin exponer la clave de API | CC verifica en Etapa 0 | Etapa 0 | Se usa Kit, o una Pages Function mínima con addendum | **confirmada** (2026-09-05) en documentación oficial: (a) endpoint `embed-subscribe` como `action` de un `<form>` HTML sin clave de API (`docs.buttondown.com/building-your-subscriber-base`); (b) double opt-in activo por defecto (`docs.buttondown.com/double-opt-in`); (c) exportación CSV (`docs.buttondown.com/data-exports-subscriber`). Matiz para la Etapa 8: la documentación pide no usar `fetch` contra `embed-subscribe` (el suscriptor puede necesitar seguir la respuesta para CAPTCHA/validación); detalle en E0-d |
-| H10 | Los errores documentados en `examen1_2.xlsx` (fórmula de tubería, factor de caída, 430-22/430-24) son representativos de la práctica común y pueden describirse en T14 sin identificar el archivo ni a su autor | S | Antes de T14 | T14 se reescribe como lista de verificación genérica | abierta |
+| H10 | Los errores documentados en `examen1_2.xlsx` (fórmula de tubería, factor de caída, 430-22/430-24) son representativos de la práctica común y pueden describirse en T14 sin identificar el archivo ni a su autor | S | Cerrada 2026-10-24 | Se conserva el planteamiento original como antecedente | **replanteada**, no refutada. Decisión de Sebastián en `TRASPASO_ETAPA5.md` §4.4: comparar proceso y controles, sin atribuir errores a una hoja de terceros ni afirmar superioridad no medida. Referencia pública posible: corrección de la Tabla 5 por el DOF. Ver A9 y HC-d en `ESTADO_SITIO.md`; no se implementa contenido de la Etapa 5 en este bloque |
 | H11 | Las decisiones D4 y D5 son las que la memoria del proyecto ya apuntaba (licencia anual con fallback perpetuo; CFDI con contador); este plan las formaliza, no las contradice | S | Etapa 0 | Se emite addendum A1 con la corrección | abierta |
 | H12 | **Hallazgo de P2 (E0-b, 2026-09-05):** `astro@latest` en el registro npm es **7.3.1**, no 5.x como asume D1 del plan; los paquetes acompañantes también van por majors posteriores (`@astrojs/mdx` 8.0.0, `@astrojs/cloudflare` 14.3.0). La hipótesis implícita del plan ("Astro 5") ya no describe el `latest` publicado. Conforme al protocolo de la Etapa 0, la decisión de stack **no se cambia** aquí; la Etapa 1 debe decidir (con autorización del humano) si se usa `astro@latest` 7.x o se fija una versión, y verificar que la documentación citada por el plan (Content Collections, adaptador Cloudflare, islas) siga vigente en esa major | S | Etapa 1 | Si Astro 7.x cambió APIs que el plan asume (Content Collections/Zod, adaptador Cloudflare, islas React), la Etapa 1 lo documenta como addendum en `ESTADO_SITIO.md` sin reescribir el plan | **cerrada** (2026-09-11). Astro 7.3.1 autorizado en la puerta de la Etapa 1 (E1-a), y verificadas en uso las APIs que el plan asumía: el adaptador Cloudflare en la prueba I5 (E1-f, E1-k); las colecciones de contenido con el cargador `glob` y Zod 4 vía `astro/zod`, y la API de contenedor para el RSS, en la Etapa 4. Diferencias encontradas, ninguna estructural: la configuración va en `src/content.config.ts` y no en `src/content/config.ts`; `paginate()` exige un parámetro llamado `page`; `@astrojs/mdx` 8 ya no usa remark sino `markdown-satteri` (addendum A8) |
 
@@ -38,10 +38,20 @@ la autorización de la Etapa 4; aquí queda registrada con sus fuentes.
    para consulta pública, no expedición.
 4. **Nota Aclaratoria, DOF 07/02/2014** (código 5331914): corrige errores gramaticales,
    ortográficos, de congruencia y de redacción, «así como en algunos valores». Afecta a
-   CalcInst en la Tabla 5 (10 AWG TW/THHW/THW/THW-2: 55.68 pasa a 15.68 mm²) y en la
-   Tabla 310-15(b)(2)(a) (factores de corrección, filas 66-85 °C). **No toca** 310-15(b)(16),
+   CalcInst en la Tabla 5 del Capítulo 10 (10 AWG TW/THHW/THW/THW-2: 55.68 pasa a
+   15.68 mm²) y en la Tabla 310-15(b)(2)(a), donde corrige únicamente la **etiqueta
+   de un renglón**: «91-75» pasa a «71-75». Los factores de las filas 66-70, 71-75,
+   76-80 y 81-85 °C no cambian. **No toca** 310-15(b)(16),
    310-15(b)(3)(a), 430-22, 430-24, 250-122 ni 110-14(c).
 
 La fuente 4 es la que obligó a AD8: la cadena «NOM-001-SEDE-2012» sola no identifica un
-texto único, porque el publicado en 2012 y el corregido en 2014 difieren en valores de al
-menos dos tablas que CalcInst usa.
+texto único. Entre las dos tablas citadas, **solo la Tabla 5 del Capítulo 10 difiere
+en valores**; en la Tabla 310-15(b)(2)(a) cambia la etiqueta, no los factores.
+
+**Corrección de continuidad (2026-10-24, HC-b):** esta redacción sustituye las frases
+«factores de corrección, filas 66-85 °C» y «difieren en valores de al menos dos tablas».
+Prevalece la verificación de Sebastián registrada en E4-ak (2026-10-04), ratificada en
+`TRASPASO_ETAPA5.md` §1.2. Ese traspaso registra además que la misma errata «91-75»
+**sigue sin corregir en la Tabla 310-15(b)(2)(b), de base 40 °C**: la Nota Aclaratoria
+de 2014 no la toca. Es evidencia aportada por Sebastián, no un nuevo cotejo del DOF
+ejecutado durante este bloque de mantenimiento.
