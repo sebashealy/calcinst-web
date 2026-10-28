@@ -5,7 +5,11 @@ import puppeteer from 'puppeteer-core'
 import axeCore from 'axe-core'
 
 const root = path.resolve('dist')
-const salida = 'evidencia/etapa-5'
+const etapa6 = process.argv.includes('--etapa6')
+const salida = etapa6 ? 'evidencia/etapa-6' : 'evidencia/etapa-5'
+const rutas = etapa6
+  ? ['/quienes-somos/', '/contacto/', '/terminos/', '/privacidad/', '/ruta-inexistente-etapa6/']
+  : ['/', '/producto/']
 await mkdir(salida, { recursive: true })
 const tipos = {
   '.html': 'text/html',
@@ -28,8 +32,13 @@ const server = createServer(async (req, res) => {
     )
     res.end(await readFile(file))
   } catch {
-    res.writeHead(404)
-    res.end()
+    res.statusCode = 404
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    try {
+      res.end(await readFile(path.join(root, '404.html')))
+    } catch {
+      res.end('404')
+    }
   }
 })
 await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
@@ -40,7 +49,7 @@ const browser = await puppeteer.launch({
 })
 const informes = []
 try {
-  for (const ruta of ['/', '/producto/']) {
+  for (const ruta of rutas) {
     for (const tema of ['dark', 'light']) {
       for (const ancho of [360, 768, 1280]) {
         const page = await browser.newPage()
@@ -55,7 +64,8 @@ try {
         const respuesta = await page.goto(`http://127.0.0.1:${server.address().port}${ruta}`, {
           waitUntil: 'networkidle0',
         })
-        if (respuesta?.status() !== 200) {
+        const estadoEsperado = ruta === '/ruta-inexistente-etapa6/' ? 404 : 200
+        if (respuesta?.status() !== estadoEsperado) {
           throw new Error(
             `No se puede auditar ${ruta}: HTTP ${respuesta?.status()}. Ejecutar después del build, sin reconstruir dist durante la auditoría.`,
           )
@@ -109,7 +119,7 @@ try {
           )
         }
         await page.screenshot({
-          path: `${salida}/${ruta === '/' ? 'inicio' : 'producto'}-${tema}-${ancho}.png`,
+          path: `${salida}/${ruta === '/' ? 'inicio' : ruta.split('/').filter(Boolean).join('-')}-${tema}-${ancho}.png`,
           fullPage: true,
         })
         const informe = { ruta, tema, ancho, ...datos, salto, sinFoco, escape, errores }

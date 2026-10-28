@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content'
+import LayoutContenido from '../layouts/LayoutContenido.astro'
+import { publicables } from '../lib/blog'
+const posts = publicables(await getCollection('blog'))
+---
+
+<LayoutContenido
+  titulo="No encontramos esta página"
+  descripcion="Vuelve a Inicio, explora el producto o encuentra un artículo del blog de CalcInst."
+>
+  <p>La dirección puede estar incompleta o haber cambiado.</p>
+  <p><a href="/">Volver a Inicio</a> · <a href="/blog/">Explorar el blog</a></p>
+  <h2>Encuentra un artículo</h2>
+  <p>Estos son los artículos publicados:</p>
+  <ul>
+    {
+      posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+  <p>Si llegaste aquí desde un enlace del sitio, puedes <a href="/contacto/">avisarnos</a>.</p>
+</LayoutContenido>

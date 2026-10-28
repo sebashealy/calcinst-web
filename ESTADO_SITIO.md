@@ -2,7 +2,7 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
-## Último corte — Etapa 5 cerrada; Etapa 6 en preparación (2026-10-28)
+## Último corte — Etapa 5 cerrada; Etapa 6 en curso (2026-10-28)
 
 Etapa 5: criterios técnicos y aprobación humana registrados en E5-n, integración
 confirmada en E5-o. PR #16 y #17 fusionados a main. LCP 1,20–1,22 s, CLS 0 en los
@@ -4782,3 +4782,251 @@ medición de Lighthouse en producción.
 Preparación guardada en PR #18 (borrador):
 https://github.com/sebashealy/calcinst-web/pull/18 . Continuar en
 `etapa6/preparacion-contenido`. CI del PR pendiente al registrar esta entrada.
+
+### E6-b — Implementación autorizada de páginas y puerta legal (2026-10-28)
+
+Sebastián autoriza: «Pasemos a la etapa 6». Se continúa en la rama y PR #18,
+árbol limpio al comenzar. Identidad personal sigue pendiente; correo elegido
+instcalc@gmail.com. No se atribuyen nombre, equipo, credenciales ni empresa.
+
+Se crea LayoutContenido sobre LayoutBase para las páginas informativas, con
+medida de lectura y tokens existentes. Quiénes somos presenta CalcInst y sus
+límites; Contacto usa mailto sin formulario; 404 lista solo posts de publicables()
+y ofrece Inicio/Blog. Se crean Términos/Privacidad con un aviso de documento en
+revisión, sin servir el cuerpo de sus borradores.
+
+Colección legal en src/content.config.ts y src/lib/legal.ts: versión, fecha real,
+publicado, revisión humana, pendientes, responsable y domicilio. Publicar exige
+revisión, fecha y pendientes vacíos; privacidad exige responsable/domicilio.
+legalPublicable también rechaza fechas futuras con día civil de Ciudad de México.
+La publicación es estática: cambiar fecha o aprobación requiere reconstrucción.
+Una bandera no demuestra la revisión: su autorización real debe registrarse aquí.
+
+Los dos MDX son borradores internos versionados, no documentos legales terminados:
+contienen el texto propuesto y tareas de comprobación. No se publica su cuerpo ni
+se expone en una ruta de descarga. El repositorio GitHub puede contenerlos como
+fuente de trabajo; la exclusión de publicación se refiere al sitio servido.
+No se afirma que solo se trate correo ni se inventa el tratamiento del hosting.
+La consulta legal preparatoria de E5-n no cierra H2 ni sustituye revisión humana.
+Person queda pendiente porque no hay identidad aprobada; no crear datos ficticios.
+
+Pruebas nuevas: publicación hoy/pasado/futuro, borradores, revisión ausente,
+pendientes, identidad/domicilio, fechas inexistentes y datos inválidos. Se conserva
+la arquitectura y dependencias; no se cambia Cloudflare ni se crean formularios.
+Comprobación inicial: Astro check, 0 errores/avisos/hints; invariantes 7/0.
+Siguiente: batería completa, inspección de HTML para asegurar que no se filtran
+los borradores y auditoría visual/accesibilidad de las cinco rutas.
+
+### E6-c — Batería local de contenido y legales (2026-10-28)
+
+Salidas completas, sin filtrar. Se usa npm 11.13.0 local con las dependencias ya instaladas.
+
+```text
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+12:16:58 [content] Syncing content
+12:16:58 [content] Synced content
+12:16:58 [types] Generated 599ms
+12:16:58 [check] Getting diagnostics for Astro files in C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web...
+Result (66 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+EXIT=0
+```
+
+```text
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web
+
+
+ Test Files  7 passed (7)
+      Tests  150 passed (150)
+   Start at  12:17:08
+   Duration  7.19s (import 74%, transform 18%, tests 5%, worker 3%)
+
+EXIT=0
+```
+
+```text
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT=0
+```
+
+```text
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0
+```
+
+```text
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+12:17:49 [WARN] [content] data store cleared (force)
+12:17:50 [content] Syncing content
+12:17:50 [content] Synced content
+12:17:50 [types] Generated 666ms
+12:17:50 [build] output: "static"
+12:17:50 [build] mode: "static"
+12:17:50 [build] directory: C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\dist\
+12:17:50 [build] Collecting build info...
+12:17:50 [build] ✓ Completed in 744ms.
+12:17:50 [build] Building static entrypoints...
+12:17:52 [vite] ✓ built in 1.54s
+12:17:52 [vite] ✓ built in 32ms
+12:17:52 [build] Rearranging server assets...
+
+ generating static routes
+12:17:55   ├─ /404.html (+48ms)
+12:17:55   ├─ /blog/categoria/conductores/index.html (+9ms)
+12:17:55   ├─ /blog/categoria/motores/index.html (+6ms)
+12:17:55   ├─ /blog/categoria/canalizaciones/index.html (+5ms)
+12:17:55   ├─ /blog/categoria/puesta-a-tierra/index.html (+41ms)
+12:17:55   ├─ /blog/categoria/practica-profesional/index.html (+4ms)
+12:17:55   ├─ /blog/etiqueta/110-14c/index.html (+5ms)
+12:17:55   ├─ /blog/etiqueta/ampacidad/index.html (+4ms)
+12:17:55   ├─ /blog/etiqueta/dof/index.html (+5ms)
+12:17:55   ├─ /blog/etiqueta/nom-001-sede/index.html (+33ms)
+12:17:55   ├─ /blog/etiqueta/temperatura/index.html (+4ms)
+12:17:55   ├─ /blog/etiqueta/terminales/index.html (+4ms)
+12:17:55   ├─ /blog/etiqueta/verificacion/index.html (+3ms)
+12:17:55   ├─ /blog/etiqueta/vigencia/index.html (+4ms)
+12:17:55   ├─ /blog/rss.xml (+1.39s)
+12:17:57   ├─ /blog/110-14c-decide-la-columna-no-el-conductor/index.html (+7ms)
+12:17:57   ├─ /blog/que-version-de-la-nom-001-sede-esta-vigente/index.html (+5ms)
+12:17:57   ├─ /blog/index.html (+3ms)
+12:17:57   ├─ /contacto/index.html (+4ms)
+12:17:57   ├─ /diseno/index.html (+172ms)
+12:17:57   ├─ /privacidad/index.html (+11ms)
+12:17:57   ├─ /producto/index.html (+6ms)
+12:17:57   ├─ /quienes-somos/index.html (+4ms)
+12:17:57   ├─ /terminos/index.html (+5ms)
+12:17:57   ├─ /index.html (+6ms)
+12:17:57 ✓ Completed in 5.32s.
+
+12:17:57 [build] ✓ Completed in 6.98s.
+12:17:57 [build] 24 page(s) built in 7.74s
+12:17:57 [build] Complete!
+EXIT=0
+```
+
+```text
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+
+### E6-d — Salida pública y 404 (2026-10-28)
+
+La batería E6-c termina exit 0 en los ocho comandos: 150 pruebas/7 archivos,
+check sin errores, lint/formato correctos, 7 invariantes/0 fallos, 24 páginas y
+portabilidad 2/2. La puerta de HTML de Inicio/Producto también pasa; no se reabren
+ni se alteran sus capacidades.
+
+Inspección de dist: Términos/Privacidad contienen data-legal-pendiente y el correo,
+sin formularios ni cuerpo del borrador. Búsqueda en todos los HTML/JS/JSON de dist
+sin «Borrador interno: no publicar». 404.html existe y enlaza ambos posts publicados.
+No se interpreta una ruta de aviso como un aviso de privacidad válido.
+
+El código de la página 404 no basta para Workers: su valor predeterminado de
+assets.not_found_handling es none. Se añade `404-page` en wrangler.jsonc para
+que las rutas inexistentes sirvan 404.html conservando HTTP 404. Fuente oficial
+consultada el 2026-10-28:
+https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/ .
+Es la configuración de entrega requerida por la página de esta etapa, no una
+migración ni un cambio de dominio, rutas, Workers code o dashboard. Las rutas
+normativas reservadas siguen inexistentes y con HTTP 404. La frase «no se cambia
+Cloudflare» de E6-b describe el primer bloque; este ajuste posterior se identifica
+expresamente aquí. Falta confirmar su comportamiento en la preview desplegada.
+
+Se reutiliza scripts/auditar-producto.mjs con --etapa6: cinco rutas, ambos temas,
+360/768/1280. El servidor local emula 404.html con HTTP 404 para la ruta de prueba;
+esto prueba la interfaz y no acredita por sí mismo la configuración remota.
+Lint del auditor y formato del auditor/Wrangler pasaron después del ajuste.
+
+### E6-e — Auditoría y transferencia del primer bloque (2026-10-28)
+
+`node scripts/auditar-producto.mjs --etapa6`: exit 0, 30 combinaciones de cinco
+páginas × oscuro/claro × 360/768/1280. Axe sin violaciones, sin errores JS ni
+scroll horizontal de página; skip link, foco visible, Escape y reduced-motion
+correctos. Pesos sin compresión: Quiénes somos 74049 B; Contacto 73743 B;
+avisos legales 73196 B cada uno; 404 73531 B. Se inspeccionaron visualmente las
+cinco capturas a 360 px: títulos y enlaces legibles, correo completo, sin recortes.
+El JSON y treinta capturas quedan conservados en evidencia/etapa-6-evidencia.zip.
+
+Archivos: LayoutContenido, DocumentoLegal, cinco páginas, dos MDX borradores,
+lib/legal.ts, tests/legal.test.ts, colección legal, opción 404 de Wrangler y
+extensión reutilizable del auditor. No se cambian capacidades ni lanzamiento.
+
+Etapa 6 en curso, no cerrada. Implementado y probado: páginas informativas,
+mailto, 404 local, colección y exclusión de borradores. Pendiente: comprobación
+remota del 404, revisión visual humana, identidad/domicilio, Person, aviso y términos
+completos aprobados, confirmación de tratamientos/proveedores (H2). El build
+correcto y las banderas de metadatos no equivalen a aprobación legal.
+
+Para retomar: PR #18 y rama etapa6/preparacion-contenido, leer este corte y E6-b/d.
+No cambiar publicado/revisionHumana ni completar nombre/domicilio por inferencia.
+Revisar los borradores en src/content/legal y cerrar pendientes antes de publicar.
+Las rutas legales actuales solo muestran aviso de revisión. No fusionar esta
+etapa a main sin nueva autorización; la autorización de fusión previa fue #16/#17.
+
+Paquete: 1143345 bytes; SHA-256 `24a52e24e91f272da2d1f9c63e9b79540e38450ad95b6bfa4ac9a8e1ce6c3899`.
