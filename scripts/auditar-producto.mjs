@@ -52,9 +52,14 @@ try {
           { name: 'prefers-color-scheme', value: tema },
           { name: 'prefers-reduced-motion', value: 'reduce' },
         ])
-        await page.goto(`http://127.0.0.1:${server.address().port}${ruta}`, {
+        const respuesta = await page.goto(`http://127.0.0.1:${server.address().port}${ruta}`, {
           waitUntil: 'networkidle0',
         })
+        if (respuesta?.status() !== 200) {
+          throw new Error(
+            `No se puede auditar ${ruta}: HTTP ${respuesta?.status()}. Ejecutar después del build, sin reconstruir dist durante la auditoría.`,
+          )
+        }
         await page.evaluate(() => document.fonts.ready)
         await page.evaluate(axeCore.source)
         const datos = await page.evaluate(async () => {

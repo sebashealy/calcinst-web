@@ -2,7 +2,7 @@
 
 > Nota de continuidad (2026-10-27): se conserva este encargo histórico.
 > El bloque previo se documentó en HC-a–HC-h y la Etapa 5 fue autorizada después.
-> Consultar primero el encabezado y E5-a–E5-h de `ESTADO_SITIO.md` para el estado
+> Consultar primero el encabezado y E5-a–E5-l de `ESTADO_SITIO.md` para el estado
 > actual, resultados, archivos y pendientes; no repetir las tareas ya resueltas.
 
 - **Fecha:** 2026-10-24
