@@ -2,13 +2,15 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
-## Etapa 5 — Inicio y Producto: aprobación humana recibida (2026-10-28)
+## Último corte — Etapa 5 cerrada; Etapa 6 en preparación (2026-10-28)
 
-**Último corte:** criterios técnicos satisfechos (E5-j–E5-l), revisión de la vista
-previa aprobada por Sebastián y fusión de PR #16/#17 expresamente autorizada
-(E5-n). Integración en curso, condicionada al CI. No confundir la aprobación del
-sitio con certificación normativa del motor. Próxima etapa: 6, preparada en E5-n;
-identidad personal pendiente de decisión y textos legales sin aprobar.
+Etapa 5: criterios técnicos y aprobación humana registrados en E5-n, integración
+confirmada en E5-o. PR #16 y #17 fusionados a main. LCP 1,20–1,22 s, CLS 0 en los
+perfiles medidos; 134 pruebas y auditoría en 12 variantes pasan. Esto no certifica
+los cálculos del motor. Próximo trabajo: Etapa 6, plan en E5-n y arranque documental
+E6-a. Identidad personal y textos legales pendientes; no se publican por inferencia.
+
+## Etapa 5 — Inicio y Producto (2026-10-27 a 2026-10-28)
 
 ### E5-a — Autorización, base y fuente del producto
 
@@ -4727,3 +4729,46 @@ Para retomar: completar integración #17 y comprobar despliegue; continuar el pl
 anterior en rama de Etapa 6. Mantener identidad como pendiente. La configuración
 actual todavía conserva correoContacto=null; el valor elegido se aplicará en esa
 etapa. Plan original, decisiones aprobadas y restricciones de etapas futuras intactos.
+
+### E5-o — Integración confirmada y cierre (2026-10-28)
+
+CI del último head `2e31f26999884ec84290d1842f4006c73b65917a` completado con
+success: https://github.com/sebashealy/calcinst-web/actions/runs/40741550475 .
+Tras ese resultado se ejecuta la autorización expresa de Sebastián:
+
+- PR #16 fusionado: `f64448720799dc7af5f9eaddf64411a34e076d9a`.
+- PR #17, retarget a main, fusionado: `22a129d7b132139cd1a961fc08ef8e4169edd243`.
+- `git fetch origin`, `git switch main`, `git merge --ff-only origin/main`:
+  main local y origin/main idénticos en `22a129d`, árbol limpio.
+
+Etapa 5 cerrada por criterios E5-n + aprobación humana + integración. No se
+reclasifica ninguna capacidad del motor. El push a main activa el despliegue
+existente; la fusión por sí sola no acredita que Cloudflare haya terminado.
+No se cambia su configuración. Conservar PR y CI como referencias de integración.
+Las menciones anteriores de integración pendiente son cortes históricos.
+
+### E6-a — Preparación de contenido, identidad pendiente (2026-10-28)
+
+Rama `etapa6/preparacion-contenido` desde main `22a129d`. Se registra el cierre
+anterior y se aplica en `src/config/sitio.ts` el correo elegido expresamente por
+Sebastián: `instcalc@gmail.com`. El tipo nullable se conserva por compatibilidad.
+No se envía correo ni se añade formulario. No hay todavía páginas de Etapa 6.
+
+Ante la solicitud de nombre público, Sebastián responde: «No se si usar mi nombre».
+La identidad continúa sin decisión: no usar nombre supuesto ni JSON-LD Person
+con datos ficticios. Propuesta de presentación: CalcInst como marca, descripción
+del proyecto y sus límites. Esto no sustituye la identidad legal del responsable.
+El artículo 15 I del texto oficial consultado exige identidad y domicilio del
+responsable en el aviso; resolverlo antes de aprobar su publicación. Fuente y
+versión consultada en E5-n; H2 sigue abierta para la revisión del aviso concreto.
+
+Plan de implementación E5-n vigente: Quiénes somos, Contacto y 404 primero;
+colección y páginas legales como borradores después, con publicación condicionada
+a revisión humana. Datos personales, domicilio y figura del responsable no se
+inventan. Person y el cierre de Etapa 6 dependen de esa decisión. No adelantar
+suscripciones, descargas, normativa ni comercio. Preparación en PR separado;
+no implica autorización de fusión de la futura Etapa 6 ni aprobación de sus legales.
+
+Verificación de preparación: Prettier de sitio.ts correcto, 7 invariantes/0 fallos
+y git diff --check sin errores. No se atribuye una batería nueva de 134 pruebas
+a este cambio de configuración; esa evidencia corresponde a la Etapa 5.

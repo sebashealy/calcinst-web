@@ -14,10 +14,9 @@ export const SITIO = {
   nombre: 'CalcInst',
   dominio: 'https://calcinst.mx',
   /**
-   * Pendiente de Sebastián: qué correo público usar. Lo necesitan la página de
-   * Contacto (Etapa 6) y el correo alterno del formulario (I1, Etapa 8). Se deja
-   * en `null` en vez de inventar uno: publicar una dirección es una decisión suya.
+   * Correo público elegido por Sebastián el 2026-10-28 (E6-a).
+   * Contacto lo utilizará en la Etapa 6; no activa formularios de la Etapa 8.
    */
-  correoContacto: null as string | null,
+  correoContacto: 'instcalc@gmail.com' as string | null,
   redes: [] as Red[],
 } as const
