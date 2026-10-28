@@ -4660,3 +4660,19 @@ Para reproducir: batería habitual → build completo → verificar-producto →
 nuevos ni trabajar en CalcInst. No adelantar legales, descargas, normativa o formularios.
 
 Paquete de este bloque: 14440966 bytes, SHA-256 `b40d7f918adca7ffd2ee6d158bbd68320aa489e95e4b10dffe02e4e290d6d5ea`.
+
+### E5-m — CI remoto y entrega para revisión (2026-10-28)
+
+Se confirma por el conector GitHub que el CI del commit de rendimiento `31f882e`
+terminó `completed / success`:
+https://github.com/sebashealy/calcinst-web/actions/runs/40619684129 .
+El PR #17 contiene ese commit y continúa abierto, en borrador y sin fusionar.
+Su descripción ya refleja LCP 1,20–1,22 s, CLS 0 y revisión humana pendiente;
+la actualización de descripción del intento anterior no había quedado aplicada.
+
+Los dos paquetes de evidencia están versionados. El siguiente paso es revisar
+Inicio y Producto con Sebastián (diseño, textos, captura y límites del inventario),
+no repetir la implementación ni iniciar otra etapa. Después de esa revisión se
+podrá decidir el cierre y la integración de los PR #16 y #17. Main no se modificó.
+Esta entrada es documental; el éxito citado corresponde exactamente a `31f882e`,
+no se atribuye anticipadamente al commit que incorpora esta nota.
