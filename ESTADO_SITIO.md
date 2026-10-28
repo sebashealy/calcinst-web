@@ -2,6 +2,47 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
+## Etapa 5 — Inicio y Producto: aprobación humana recibida (2026-10-28)
+
+**Último corte:** criterios técnicos satisfechos (E5-j–E5-l), revisión de la vista
+previa aprobada por Sebastián y fusión de PR #16/#17 expresamente autorizada
+(E5-n). Integración en curso, condicionada al CI. No confundir la aprobación del
+sitio con certificación normativa del motor. Próxima etapa: 6, preparada en E5-n;
+identidad personal pendiente de decisión y textos legales sin aprobar.
+
+### E5-a — Autorización, base y fuente del producto
+
+Sebastián autoriza expresamente: «Pasemos a la etapa 5». Se trabaja en
+`etapa5/inicio-producto`, creada desde `1577743`, con árbol limpio antes de empezar.
+El PR #16 sigue abierto y sin fusionar; esta rama depende de sus cambios de
+continuidad. No se fusiona ni se publica nada como parte de esta autorización.
+
+Fuente recibida: `Nueva carpeta comprimida (en zip).zip`, SHA-256
+`94b7661f44a6a0022d97712e59e66c759329aa92d075042c05ce3dba74483da8`.
+Se conserva intacto; la copia de inspección está fuera del repositorio del sitio,
+en `../revision-calcinst-94b7661f/calcinst`. Incluye dependencias existentes; no se
+instalan ni actualizan paquetes. El sitio no incorpora el código de la aplicación.
+
+GitHub fue consultado de nuevo: `main` en `2f4c187`, geometría en `62ea6c5` y
+charola en `f57c47c`. El ZIP contiene avances posteriores hasta ADR-0023 y evidencia
+TAB1 del 27 de octubre. La pregunta de HC-h queda resuelta: el trabajo reciente
+se recibió como carpeta local, y no está en las puntas de esas ramas consultadas.
+No se conoce un commit Git que identifique esta carpeta: su identidad es el hash.
+
+Prevalecen sobre el diagnóstico antiguo las decisiones y código posteriores:
+ADR-0013 corrige Ft y ampacidades; ADR-0014 conecta FLC; ADR-0015 excluye aluminio;
+ADR-0016 implementa protecciones; ADR-0020–0022 añaden PDF, plano y archivos.
+Los resultados de pruebas citados por esos documentos son evidencia histórica,
+no ejecuciones de esta sesión. La evidencia TAB1 declara 1522 pruebas.
+
+Plan del bloque: auditar y actualizar inventario con evidencia y límites; fijar
+demostración sintética y capturas reales a 2×; reutilizar LayoutBase, Boton,
+Insignia y tokens; llevar el CTA al blog según A9; construir Inicio/Producto y
+separar «En desarrollo»; comprobar HTML contra el inventario, accesibilidad,
+vista móvil, rendimiento e invariantes. Documentar resultados inmediatamente.
+No se adelantan legales, descarga, formularios, normativa ni comercio.
+La etapa está autorizada y en curso, no cerrada.
+
 ## Bloque de higiene y continuidad previo a la Etapa 5 (2026-10-24)
 
 Encargo de Sebastián: incorporar el plan y el traspaso, corregir H1 y la descripción
@@ -3930,3 +3971,759 @@ La comparación contra la base de `capacidades.json`, `package.json`,
 Git avisó de la conversión CRLF a LF al incorporar salidas capturadas en Windows;
 es la política existente de `.gitattributes`, no un cambio de contenido ni un aviso
 que se atribuya a P6.
+
+
+### E5-b — Inventario auditado y comprobación dirigida del motor (2026-10-27)
+
+Se actualiza `src/config/capacidades.json` desde el ZIP identificado en E5-a.
+Se retiran los motivos históricos de 430-22/430-24 y aluminio seleccionable.
+Protecciones pasa de planeado a implementado (ADR-0016). Memoria pasa a
+verificado exclusivamente como exportación para revisión: MEM1 acredita PDF
+real, comparación con CSV y pruebas independientes; no se promete certificación
+ni validez legal. Ft conserva verificado por ADR-0013/FT1 y pruebas ejecutadas.
+Fa conserva su alcance de portadores por tubo. Casos 1–3 y caída permanecen
+implementados: los defectos antiguos están corregidos, pero no se declara cerrada
+la cobertura normativa de la afirmación comercial (tensiones estimadas, cascadas,
+fórmula de caída). La fuente ya no es julio y los motivos explicitan los límites.
+Las referencias DOF se atribuyen al expediente del motor y E4-ak; no se hizo
+un nuevo cotejo de tablas oficiales durante esta sesión. Las capacidades sin
+cálculo normativo (dibujo, distancias geométricas, exportaciones) no requieren
+referencias normativas; caída/protecciones quedan sin referencias publicables
+hasta cerrar ese cotejo. No se añaden cotización ni funcionalidades de otras etapas.
+
+Comando ejecutado en la copia del ZIP, sin instalar paquetes:
+`node node_modules/vitest/vitest.mjs run tests/engine/ftYAmpacidad.test.ts tests/engine/flcIntegracion.test.ts tests/engine/faTramosMixtos.test.ts tests/engine/cascadaAlimentadores.test.ts tests/export/memoriaModelo.test.ts`.
+Salida completa (exit 0):
+
+```text
+ RUN  v4.1.7 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/revision-calcinst-94b7661f/calcinst
+
+ Test Files  5 passed (5)
+      Tests  101 passed (101)
+   Start at  15:45:04
+   Duration  2.41s (transform 2.67s, setup 0ms, import 3.78s, tests 874ms, environment 1ms)
+```
+
+### E5-c — Demostración y captura real (2026-10-27)
+
+`demo.calcinst.json`: CAS1-R1 sintético (tres motores de 30, 20 y 15 HP a 440 V,
+THHW-LS cobre; tres TD en cascada), solo se cambian nombre e id. No contiene datos
+de clientes. Hash inicial f078e6372514fe6bee6d063b2e3961f4889f587ea7d30598fb9571f060480370.
+Se ejecuta la aplicación desde su fuente con las dependencias incluidas en el ZIP.
+No se modifica su código ni se usa su dist antiguo. Vite puede generar caché local.
+`node scripts/generar-capturas.mjs`: el primer intento en sandbox agotó 30000 ms
+(TimeoutError de Puppeteer); la repetición con permiso para Chrome local terminó:
+
+```text
+Captura real 2560 × 1600 (2×); demostración cargada; errores: 0
+```
+
+PNG inicial: 261486 bytes. Inspección visual realizada. La captura corresponde a
+1280 × 800 CSS con densidad 2; procedimiento en `scripts/generar-capturas.md`,
+script reproducible y resultado en `public/capturas/`. No se retocan resultados.
+
+### E5-d — Inicio, Producto y CTA (implementación; verificación pendiente)
+
+Se sustituye la portada mínima y se crea `/producto/`, con LayoutBase, Boton,
+Insignia, Tarjeta, Tabla y tokens existentes. `CapacidadesProducto.astro` filtra
+el inventario en un único lugar; pendientes se muestran solo en «En desarrollo».
+`CapturaProducto.astro` comparte la captura con dimensiones y explicación.
+`src/styles/producto.css` aporta composición adaptable sin JS ni dependencias.
+La comparación se limita a proceso y controles según A9/H10; no reproduce hojas
+de terceros ni afirma superioridad medida. Se conserva noindex.
+`lanzamiento.ts` resuelve el destino por estado: blog durante desarrollo, descarga
+para los estados posteriores. No se crea ninguna ruta de etapa futura.
+Pendiente: batería, prueba del HTML, auditoría visual/accesibilidad y Lighthouse.
+
+### E5-e — Batería local del sitio (2026-10-27)
+
+Salidas completas, sin filtrar. Se usa npm 11.13.0 local con las dependencias ya instaladas.
+
+```text
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+15:51:24 [content] Syncing content
+15:51:24 [content] Synced content
+15:51:24 [types] Generated 1.72s
+15:51:24 [check] Getting diagnostics for Astro files in C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web...
+Result (56 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+EXIT=0
+```
+
+```text
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web
+
+
+ Test Files  6 passed (6)
+      Tests  134 passed (134)
+   Start at  15:51:55
+   Duration  9.03s (import 74%, transform 18%, tests 6%, worker 2%)
+
+EXIT=0
+```
+
+```text
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT=0
+```
+
+```text
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+[warn] scripts/generar-capturas.mjs
+[warn] src/pages/index.astro
+[warn] Code style issues found in 2 files. Run Prettier with --write to fix.
+EXIT=1
+```
+
+```text
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+15:52:47 [WARN] [content] data store cleared (force)
+15:52:48 [content] Syncing content
+15:52:48 [content] Synced content
+15:52:48 [types] Generated 897ms
+15:52:48 [build] output: "static"
+15:52:48 [build] mode: "static"
+15:52:48 [build] directory: C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\dist\
+15:52:48 [build] Collecting build info...
+15:52:48 [build] ✓ Completed in 993ms.
+15:52:48 [build] Building static entrypoints...
+15:52:50 [vite] ✓ built in 1.99s
+15:52:50 [vite] ✓ built in 43ms
+15:52:50 [build] Rearranging server assets...
+
+ generating static routes
+15:52:55   ├─ /blog/categoria/conductores/index.html (+94ms)
+15:52:55   ├─ /blog/categoria/motores/index.html (+8ms)
+15:52:55   ├─ /blog/categoria/canalizaciones/index.html (+8ms)
+15:52:55   ├─ /blog/categoria/puesta-a-tierra/index.html (+48ms)
+15:52:55   ├─ /blog/categoria/practica-profesional/index.html (+5ms)
+15:52:55   ├─ /blog/etiqueta/110-14c/index.html (+6ms)
+15:52:55   ├─ /blog/etiqueta/ampacidad/index.html (+6ms)
+15:52:55   ├─ /blog/etiqueta/dof/index.html (+9ms)
+15:52:55   ├─ /blog/etiqueta/nom-001-sede/index.html (+7ms)
+15:52:55   ├─ /blog/etiqueta/temperatura/index.html (+10ms)
+15:52:55   ├─ /blog/etiqueta/terminales/index.html (+14ms)
+15:52:55   ├─ /blog/etiqueta/verificacion/index.html (+12ms)
+15:52:55   ├─ /blog/etiqueta/vigencia/index.html (+11ms)
+15:52:55   ├─ /blog/rss.xml (+1.76s)
+15:52:57   ├─ /blog/110-14c-decide-la-columna-no-el-conductor/index.html (+9ms)
+15:52:57   ├─ /blog/que-version-de-la-nom-001-sede-esta-vigente/index.html (+8ms)
+15:52:57   ├─ /blog/index.html (+5ms)
+15:52:57   ├─ /diseno/index.html (+236ms)
+15:52:57   ├─ /producto/index.html (+8ms)
+15:52:57   ├─ /index.html (+7ms)
+15:52:57 ✓ Completed in 7.08s.
+
+15:52:57 [build] ✓ Completed in 9.21s.
+15:52:57 [build] 19 page(s) built in 10.22s
+15:52:57 [build] Complete!
+EXIT=0
+```
+
+```text
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+
+### E5-f — Captura definitiva, HTML y auditoría local (2026-10-27)
+
+Se corrigió el formato señalado por E5-e en `scripts/generar-capturas.mjs` e
+`index.astro` con Prettier existente. `prettier --check .` pasó después.
+No se borran las salidas fallidas: E5-e conserva el exit 1 original.
+La interrupción posterior de permisos fue un fallo de revisión automática por
+límite de uso, no una ejecución ni un rechazo por riesgo. Al continuar se ejecutó
+Chrome con permiso y terminó sin errores.
+
+La captura final cierra Resultados y usa Ajustar a pantalla mediante controles
+reales. Muestra completo el plano sintético. El pie se precisó para no afirmar que
+la imagen muestra resultados. PNG 2560 × 1600, 158295 bytes, SHA-256
+`1a5015c94b1465a9b327b301c1759b664132414f5789deca933dd75487e70a2c`.
+Demo formateada, sin cambios semánticos: SHA-256
+`35f07734e51ad7d2aed91dd11fa52a1c7af8efedd2634a1839b537950f34e800`.
+El hash inicial de E5-c corresponde a la serialización anterior a Prettier.
+
+Comandos y resultados reales:
+
+- `node scripts/generar-capturas.mjs`: exit 0, captura real 2×, 0 errores.
+- `npm run build` (npm local aprobado): exit 0, 19 páginas. Última compilación
+  19:45:49, después del ajuste del pie. Persiste advertencia histórica de
+  deprecación `markdown.smartypants`; no se cambia el procesador del blog.
+- `node scripts/verificar-producto.mjs`: ambas páginas coinciden con el inventario;
+  estados y dimensiones correctos. Esta puerta se incorpora a CI tras build.
+  Antes de compilar, su ejecución había encontrado el dist antiguo sin Producto;
+  no se interpreta aquel resultado como prueba del código nuevo.
+- `node scripts/auditar-producto.mjs`: servidor estático local y Chrome, sin caché,
+  `/` y `/producto/`, oscuro/claro, 360/768/1280 px: 12 variantes. Cero violaciones
+  axe WCAG A/AA, errores JS, desbordamiento de página o focos sin contorno. Skip link
+  primero, Escape cierra menú y devuelve foco, reduced-motion sin transiciones.
+  Se conserva el scroll horizontal enfocable de Tabla en móvil. Esto no sustituye
+  una prueba manual con lector de pantalla ni certifica accesibilidad completa.
+- Peso final sin compresión: Inicio 238997 bytes; Producto 241207 bytes. Incluye
+  documento y recursos transferidos en navegador limpio; cumple Inicio ≤ 600 KB.
+
+Evidencia local ignorada por Git según la convención existente:
+`evidencia/etapa-5/captura.json`, `auditoria.json` y doce PNG de páginas.
+Se inspeccionaron visualmente Inicio oscuro 1280 y Producto claro 360, además de
+la captura original: sin recortes de página, imagen proporcionada y estados
+separados. La comparación usa la tabla reutilizable con scroll interno en móvil.
+Las ocho pruebas nuevas cubren promoción indebida, cambios de estado, capacidad
+extra, omisión de pendientes, fecha/promesa, dimensiones y destino del CTA.
+Son parte de las 134 pruebas de E5-e; no constituyen verificación del motor.
+
+Lighthouse CLI 12.6.1, mediante @lhci/cli ya instalado:
+`node node_modules/@lhci/cli/src/cli.js collect --url=http://localhost/ --url=http://localhost/producto/ --numberOfRuns=1`
+con `CHROME_PATH` apuntando a Chrome instalado. Exit 0. Informes copiados a
+`evidencia/etapa-5/lhr-1793151917888.{json,html}` y
+`lhr-1793151932223.{json,html}`. Una ejecución por URL, móvil predeterminado
+412 × 823, CPU ×4, 4G simulado; no es una medición física ni exactamente Moto G4.
+
+| Página | Rendimiento | Accesibilidad | LCP | CLS | Bytes Lighthouse |
+| --- | --- | --- | --- | --- | --- |
+| Inicio | 98 | 100 | 2257,651 ms | 0 | 223966 |
+| Producto | 98 | 100 | 2256,127 ms | 0 | 224660 |
+
+El informe precede únicamente al cambio textual de 14 bytes del pie; la auditoría
+visual/de accesibilidad se repitió después. Diferencia de pesos: el servidor de
+LHCI comprime, el auditor estático no. **I4 LCP ≤ 2,0 s no acreditado**: no se
+confunde el score 98 con ese umbral. El elemento LCP es la captura; el informe
+atribuye unos 1599 ms a demora de renderizado. Debe investigarse la ruta crítica
+antes del cierre, con el perfil acordado, sin ocultar ni relajar el presupuesto.
+No se endurecen globalmente las puertas de la Etapa 10 ni se cambia Cloudflare.
+
+### E5-g — Transferencia y siguiente bloque
+
+Etapa 5 autorizada, implementada localmente y todavía en curso. Rama
+`etapa5/inicio-producto`, base `1577743`; cambios sin commit. PR #16 es dependencia
+sin fusionar según la última consulta registrada; comprobar de nuevo antes de
+preparar integración. Esta sesión no creó commit, push, PR ni despliegue.
+
+Archivos del bloque:
+
+- Inicio se modifica y Producto se crea; composición en `src/styles/producto.css`.
+- `CapacidadesProducto.astro` y `CapturaProducto.astro` comparten inventario e imagen.
+- `src/config/capacidades.json` actualiza fuentes y límites; `lanzamiento.ts` lleva
+  al blog durante desarrollo. No se anuncia dimensionamiento verificado.
+- `demo.calcinst.json`, PNG y `scripts/generar-capturas.{md,mjs}` permiten reproducción
+  con la copia del ZIP identificada en E5-a. Su fuente no está disponible en las
+  ramas consultadas de GitHub: conservar el ZIP; no incorporarlo al sitio.
+- `scripts/verificar-producto.mjs`, `tests/producto.test.ts` y CI añaden la puerta
+  de HTML; `scripts/auditar-producto.mjs` produce evidencia local reutilizable.
+- Este documento y la nota del traspaso mantienen continuidad. Plan original,
+  decisiones, dependencias y configuración de despliegue no cambiaron.
+
+Próximo bloque concreto: estudiar LCP con los informes conservados; medir con el
+perfil de I4 y corregir la causa dentro de la arquitectura aprobada. Repetir las
+pruebas afectadas, no inventar resultados ni borrar el primer informe. Después,
+Sebastián debe revisar diseño, redacción, inventario y límites; conservar el paquete
+de evidencia como adjunto de la revisión antes de declarar cierre. El noindex y
+los enlaces reservados a etapas futuras siguen vigentes. Quedan pendientes fuera
+de esta etapa las validaciones normativas de casos 1–3, caída y protecciones,
+la distribución Tauri y los textos legales de la aplicación.
+
+Para retomar: leer PLAN, DECISIONES, HIPOTESIS y este ESTADO; comprobar rama,
+`git status` y base del PR #16; no reconstruir ni instalar dependencias nuevas.
+Con las dependencias existentes ejecutar check/test/lint/format:check/verificar,
+build, verificar:salida, portabilidad y `node scripts/verificar-producto.mjs`.
+Auditoría de navegador: comando E5-f. No crear addenda por cambios ordinarios.
+Las decisiones que contradigan lo aprobado, dependencias nuevas, publicación y
+cierre humano requieren su autorización específica.
+
+### E5-h — Contraste de rendimiento y experimento descartado (2026-10-27)
+
+Se midieron tres ejecuciones por página con las opciones adicionales de LHCI:
+`--settings.screenEmulation.width=360 --settings.screenEmulation.height=640 --settings.screenEmulation.deviceScaleFactor=3 --settings.screenEmulation.mobile=true --settings.screenEmulation.disabled=false`.
+Se mantuvieron red 4G simulada y CPU ×4; es viewport de Moto G4, no dispositivo
+físico ni emulación exacta de su CPU. Informes `lhr-1793152149781` a
+`lhr-1793152215144` (consultar los JSON conservados para los nombres exactos).
+LCP de Inicio: 2256,186 / 2256,810 / 2253,989 ms; Producto:
+2254,022 / 2255,645 / 2254,814 ms. Los valores exactos están en los JSON.
+Inicio muestra CLS de 0,033–0,049 en este viewport: el CLS 0 de E5-f es específico
+al viewport de 412 px, no una garantía global. Producto mantiene CLS 0.
+
+Se ensayó una precarga de IBM Plex Sans 400/600 mediante un slot head temporal.
+Resultado: Inicio LCP 2273,805 ms y CLS 0,021; Producto LCP 2256,706 ms y CLS 0.
+No resolvió el objetivo y se retiró íntegramente: LayoutBase no cambia.
+Informes del experimento: `lhr-1793152276494` y `lhr-1793152290996`, JSON/HTML en
+`evidencia/etapa-5`. No se conservan cambios de rendimiento sin beneficio demostrado.
+El check posterior dio 0 errores/avisos/hints; 134 pruebas pasaron de nuevo.
+
+**Punto de continuación:** resolver LCP y el pequeño cambio de geometría del texto
+al cargar fuentes a 360 px; usar los informes antes de tocar estilos comunes.
+E5-g sigue vigente. Este bloque entrega las dos páginas y su evidencia funcional;
+no es un cierre de etapa. No hay autorización de publicación ni aprobación humana
+del resultado visual. La revisión del ZIP no equivale a certificación normativa.
+
+Se retiraron únicamente espacios finales de las nuevas salidas de consola para
+pasar `git diff --check`; su contenido y resultados no cambian. La evidencia
+histórica anterior se conserva. Los comandos finales de invariantes, salida y
+portabilidad pasaron: 7 controles, 0 fallos; 2 posts comparados, 0 fallos.
+
+Última reconstrucción sin precargas: 19:52:41, exit 0, 19 páginas. Lint terminó
+sin errores. Inventario de cambios de este corte (stat no incluye archivos nuevos):
+
+```text
+ .github/workflows/ci.yml    |   3 +
+ ESTADO_SITIO.md             | 392 ++++++++++++++++++++++++++++++++++++++++++++
+ TRASPASO_ETAPA5.md          |   5 +
+ src/config/capacidades.json | 107 +++++++++---
+ src/config/lanzamiento.ts   |  14 +-
+ src/pages/index.astro       |  57 +++++--
+ 6 files changed, 531 insertions(+), 47 deletions(-)
+```
+
+Archivos nuevos sin seguimiento (11):
+
+```text
+demo.calcinst.json
+public/capturas/calcinst-demo.png
+scripts/auditar-producto.mjs
+scripts/generar-capturas.md
+scripts/generar-capturas.mjs
+scripts/verificar-producto.mjs
+src/components/CapacidadesProducto.astro
+src/components/CapturaProducto.astro
+src/pages/producto.astro
+src/styles/producto.css
+tests/producto.test.ts
+```
+
+El control final de formato detectó finales de línea tras retirar el experimento;
+Prettier los normalizó en los tres Astro afectados y format:check pasó. No cambió
+el HTML. git diff --check pasó. Paquete local: evidencia/etapa-5-evidencia.zip;
+conservar como adjunto antes del cierre (ignorado por Git).
+
+### E5-i — Respaldo en GitHub autorizado (2026-10-27)
+
+Sebastián solicita commits y pushes para dejar actualizado el repositorio antes
+ de continuar. Se autoriza guardar el bloque parcial; no se interpreta como
+aprobación del cierre de la etapa o de sus resultados pendientes. Se prepara
+un PR en borrador desde `etapa5/inicio-producto`, con base
+`mantenimiento/continuidad-pre-etapa5`, porque el PR #16 sigue abierto y sin
+fusionar (consulta del conector y fetch de esta sesión). Main permanece intacta.
+
+Se conserva además `evidencia/etapa-5-evidencia.zip` como excepción puntual al
+ignore de evidencia generada: contiene capturas sintéticas e informes locales,
+no el código ni el ZIP privado de CalcInst. Permite recuperar los resultados
+al cambiar de computadora. No se cambia la regla general del gitignore.
+El paquete ya generado mide 6102187 bytes; su hash se registra a continuación.
+Las referencias a cambios sin commit en E5-g describen el corte anterior;
+esta entrada y el PR registran la sincronización posterior. LCP y revisión
+humana siguen pendientes. El push puede activar previews existentes de la rama;
+no se cambia la configuración de Cloudflare ni se fusiona a producción.
+
+SHA-256 del paquete de evidencia: e9fc1eb22dcc20df3c1ce8d2fa401248eda8ab41a7e5b475ca84df42319438c3.
+
+Confirmación de publicación del bloque: commit `ac0691a` subido a
+`origin/etapa5/inicio-producto`; PR #17 en borrador:
+https://github.com/sebashealy/calcinst-web/pull/17 . Base: rama del PR #16.
+El paquete de evidencia y los 18 archivos del bloque están incluidos en ese commit.
+CI remoto pendiente de resultado en este corte; consultar Checks del PR #17.
+Para continuar, usar esa rama; no main. No hay fusión ni cierre de etapa.
+
+### E5-j — Diagnóstico de rendimiento y correcciones en curso (2026-10-27)
+
+Se retoma desde `bdd9394`, árbol limpio. CI remoto del PR #17 para ese commit:
+https://github.com/sebashealy/calcinst-web/actions/runs/40617987822 , completed/success.
+La evidencia de E5-i está versionada; su conservación ya no depende del equipo.
+
+En los informes a 360 px el elemento LCP es `p.introduccion`; a 412 px era la
+captura. No se puede atribuir ambos perfiles a la imagen. La petición CSS externa
+es bloqueante. Se prueba `build.inlineStylesheets: 'always'`, API comprobada en
+el código y los tipos de Astro 7.3.1 instalado. Mantiene tokens y estilos, a costa
+de repetir CSS en cada HTML y perder su caché independiente entre páginas.
+Primera medición: Inicio 1971,995 ms, Producto 2106,602 ms. Aún no basta por sí sola.
+
+Diagnóstico en Chrome, reteniendo peticiones de fuentes y midiendo geometría:
+el rótulo de Inicio pasa de 22,39 a 44,78 px y la introducción de 96 a 128 px
+al cambiar de la fuente de respaldo a IBM Plex. Se acortan rótulo e introducción
+sin cambiar el alcance. Ambos conservan luego su altura; no se oculta contenido
+ni se retrasa su visualización. Con CSS incluido y precarga de las cuatro caras
+locales existentes, CLS medido es 0, LCP 2127,360 / 2108,595 ms; todavía pendiente.
+No se añade fuente, dependencia ni JS. Sigue `font-display: swap`.
+
+Siguiente prueba: quitar prioridad alta a la captura bajo el hero y usar su carga
+lazy existente, conforme al plan para imágenes fuera del primer pantallazo.
+Los informes intermedios están en `evidencia/etapa-5-rendimiento/` y no sustituyen
+las mediciones finales ni autorizan cerrar la etapa. Validación del blog también
+se incluye porque la entrega de CSS y fuentes afecta LayoutBase.
+
+Corrección conservada tras medir: CSS incluido en HTML + precarga de las cuatro
+caras locales + captura con carga lazy/prioridad automática + textos de Inicio
+más breves. Sin prioridad alta de imagen, LCP 1222,884 ms en Inicio y 1207,412 ms
+en Producto; CLS 0 en ambos. Informes intermedios `lhr-1793153115654` y
+`lhr-1793153129223`. No se altera ni comprime artificialmente la captura original.
+El resultado apunta a competencia de red entre imagen y fuentes; las mediciones
+comparadas fundamentan el cambio, sin afirmar una causa exclusiva en todos los equipos.
+
+Se añade `lighthouserc.etapa5.json` como perfil local reproducible: 360 × 640,
+DPR 3, móvil, tres ejecuciones de Inicio/Producto/un post. Reutiliza Lighthouse
+instalado, sin dependencias nuevas. Valida el peor resultado de LCP ≤ 2000 ms,
+CLS ≤ 0,01 y peso ≤ 600000 bytes. El límite de 300 KB del blog se comprueba además
+con su resultado, no queda cubierto por ese umbral general. No reemplaza la
+configuración global ni adelanta el endurecimiento completo de la Etapa 10.
+Comando: `node node_modules/@lhci/cli/src/cli.js autorun --config=lighthouserc.etapa5.json`
+con CHROME_PATH al Chrome instalado. Pendiente consignar el resultado al terminar.
+
+Resultado del perfil de tres repeticiones: exit 0, 9 informes, aserciones aprobadas.
+Salida final:
+
+```text
+Checking assertions against 3 URL(s), 9 total run(s)
+All results processed!
+Dumping 9 reports to disk at evidencia/etapa-5-rendimiento/final...
+Done writing reports to disk.
+Done running autorun.
+```
+
+| Página | LCP de las 3 ejecuciones (ms, redondeados) | CLS | Peso transferido |
+| --- | --- | --- | --- |
+| Inicio | 1208,53 / 1207,01 / 1204,62 | 0 | 223359 B |
+| Producto | 1204,26 / 1204,69 / 1203,62 | 0 | 224033 B |
+| Post 110-14c | 1205,22 / 1206,44 / 1205,30 | 0 | 68012 B |
+
+Las primeras dos mediciones del post son 1205,22 / 1206,44 ms; la tercera se
+conserva en el informe final. El peso del blog queda por debajo de 300 KB.
+Se mantienen los informes previos; la mejora no borra el LCP fallido de E5-f/h.
+
+### E5-k — Batería tras corregir rendimiento (2026-10-27)
+
+Salidas completas, sin filtrar. Se usa npm 11.13.0 local con las dependencias ya instaladas.
+
+```text
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+20:09:53 [content] Syncing content
+20:09:53 [content] Synced content
+20:09:53 [types] Generated 669ms
+20:09:53 [check] Getting diagnostics for Astro files in C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web...
+Result (57 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+EXIT=0
+```
+
+```text
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web
+
+
+ Test Files  6 passed (6)
+      Tests  134 passed (134)
+   Start at  20:10:01
+   Duration  4.73s (import 71%, transform 23%, tests 6%)
+
+EXIT=0
+```
+
+```text
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT=0
+```
+
+```text
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0
+```
+
+```text
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+20:10:14 [WARN] [content] data store cleared (force)
+20:10:14 [content] Syncing content
+20:10:14 [content] Synced content
+20:10:14 [types] Generated 587ms
+20:10:14 [build] output: "static"
+20:10:14 [build] mode: "static"
+20:10:14 [build] directory: C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\dist\
+20:10:14 [build] Collecting build info...
+20:10:14 [build] ✓ Completed in 648ms.
+20:10:14 [build] Building static entrypoints...
+20:10:17 [vite] ✓ built in 2.75s
+20:10:17 [vite] ✓ built in 41ms
+20:10:17 [build] Rearranging server assets...
+
+ generating static routes
+20:10:18   ├─ /blog/categoria/conductores/index.html (+22ms)
+20:10:18   ├─ /blog/categoria/motores/index.html (+3ms)
+20:10:18   ├─ /blog/categoria/canalizaciones/index.html (+2ms)
+20:10:18   ├─ /blog/categoria/puesta-a-tierra/index.html (+2ms)
+20:10:18   ├─ /blog/categoria/practica-profesional/index.html (+3ms)
+20:10:18   ├─ /blog/etiqueta/110-14c/index.html (+4ms)
+20:10:18   ├─ /blog/etiqueta/ampacidad/index.html (+4ms)
+20:10:18   ├─ /blog/etiqueta/dof/index.html (+3ms)
+20:10:18   ├─ /blog/etiqueta/nom-001-sede/index.html (+4ms)
+20:10:18   ├─ /blog/etiqueta/temperatura/index.html (+4ms)
+20:10:18   ├─ /blog/etiqueta/terminales/index.html (+4ms)
+20:10:18   ├─ /blog/etiqueta/verificacion/index.html (+5ms)
+20:10:18   ├─ /blog/etiqueta/vigencia/index.html (+3ms)
+20:10:18   ├─ /blog/rss.xml (+139ms)
+20:10:18   ├─ /blog/110-14c-decide-la-columna-no-el-conductor/index.html (+5ms)
+20:10:18   ├─ /blog/que-version-de-la-nom-001-sede-esta-vigente/index.html (+4ms)
+20:10:18   ├─ /blog/index.html (+9ms)
+20:10:18   ├─ /diseno/index.html (+123ms)
+20:10:18   ├─ /producto/index.html (+6ms)
+20:10:18   ├─ /index.html (+4ms)
+20:10:18 ✓ Completed in 716ms.
+
+20:10:18 [build] ✓ Completed in 3.63s.
+20:10:18 [build] 19 page(s) built in 4.29s
+20:10:18 [build] Complete!
+EXIT=0
+```
+
+```text
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+
+### E5-l — Resultado, evidencia y transferencia del bloque de rendimiento
+
+Control adicional 412 × 823, DPR 1,75, mismo perfil y una repetición por ruta:
+Inicio 1207,172 ms; Producto 1218,625 ms; post 1207,323 ms; CLS 0 en los tres.
+Comando de E5-j con `--collect.numberOfRuns=1`,
+`--collect.settings.screenEmulation.width=412`,
+`--collect.settings.screenEmulation.height=823`,
+`--collect.settings.screenEmulation.deviceScaleFactor=1.75` y
+`--upload.outputDir=evidencia/etapa-5-rendimiento/control-412`.
+Exit 0, las aserciones pasan. Rendimiento y accesibilidad: 100 en las doce
+mediciones finales (nueve a 360 y tres a 412). Son mediciones de laboratorio
+local, no métricas de usuarios reales ni prueba del despliegue de producción.
+
+La batería E5-k pasa los ocho comandos. Validación adicional del HTML:
+
+```text
+dist/index.html: HTML coincide con inventario; estados y dimensiones correctos
+dist/producto/index.html: HTML coincide con inventario; estados y dimensiones correctos
+```
+
+La primera auditoría de navegador del bloque falló (exit 1) porque se lanzó
+mientras la batería reconstruía dist: Producto oscuro 768/1280 recibió contenido
+incompleto, bytes 0, sin skip link y con fallo meta-viewport. Se conserva
+`auditoria-durante-build.json`; no se contabiliza como éxito. El auditor ahora
+exige HTTP 200 antes de examinar accesibilidad y explica que no debe ejecutarse
+durante el build. Se repitió después del build estable: **exit 0**, 12 variantes,
+0 violaciones axe, 0 errores JS, sin desbordamiento; foco, skip link, Escape y
+reduced-motion correctos. Inicio 239006 B y Producto 241246 B sin compresión.
+Lint del auditor y format:check volvieron a pasar tras añadir la comprobación.
+
+Cambios definitivos: `astro.config.mjs` incluye estilos en HTML; `LayoutBase.astro`
+precarga las cuatro caras de las fuentes ya existentes; Inicio acorta rótulo e
+introducción; Inicio/Producto dejan de forzar carga prioritaria de la captura.
+No cambian tokens, fuentes, dependencias, norma, estados del inventario ni los
+resultados de CalcInst. Se añade el perfil local `lighthouserc.etapa5.json`.
+La auditoría del blog y portabilidad 2/2 cubren el cambio compartido de entrega.
+El coste aceptado es repetir CSS dentro de cada HTML; evitar la petición bloqueante
+mejora la primera visita. Si el CSS crece, medir de nuevo antes de cambiar esta opción.
+Es un ajuste de implementación para I4, no una sustitución del stack ni una decisión
+que requiera reescribir el plan. No se modifica el perfil global de CI de Etapa 10.
+
+Se conservan el paquete anterior y el nuevo `evidencia/etapa-5-rendimiento.zip`,
+con informes intermedios/finales, manifiestos, auditoría fallida y correcta,
+diagnóstico de fuentes y doce capturas actualizadas. Inspección visual de Inicio
+móvil: contenido completo, captura real, sección pendiente diferenciada.
+La captura de la aplicación no fue regenerada ni alterada por este ajuste.
+
+**Siguiente paso:** revisión de Sebastián de Inicio/Producto, sus textos, límites
+del inventario y captura. La corrección del LCP queda acreditada localmente; no
+cierra por sí sola la etapa. Resolver integración del PR #16 antes de llevar #17
+a main. Continuar en `etapa5/inicio-producto`; comprobar Checks del último commit.
+Para reproducir: batería habitual → build completo → verificar-producto → auditoría
+(sin build concurrente) → LHCI con lighthouserc.etapa5.json. No instalar paquetes
+nuevos ni trabajar en CalcInst. No adelantar legales, descargas, normativa o formularios.
+
+Paquete de este bloque: 14440966 bytes, SHA-256 `b40d7f918adca7ffd2ee6d158bbd68320aa489e95e4b10dffe02e4e290d6d5ea`.
+
+### E5-m — CI remoto y entrega para revisión (2026-10-28)
+
+Se confirma por el conector GitHub que el CI del commit de rendimiento `31f882e`
+terminó `completed / success`:
+https://github.com/sebashealy/calcinst-web/actions/runs/40619684129 .
+El PR #17 contiene ese commit y continúa abierto, en borrador y sin fusionar.
+Su descripción ya refleja LCP 1,20–1,22 s, CLS 0 y revisión humana pendiente;
+la actualización de descripción del intento anterior no había quedado aplicada.
+
+Los dos paquetes de evidencia están versionados. El siguiente paso es revisar
+Inicio y Producto con Sebastián (diseño, textos, captura y límites del inventario),
+no repetir la implementación ni iniciar otra etapa. Después de esa revisión se
+podrá decidir el cierre y la integración de los PR #16 y #17. Main no se modificó.
+Esta entrada es documental; el éxito citado corresponde exactamente a `31f882e`,
+no se atribuye anticipadamente al commit que incorpora esta nota.
+
+### E5-n — Aprobación humana y preparación de continuidad (2026-10-28)
+
+Tras la entrega de Inicio/Producto para revisar diseño, textos, captura y funciones,
+Sebastián responde: «excelente me gusto mucho, continuemos». Se registra su
+aprobación de la vista previa de `31f882e`. Después autoriza expresamente:
+«Sí, fusionar ambos PR cuando sus comprobaciones pasen». No es autorización para
+publicar textos legales de otra etapa ni para cambiar capacidades normativas.
+
+| Criterio Etapa 5 | Evidencia y resultado |
+| --- | --- |
+| Inicio/Producto consumen inventario y lanzamiento | E5-d; componentes compartidos y CTA al blog |
+| Promoción limitada a verificadas; pendientes diferenciadas | E5-e/k, 134 pruebas; verificador de HTML en ambas rutas |
+| Hero sin fechas ni promesas fuera de insignia | prueba negativa y validación HTML E5-f/l |
+| Captura real sintética a 2×, dimensiones y estabilidad | E5-c/f; 2560×1600; CLS 0 en perfiles finales E5-j/l |
+| Inicio ≤600 KB | E5-l: 239006 B sin compresión |
+| Capturas 360/768/1280 e informe Lighthouse | dos paquetes de evidencia versionados; auditoría 12 variantes |
+| Revisión humana | respuesta anterior sobre la preview entregada; no sustituye verificación del motor |
+
+CI de `edf5a0d`: completed/success, run 40739615554:
+https://github.com/sebashealy/calcinst-web/actions/runs/40739615554 .
+PR #16 fusionado con merge commit `f64448720799dc7af5f9eaddf64411a34e076d9a`;
+se conservó la historia. PR #17 se redirigió a main y salió de borrador. Antes de
+fusionarlo debe pasar la comprobación de esta última nota sobre la base definitiva.
+El resultado de integración se registrará sin atribuirlo por anticipado.
+
+Preparación de Etapa 6 (plan, todavía sin implementar páginas nuevas):
+
+1. Configuración: correo público elegido expresamente `instcalc@gmail.com`.
+   Identidad personal no decidida: Sebastián indica «No se si usar mi nombre».
+   Presentar CalcInst como marca; no inventar nombre ni generar Person ficticio.
+2. Crear Quiénes somos y Contacto sobre LayoutBase, con descripción honesta del
+   proyecto y enlace mailto. No añadir formulario, reservas de descarga ni listas.
+3. Crear 404 con Inicio/Blog y lista de artículos publicados, reutilizando colección.
+4. Modelar legales MDX con version, fechaVigencia y publicado; borradores excluidos
+   de publicación hasta revisión humana. Resolver identidad/domicilio del responsable,
+   tratamientos y proveedores reales antes de dar por válido el aviso. Person con
+   jobTitle del plan y sin hasCredential queda pendiente de identidad aprobada.
+5. Probar estados publicado/no publicado y fechas, I3(c), enlaces, teclado/axe,
+   capturas a 360 px y batería habitual. Registrar evidencia E6 solo al iniciar el bloque.
+
+H2: consulta preparatoria a la fuente oficial de Cámara de Diputados el 2026-10-28,
+https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf . El documento consultado
+indica ley nueva del 20-03-2025, última reforma del 14-11-2025; artículo 2 XV identifica
+la Secretaría Anticorrupción y Buen Gobierno. No se cierra H2: falta revisión del
+aviso concreto por Sebastián y, de ser posible, su asesor. No se publica texto legal
+ni se trata la marca por sí sola como identidad legal confirmada.
+
+Para retomar: completar integración #17 y comprobar despliegue; continuar el plan
+anterior en rama de Etapa 6. Mantener identidad como pendiente. La configuración
+actual todavía conserva correoContacto=null; el valor elegido se aplicará en esa
+etapa. Plan original, decisiones aprobadas y restricciones de etapas futuras intactos.

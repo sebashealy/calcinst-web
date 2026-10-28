@@ -1,0 +1,40 @@
+---
+interface Props {
+  prioritaria?: boolean
+}
+const { prioritaria = false } = Astro.props
+---
+
+<figure>
+  <a href="/capturas/calcinst-demo.png" aria-label="Abrir la captura de CalcInst a tamaño completo">
+    <img
+      src="/capturas/calcinst-demo.png"
+      width="2560"
+      height="1600"
+      alt="Plano real de CalcInst: tres motores conectados a tres tableros en cascada sobre una retícula en metros."
+      loading={prioritaria ? 'eager' : 'lazy'}
+      fetchpriority={prioritaria ? 'high' : 'auto'}
+    />
+  </a>
+  <figcaption>
+    Captura real de una versión de desarrollo. Proyecto sintético a 440 V, motores trifásicos y
+    conductores de cobre. El cálculo requiere revisión; no es un proyecto de obra.
+  </figcaption>
+</figure>
+<style>
+  figure {
+    margin: var(--e-8) 0;
+  }
+  img {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--color-line-ui);
+    border-radius: var(--r-lg);
+  }
+  figcaption {
+    color: var(--fg-1);
+    font-size: var(--text-sm);
+    margin-top: var(--e-3);
+    max-width: var(--medida);
+  }
+</style>

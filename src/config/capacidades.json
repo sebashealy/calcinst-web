@@ -1,13 +1,13 @@
 {
-  "fuente": "PLAN_SITIO_WEB.md §4.3, con datos de ESTADO_PROYECTO.md del 2026-07-30",
-  "redaccionProvisional": true,
+  "fuente": "ZIP CalcInst SHA-256 94b7661f44a6a0022d97712e59e66c759329aa92d075042c05ce3dba74483da8; ADR-0013–0023 y evidencias FT1/FLC1/FA1/CAS1/MEM1/TAB1. Auditoría E5-b, 2026-10-27.",
+  "redaccionProvisional": false,
   "capacidades": [
     {
       "id": "dibujo-reticula-metros",
       "nombre": "Dibujo sobre retícula en metros",
       "descripcion": "Traza la instalación sobre una retícula con escala en metros.",
       "estado": "verificado",
-      "motivo": "Completo, sin dependencia normativa.",
+      "motivo": "Demostración sintética reproducida desde demo.calcinst.json; captura real E5-c. Sin cálculo normativo.",
       "normativa": []
     },
     {
@@ -15,7 +15,7 @@
       "nombre": "Longitudes por el trazo",
       "descripcion": "Calcula la longitud real de cada circuito siguiendo el trazo dibujado.",
       "estado": "verificado",
-      "motivo": "Completo.",
+      "motivo": "CAS1 y FLC1: recorridos de cascadas con entradas fijas y comparación; 101 pruebas dirigidas ejecutadas en E5-b. No mide distancias de obra.",
       "normativa": []
     },
     {
@@ -23,71 +23,124 @@
       "nombre": "Factor de agrupamiento",
       "descripcion": "Determina el factor de ajuste por número de conductores en una misma canalización.",
       "estado": "verificado",
-      "motivo": "Tabla 310-15(b)(3)(a), con pruebas.",
-      "normativa": []
+      "motivo": "FA1/CAS1 y prueba faTramosMixtos ejecutada en E5-b. Alcance: portadores por tramo de tubería de motores trifásicos; no equivale a validar el dimensionamiento completo.",
+      "normativa": [
+        {
+          "ref": "310-15-b-3-a",
+          "texto": "Tabla 310-15(b)(3)(a)",
+          "verificadoDOF": true,
+          "evidencia": "FA1 y CAS1: conteo y casos independientes; FLC1 actualiza la corriente de motores."
+        }
+      ]
     },
     {
       "id": "correccion-temperatura",
       "nombre": "Corrección por temperatura",
-      "descripcion": "Aplica el factor de corrección por temperatura ambiente.",
+      "descripcion": "Corrige por temperatura ambiente según la base de la tabla y el aislamiento; avisa cuando no hay un factor aplicable.",
       "estado": "verificado",
-      "motivo": "Con pruebas; el factor no se recorta a 1 (decisión registrada).",
-      "normativa": []
+      "motivo": "ADR-0013 sustituye la proximidad por la base de tabla. FT1 documenta casos manuales; ftYAmpacidad pasa en E5-b. La falta de temperatura se advierte como factor asumido.",
+      "normativa": [
+        {
+          "ref": "310-15-b-2-a",
+          "texto": "Tabla 310-15(b)(2)(a)",
+          "verificadoDOF": true,
+          "evidencia": "ADR-0013 y FT1, cotejo atribuido al expediente del motor; E4-ak sobre Nota Aclaratoria."
+        }
+      ]
     },
     {
       "id": "sizing-caso-1",
       "nombre": "Dimensionamiento de conductores (caso 1)",
-      "descripcion": "Dimensionamiento de conductores, caso 1 del motor de cálculo.",
+      "descripcion": "Conductor de un motor con canalización exclusiva.",
       "estado": "implementado",
-      "motivo": "Falta corregir Art. 430-22 y construir el caso de referencia calculado a mano.",
-      "normativa": []
+      "motivo": "430-22/430-24 corregidos; FLC de tabla conectada (ADR-0014), ampacidad corregida (ADR-0013). Hay casos independientes y pruebas E5-b. Se mantiene en verificación normativa hasta cerrar la cobertura y límites de la afirmación pública, incluida estimación fuera de tensiones tabuladas y supuestos de cascada.",
+      "normativa": [
+        {
+          "ref": "430-6-a-1",
+          "texto": "Art. 430-6(a)(1)",
+          "verificadoDOF": true,
+          "evidencia": "ADR-0014; FLC1 y PROT1 §7"
+        },
+        {
+          "ref": "430-22",
+          "texto": "Art. 430-22",
+          "verificadoDOF": true,
+          "evidencia": "ADR-0001/0002; FLC1; MEM1"
+        }
+      ]
     },
     {
       "id": "sizing-caso-2",
       "nombre": "Dimensionamiento de conductores (caso 2)",
-      "descripcion": "Dimensionamiento de conductores, caso 2 del motor de cálculo.",
+      "descripcion": "Conductor de un motor con tronco compartido y derivación.",
       "estado": "implementado",
-      "motivo": "Ídem caso 1.",
-      "normativa": []
+      "motivo": "430-22/430-24 corregidos; FLC de tabla conectada (ADR-0014), ampacidad corregida (ADR-0013). Hay casos independientes y pruebas E5-b. Se mantiene en verificación normativa hasta cerrar la cobertura y límites de la afirmación pública, incluida estimación fuera de tensiones tabuladas y supuestos de cascada.",
+      "normativa": [
+        {
+          "ref": "430-6-a-1",
+          "texto": "Art. 430-6(a)(1)",
+          "verificadoDOF": true,
+          "evidencia": "ADR-0014; FLC1 y PROT1 §7"
+        },
+        {
+          "ref": "430-22",
+          "texto": "Art. 430-22",
+          "verificadoDOF": true,
+          "evidencia": "ADR-0001/0002; FLC1; MEM1"
+        }
+      ]
     },
     {
       "id": "sizing-caso-3-alimentador",
       "nombre": "Dimensionamiento de alimentadores",
-      "descripcion": "Dimensionamiento del conductor alimentador de un tablero.",
+      "descripcion": "Conductores de alimentadores y ramales desde tableros de distribución.",
       "estado": "implementado",
-      "motivo": "Falta corregir Art. 430-24 (suma aritmética + 25 %); Bug 4 abierto.",
-      "normativa": []
+      "motivo": "430-22/430-24 corregidos; FLC de tabla conectada (ADR-0014), ampacidad corregida (ADR-0013). Hay casos independientes y pruebas E5-b. Se mantiene en verificación normativa hasta cerrar la cobertura y límites de la afirmación pública, incluida estimación fuera de tensiones tabuladas y supuestos de cascada.",
+      "normativa": [
+        {
+          "ref": "430-6-a-1",
+          "texto": "Art. 430-6(a)(1)",
+          "verificadoDOF": true,
+          "evidencia": "ADR-0014; FLC1 y PROT1 §7"
+        },
+        {
+          "ref": "430-24",
+          "texto": "Art. 430-24",
+          "verificadoDOF": true,
+          "evidencia": "ADR-0001/0002; FLC1; MEM1"
+        }
+      ]
     },
     {
       "id": "caida-tension",
       "nombre": "Caída de tensión",
       "descripcion": "Calcula la caída de tensión de cada circuito.",
       "estado": "implementado",
-      "motivo": "Depende del calibre; pasa a verificado con los casos de referencia.",
+      "motivo": "Cálculo en cobre con casos FLC1/CF1; aluminio bloqueado por ADR-0015. Pendiente cierre de trazabilidad de la fórmula y de la cobertura para anunciarla como verificada.",
       "normativa": []
     },
     {
       "id": "protecciones",
       "nombre": "Selección de protecciones",
-      "descripcion": "Selección de la protección de cada circuito.",
-      "estado": "planeado",
-      "motivo": "No iniciado. No aparece como funcionalidad.",
+      "descripcion": "Protecciones de motores y conductor de puesta a tierra, con límites y supuestos explícitos.",
+      "estado": "implementado",
+      "motivo": "ADR-0016 y PROT1: ITM de tiempo inverso y tierra implementados. Arranque supuesto, sobrecarga con placa estimada; no incluye fusibles, disparo instantáneo ni protección principal del TG. Pendiente cierre de verificación para publicación.",
       "normativa": []
     },
     {
       "id": "memoria-calculo-exportable",
       "nombre": "Memoria de cálculo exportable",
-      "descripcion": "Documento de memoria de cálculo con formato para revisión y firma.",
-      "estado": "planeado",
-      "motivo": "Hoy solo hay exportación CSV; el sitio no dice «memoria de cálculo».",
+      "descripcion": "Exporta una memoria PDF con datos, resultados, supuestos y avisos para revisión profesional.",
+      "estado": "verificado",
+      "motivo": "MEM1: PDF real y comparación con CSV; memoriaModelo ejecutada en E5-b. Se verifica la exportación, no una certificación normativa ni validez legal. Textos de responsabilidad provisionales y WebView2 pendiente.",
       "normativa": []
     },
     {
       "id": "exportacion-csv",
       "nombre": "Exportación CSV",
-      "descripcion": "Exporta los resultados del cálculo a un archivo CSV.",
+      "descripcion": "Exporta tablas de resultados, avisos y supuestos a CSV.",
       "estado": "verificado",
-      "motivo": "Completo.",
+      "motivo": "CSV1 acredita descarga y codificación; TAB1 conserva 12 CSV. No certifica la corrección normativa de los resultados exportados.",
       "normativa": []
     }
   ]

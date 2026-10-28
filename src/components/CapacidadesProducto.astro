@@ -1,0 +1,93 @@
+---
+import inventario from '../config/capacidades.json'
+import Tarjeta from './Tarjeta.astro'
+const verificadas = inventario.capacidades.filter((c) => c.estado === 'verificado')
+const pendientes = inventario.capacidades.filter((c) => c.estado !== 'verificado')
+---
+
+<section aria-labelledby="capacidades-titulo" class="bloque">
+  <p class="indice">01 / Herramientas</p>
+  <h2 id="capacidades-titulo">Del trazo a la revisión</h2>
+  <p>
+    Funciones verificadas dentro del alcance descrito. Cada resultado necesita revisión profesional.
+  </p>
+  <div class="capacidades" data-capacidades="verificadas">
+    {
+      verificadas.map((c) => (
+        <article data-capacidad={c.id}>
+          <>
+            <h3>{c.nombre}</h3>
+            <p>{c.descripcion}</p>
+          </>
+        </article>
+      ))
+    }
+  </div>
+</section>
+<section aria-labelledby="desarrollo-titulo" class="bloque" data-capacidades="desarrollo">
+  <Tarjeta>
+    <p class="indice">02 / Alcance pendiente</p>
+    <h2 id="desarrollo-titulo">En desarrollo</h2>
+    <p>
+      El dimensionamiento está en verificación normativa. Las funciones siguientes no se presentan
+      como listas para uso sin revisión.
+    </p>
+    <ul>
+      {
+        pendientes.map((c) => (
+          <li data-capacidad={c.id}>
+            <strong>{c.nombre}</strong> —{' '}
+            {c.estado === 'planeado' ? 'Planeado' : 'Implementado; verificación pendiente'}
+          </li>
+        ))
+      }
+    </ul>
+    <p>
+      La exportación de una memoria no certifica el cálculo ni sustituye la revisión y firma del
+      profesional responsable.
+    </p>
+  </Tarjeta>
+</section>
+<style>
+  .bloque {
+    margin-block: var(--e-16);
+  }
+  .indice {
+    color: var(--accent);
+    font-family: var(--fuente-mono);
+    font-size: var(--text-sm);
+  }
+  .capacidades {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--e-8);
+    margin-top: var(--e-8);
+  }
+  article {
+    border-top: 1px solid var(--color-line-ui);
+    padding-top: var(--e-4);
+  }
+  h3 {
+    font-size: var(--text-lg);
+  }
+  p,
+  li {
+    color: var(--fg-1);
+  }
+  li {
+    margin-bottom: var(--e-2);
+  }
+  ul {
+    padding-left: var(--e-6);
+  }
+  @media (max-width: 60rem) {
+    .capacidades {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 36rem) {
+    .capacidades {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,18 +1,44 @@
 ---
-import '../styles/tokens.css'
+import LayoutBase from '../layouts/LayoutBase.astro'
+import Boton from '../components/Boton.astro'
+import Insignia from '../components/Insignia.astro'
+import CapturaProducto from '../components/CapturaProducto.astro'
+import CapacidadesProducto from '../components/CapacidadesProducto.astro'
+import { TEXTO_VIGENTE, DESTINO_ACCION } from '../config/lanzamiento'
+import '../styles/producto.css'
 ---
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex" />
-    <title>CalcInst</title>
-  </head>
-  <body>
-    <!-- Contenido mínimo: Lighthouse aborta con NO_FCP si el body no pinta nada.
-         El diseño y el contenido reales llegan en las Etapas 2, 3 y 5. -->
-    <h1>CalcInst</h1>
-  </body>
-</html>
+<LayoutBase
+  titulo="CalcInst"
+  descripcion="Traza instalaciones de motores trifásicos, revisa sus recorridos y reúne los resultados en CalcInst."
+  noindex
+>
+  <div class="pagina-producto">
+    <header class="hero" data-hero>
+      <p class="sobretitulo">CalcInst / Motores trifásicos</p>
+      <Insignia tono={TEXTO_VIGENTE.insignia.tono}>{TEXTO_VIGENTE.insignia.texto}</Insignia>
+      <h1>Tu instalación,<br />trazo por trazo.</h1>
+      <p class="introduccion">
+        Traza tus motores trifásicos. Revisa recorridos, factores y resultados en un mismo proyecto.
+      </p>
+      <p class="alcance">
+        Alcance de la v1.0: motores trifásicos de inducción, de servicio continuo y con conductores
+        de cobre.
+      </p>
+      <div class="acciones">
+        <Boton href={DESTINO_ACCION}>{TEXTO_VIGENTE.accion}</Boton><Boton
+          href="/producto/"
+          variante="secundario">Explorar el producto</Boton
+        >
+      </div>
+    </header>
+    <CapturaProducto />
+    <CapacidadesProducto />
+    <section class="cierre" aria-labelledby="blog-titulo">
+      <p class="sobretitulo">Criterio técnico, paso a paso</p>
+      <h2 id="blog-titulo">Entiende la norma detrás del cálculo</h2>
+      <p>Artículos con referencias, supuestos y explicaciones para revisar tus decisiones.</p>
+      <Boton href="/blog/" variante="secundario">Consultar los artículos</Boton>
+    </section>
+  </div>
+</LayoutBase>

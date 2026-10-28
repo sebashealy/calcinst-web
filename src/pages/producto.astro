@@ -1,0 +1,77 @@
+---
+import LayoutBase from '../layouts/LayoutBase.astro'
+import Boton from '../components/Boton.astro'
+import Insignia from '../components/Insignia.astro'
+import Tabla from '../components/Tabla.astro'
+import CapturaProducto from '../components/CapturaProducto.astro'
+import CapacidadesProducto from '../components/CapacidadesProducto.astro'
+import { TEXTO_VIGENTE, DESTINO_ACCION } from '../config/lanzamiento'
+import '../styles/producto.css'
+---
+
+<LayoutBase
+  titulo="Producto"
+  descripcion="Conoce el alcance de CalcInst, las funciones verificadas y las que siguen en desarrollo."
+  noindex
+>
+  <div class="pagina-producto">
+    <header class="hero" data-hero>
+      <p class="sobretitulo">Producto / CalcInst</p>
+      <Insignia tono={TEXTO_VIGENTE.insignia.tono}>{TEXTO_VIGENTE.insignia.texto}</Insignia>
+      <h1>Un plano que puedes<br />seguir y revisar.</h1>
+      <p class="introduccion">
+        Del recorrido dibujado a las tablas de resultados, con los avisos y supuestos a la vista.
+      </p>
+      <p class="alcance">
+        Para motores trifásicos de inducción, de servicio continuo y con conductores de cobre. No
+        incluye alumbrado, contactos, circuitos monofásicos ni conductores en paralelo.
+      </p>
+      <Boton href={DESTINO_ACCION}>{TEXTO_VIGENTE.accion}</Boton>
+    </header>
+    <CapturaProducto />
+    <CapacidadesProducto />
+    <section class="cierre" aria-labelledby="comparacion-titulo">
+      <p class="sobretitulo">03 / Proceso y controles</p>
+      <h2 id="comparacion-titulo">Trabajar con una hoja de cálculo y con CalcInst</h2>
+      <p>
+        Una hoja bien construida también puede automatizar y documentar el cálculo. Esta comparación
+        describe el flujo de trabajo; no afirma que una herramienta sea más exacta o más rápida.
+      </p>
+      <Tabla caption="Controles que conviene conservar en ambos procesos">
+        <thead
+          ><tr
+            ><th scope="col">Paso</th><th scope="col">En una hoja de cálculo</th><th scope="col"
+              >En CalcInst</th
+            ></tr
+          ></thead
+        >
+        <tbody>
+          <tr
+            ><th scope="row">Recorridos</th><td
+              >Registrar las longitudes y mantenerlas alineadas con el plano.</td
+            ><td>Las longitudes se obtienen del trazo conectado.</td></tr
+          >
+          <tr
+            ><th scope="row">Factores</th><td
+              >Organizar las tablas, sus bases y las condiciones que seleccionan cada factor.</td
+            ><td>El agrupamiento y la temperatura se aplican dentro del alcance descrito.</td></tr
+          >
+          <tr
+            ><th scope="row">Revisión</th><td
+              >Conservar entradas, fórmulas, referencias y supuestos.</td
+            ><td>El CSV y la memoria reúnen resultados, avisos y supuestos para revisarlos.</td></tr
+          >
+          <tr
+            ><th scope="row">Responsabilidad</th><td
+              >Comprobar las fórmulas y su aplicación al proyecto.</td
+            ><td>Comprobar los resultados y sus límites con el mismo rigor.</td></tr
+          >
+        </tbody>
+      </Tabla>
+      <p class="nota">
+        El dimensionamiento sigue en verificación normativa. Las estimaciones para tensiones no
+        tabuladas y los supuestos del motor deben revisarse antes de usar sus resultados.
+      </p>
+    </section>
+  </div>
+</LayoutBase>

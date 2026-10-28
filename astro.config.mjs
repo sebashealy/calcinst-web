@@ -11,6 +11,9 @@ export default defineConfig({
   // por omisión ('ignore'), paginate() generaba /blog/2 y /blog, y cada clic
   // costaba una redirección 307 hacia la forma con barra.
   trailingSlash: 'always',
+  // El CSS del sitio es pequeño: incluirlo evita otra petición bloqueante en 4G.
+  // Mantiene los mismos tokens y estilos; mediciones y coste de caché en E5-j.
+  build: { inlineStylesheets: 'always' },
   // Bloques de código del Markdown con los dos temas como variables, igual que
   // BloqueCodigo: el CSS del post elige según el tema activo del sitio.
   markdown: {
