@@ -4772,3 +4772,13 @@ no implica autorización de fusión de la futura Etapa 6 ni aprobación de sus l
 Verificación de preparación: Prettier de sitio.ts correcto, 7 invariantes/0 fallos
 y git diff --check sin errores. No se atribuye una batería nueva de 134 pruebas
 a este cambio de configuración; esa evidencia corresponde a la Etapa 5.
+
+Confirmación posterior de producción (2026-10-28): solicitudes HTTP reales a
+https://calcinst.mx/ y https://calcinst.mx/producto/ devolvieron 200; ambas
+respuestas contienen inventario verificado, «En desarrollo» y la captura real.
+Esto confirma la entrega de las páginas tras la integración, no una nueva
+medición de Lighthouse en producción.
+
+Preparación guardada en PR #18 (borrador):
+https://github.com/sebashealy/calcinst-web/pull/18 . Continuar en
+`etapa6/preparacion-contenido`. CI del PR pendiente al registrar esta entrada.
