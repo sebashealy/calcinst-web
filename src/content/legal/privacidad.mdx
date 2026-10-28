@@ -29,6 +29,15 @@ La página de Contacto propone un enlace de correo, no un formulario. Antes de a
 
 No afirmar que el único dato tratado es el correo sin revisar el contenido de los mensajes y los datos técnicos del alojamiento. No afirmar ausencia de cookies, registros o transferencias sin evidencia.
 
+## Inventario técnico comprobado para la redacción (2026-10-28)
+
+- Preferencia de apariencia: `ConmutadorTema.astro` guarda `tema` con valor `claro` u `oscuro` en `localStorage`; `ScriptTema.astro` lo lee al cargar. Ese código no transmite la preferencia a un servidor ni fija una caducidad. Se puede eliminar desde los datos del sitio del navegador.
+- Contacto: el enlace `mailto:` abre el cliente de correo. El sitio no contiene un formulario de envío. El mensaje que el visitante decida enviar puede incluir dirección, nombre, contenido y adjuntos; acceso, reenvíos, finalidades y conservación requieren confirmación del responsable.
+- Recursos: `LayoutBase.astro` carga las fuentes desde `/fuentes/`, en el mismo sitio. La búsqueda en `src/`, `public/` y `wrangler.jsonc` no encontró integración de analítica, Buttondown ni escritura de `document.cookie`. Esta revisión de código no acredita por sí sola ausencia de cookies o registros añadidos por el alojamiento.
+- Alojamiento: Workers sirve activos estáticos. Falta comprobar la configuración efectiva y las condiciones de los registros técnicos del proveedor. No se han inspeccionado el buzón ni las opciones privadas del dashboard.
+
+Estos hallazgos son evidencia para preparar el aviso, no un texto legal aprobado. La identidad y domicilio se mantienen pendientes: el artículo 15, fracción I, de la fuente oficial citada los incluye en el contenido mínimo del aviso.
+
 ## Proveedores y comunicaciones
 
 Revisar Cloudflare y el proveedor del buzón, distinguir sus funciones y documentar ubicaciones, condiciones y conservación aplicables. Buttondown no está integrado: no describirlo como un tratamiento activo ni como una transferencia ya efectuada.

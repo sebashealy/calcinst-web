@@ -5076,3 +5076,41 @@ src/pages/{quienes-somos,contacto,404,terminos,privacidad}.astro,
 src/layouts/LayoutContenido.astro, src/components/DocumentoLegal.astro,
 src/lib/legal.ts, src/content/legal/ y tests/legal.test.ts. Evidencia visual:
 evidencia/etapa-6-evidencia.zip. No se añaden dependencias ni se modifica CalcInst.
+
+### E6-g — Aprobación visual e inventario para el aviso (2026-10-28)
+
+El usuario responde «Excelente apruebo, continuemos con lo que sigue» tras la
+entrega de las páginas de E6-f. Se registra la aprobación de las páginas
+informativas y 404 presentadas. Los borradores legales no fueron mostrados como
+textos definitivos: esta aprobación no activa publicado/revisionHumana, no cierra
+la etapa ni se interpreta como orden de fusionar el PR #18.
+
+Se amplía exclusivamente el borrador privado src/content/legal/privacidad.mdx
+con evidencia del código: localStorage/tema (claro u oscuro, sin vencimiento
+programado ni transmisión en esos componentes), contacto mediante mailto y
+fuentes locales. Búsqueda ejecutada con rg en src/, public/ y wrangler.jsonc de
+localStorage, sessionStorage, document.cookie, analytics, beacon, fetch, form y
+buttondown: solo coincidieron la lectura y escritura de tema. Se leyeron
+LayoutBase, ScriptTema, ConmutadorTema y Wrangler para contextualizar el resultado.
+No se deduce ausencia global de registros o cookies del proveedor. No se accedió
+al buzón ni al dashboard. La finalidad del cambio es redactar sobre el tratamiento
+real y no copiar «solo correo» o Buttondown activo del plan histórico.
+
+Se consultó de nuevo https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf :
+texto vigente con reforma DOF 14-11-2025, artículo 15.I identidad y domicilio;
+artículo 2.XV identifica a la Secretaría Anticorrupción y Buen Gobierno.
+H2 permanece abierta hasta completar y revisar el aviso aplicable al proyecto.
+
+Se solicitaron al usuario dos datos: definición del responsable/domicilio y
+operación del buzón (accesos, finalidad, reenvíos y conservación). Pendientes de
+respuesta; no inferir información personal ni publicar datos recibidos sin dejar
+claro su destino. Próximo paso: incorporar respuestas, revisar proveedores y
+preparar textos completos para aprobación humana. Person y propiedad intelectual
+también requieren titular confirmado. Mantener PR #18 en borrador.
+
+Validación de este bloque: npm run check terminó exit 0, 66 archivos,
+0 errores/advertencias/hints. Persiste el aviso de configuración obsoleta
+markdown.smartypants ya documentado. Primer intento restringido interrumpido
+sin resultados; la ejecución con permisos ampliados produjo el resultado anterior.
+git diff --check pasó. No se repitió la auditoría visual: el cambio de contenido
+permanece en un borrador no publicable y no modifica las páginas aprobadas.
