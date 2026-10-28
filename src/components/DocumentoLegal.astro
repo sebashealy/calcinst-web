@@ -1,0 +1,46 @@
+---
+import { getEntry, render } from 'astro:content'
+import LayoutContenido from '../layouts/LayoutContenido.astro'
+import { fechaMexico, legalPublicable } from '../lib/legal'
+import { SITIO } from '../config/sitio'
+interface Props {
+  tipo: 'terminos' | 'privacidad'
+}
+const { tipo } = Astro.props
+const documento = await getEntry('legal', tipo)
+if (!documento) throw new Error(`Falta documento legal: ${tipo}`)
+const publicado = legalPublicable(documento.data, fechaMexico())
+const contenido = publicado ? await render(documento) : null
+const Content = contenido?.Content
+---
+
+<LayoutContenido
+  titulo={documento.data.titulo}
+  descripcion={publicado ? documento.data.titulo : 'Documento pendiente de publicación.'}
+>
+  {
+    Content ? (
+      <>
+        <>
+          <p>
+            Versión {documento.data.version} · Vigente desde {documento.data.fechaVigencia}
+          </p>
+          <Content />
+        </>
+      </>
+    ) : (
+      <div data-legal-pendiente>
+        <h2>Documento en revisión</h2>
+        <p>
+          Este documento aún no está publicado. Puedes consultar el{' '}
+          <a href="/producto/">alcance del producto</a> o volver a <a href="/">Inicio</a>.
+        </p>
+        {SITIO.correoContacto && (
+          <p>
+            Para consultas: <a href={`mailto:${SITIO.correoContacto}`}>{SITIO.correoContacto}</a>.
+          </p>
+        )}
+      </div>
+    )
+  }
+</LayoutContenido>

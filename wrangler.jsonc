@@ -6,6 +6,7 @@
   "compatibility_date": "2026-09-05",
   "assets": {
     "directory": "./dist/",
+    "not_found_handling": "404-page",
   },
   // Explícitos a propósito (DECISIONES_SITIO.md, AD3; ESTADO_SITIO.md, P3).
   // Las URL de preview se sirven en el subdominio workers.dev y no existen sin él:

@@ -1,0 +1,45 @@
+---
+import LayoutBase from './LayoutBase.astro'
+interface Props {
+  titulo: string
+  descripcion: string
+}
+const { titulo, descripcion } = Astro.props
+---
+
+<LayoutBase titulo={titulo} descripcion={descripcion} noindex>
+  <article class="contenido">
+    <header><p class="marca">CalcInst</p><h1>{titulo}</h1></header>
+    <div class="texto"><slot /></div>
+  </article>
+</LayoutBase>
+<style>
+  .contenido {
+    max-width: 52rem;
+    margin-inline: auto;
+    padding: var(--e-12) var(--e-4) var(--e-16);
+  }
+  header {
+    margin-bottom: var(--e-8);
+  }
+  .marca {
+    font-family: var(--fuente-mono);
+    color: var(--accent);
+    font-size: var(--text-sm);
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+  .texto {
+    max-width: var(--medida);
+  }
+  .texto :global(h2) {
+    margin-top: var(--e-8);
+  }
+  .texto :global(li) {
+    margin-block: var(--e-2);
+  }
+  .texto :global(a) {
+    overflow-wrap: anywhere;
+  }
+</style>

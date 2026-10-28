@@ -1,0 +1,37 @@
+---
+import LayoutContenido from '../layouts/LayoutContenido.astro'
+import { SITIO } from '../config/sitio'
+const correo = SITIO.correoContacto
+---
+
+<LayoutContenido
+  titulo="Contacto"
+  descripcion="Escribe a CalcInst para compartir una observación o reportar un error."
+>
+  <p>Para preguntas sobre el proyecto, observaciones del sitio o errores del programa:</p>
+  {
+    correo ? (
+      <p>
+        <a href={`mailto:${correo}`}>{correo}</a>
+      </p>
+    ) : (
+      <p>El correo de contacto aún no está publicado.</p>
+    )
+  }
+  <p>El enlace abre tu aplicación de correo. Esta página no envía mensajes por sí misma.</p>
+  <h2>Si encontraste un error</h2>
+  <ul>
+    <li>Indica la página o la versión del programa que estabas usando.</li>
+    <li>Describe los pasos para reproducirlo y qué esperabas que ocurriera.</li>
+    <li>Si se trata de una afirmación técnica, señala el artículo o la tabla de referencia.</li>
+  </ul>
+  <p>
+    Utiliza ejemplos sintéticos. No adjuntes datos personales de terceros, planos de clientes ni
+    información confidencial.
+  </p>
+  <p>
+    Los <a href="/blog/">artículos técnicos</a> y la <a href="/producto/"
+      >descripción del producto</a
+    > pueden ayudarte a identificar el alcance de tu consulta.
+  </p>
+</LayoutContenido>
