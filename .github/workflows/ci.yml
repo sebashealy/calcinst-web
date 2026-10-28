@@ -40,6 +40,9 @@ jobs:
       - name: Notacion en la salida construida (AD9)
         run: npm run verificar:salida
 
+      - name: Capacidades en el HTML de Inicio y Producto
+        run: node scripts/verificar-producto.mjs
+
       - name: Portabilidad del contenido (I2)
         run: npm run portabilidad
 

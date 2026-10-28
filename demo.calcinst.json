@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 5,
+  "id": "demo-sitio-motores",
+  "name": "Demostración CalcInst — motores trifásicos",
+  "width": 80,
+  "height": 70,
+  "nodes": [
+    {
+      "id": "tg",
+      "type": "MAIN_PANEL",
+      "x": 5,
+      "y": 5,
+      "panelProps": {
+        "voltageV": 440,
+        "phaseAngleDeg": 0
+      }
+    },
+    {
+      "id": "tda",
+      "type": "DISTRIBUTION_PANEL",
+      "x": 5,
+      "y": 65,
+      "panelProps": {
+        "voltageV": 440,
+        "phaseAngleDeg": 0,
+        "connection": "STAR",
+        "tempAmbienteC": 30
+      },
+      "label": "TD-A"
+    },
+    {
+      "id": "ma",
+      "type": "LOAD",
+      "x": 10,
+      "y": 65,
+      "label": "MA",
+      "loadProps": {
+        "powerHp": 30,
+        "powerFactor": 0.85,
+        "connection": "STAR",
+        "serviceFactor": 1.15,
+        "efficiencyPct": 90,
+        "tempAmbienteC": 30,
+        "tempOperacionC": 75,
+        "topeTerminalC": 75
+      }
+    },
+    {
+      "id": "k1",
+      "type": "JUNCTION",
+      "x": 45,
+      "y": 65
+    },
+    {
+      "id": "tdb",
+      "type": "DISTRIBUTION_PANEL",
+      "x": 45,
+      "y": 35,
+      "panelProps": {
+        "voltageV": 440,
+        "phaseAngleDeg": 0,
+        "connection": "STAR",
+        "tempAmbienteC": 30
+      },
+      "label": "TD-B"
+    },
+    {
+      "id": "mb",
+      "type": "LOAD",
+      "x": 40,
+      "y": 35,
+      "label": "MB",
+      "loadProps": {
+        "powerHp": 20,
+        "powerFactor": 0.85,
+        "connection": "STAR",
+        "serviceFactor": 1.15,
+        "efficiencyPct": 90,
+        "tempAmbienteC": 30,
+        "tempOperacionC": 75,
+        "topeTerminalC": 75
+      }
+    },
+    {
+      "id": "tdc",
+      "type": "DISTRIBUTION_PANEL",
+      "x": 75,
+      "y": 35,
+      "panelProps": {
+        "voltageV": 440,
+        "phaseAngleDeg": 0,
+        "connection": "STAR",
+        "tempAmbienteC": 30
+      },
+      "label": "TD-C"
+    },
+    {
+      "id": "mc",
+      "type": "LOAD",
+      "x": 75,
+      "y": 10,
+      "label": "MC",
+      "loadProps": {
+        "powerHp": 15,
+        "powerFactor": 0.85,
+        "connection": "STAR",
+        "serviceFactor": 1.15,
+        "efficiencyPct": 90,
+        "tempAmbienteC": 30,
+        "tempOperacionC": 75,
+        "topeTerminalC": 75
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-tg-tda",
+      "fromId": "tg",
+      "toId": "tda"
+    },
+    {
+      "id": "e-tda-ma",
+      "fromId": "tda",
+      "toId": "ma"
+    },
+    {
+      "id": "e-tda-k1",
+      "fromId": "tda",
+      "toId": "k1"
+    },
+    {
+      "id": "e-k1-tdb",
+      "fromId": "k1",
+      "toId": "tdb"
+    },
+    {
+      "id": "e-tdb-mb",
+      "fromId": "tdb",
+      "toId": "mb"
+    },
+    {
+      "id": "e-tdb-tdc",
+      "fromId": "tdb",
+      "toId": "tdc"
+    },
+    {
+      "id": "e-tdc-mc",
+      "fromId": "tdc",
+      "toId": "mc"
+    }
+  ],
+  "conductorType": "THHW-LS",
+  "conductorMaterial": "COBRE",
+  "voltageDropPct": 3,
+  "tempAmbienteProyectoC": 30,
+  "caidaTotalMaximaPct": 5,
+  "createdAt": "2026-10-16T00:00:00.000Z",
+  "updatedAt": "2026-10-16T00:00:00.000Z"
+}

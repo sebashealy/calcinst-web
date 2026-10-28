@@ -33,7 +33,7 @@ export interface TextoEstado {
 
 export const TEXTO = {
   proximamente: {
-    accion: 'Únete a la lista',
+    accion: 'Leer el blog técnico',
     banner: null,
     descarga: 'aviso',
     pie: 'Estado: en desarrollo',
@@ -59,8 +59,12 @@ export const TEXTO = {
 export const TEXTO_VIGENTE: TextoEstado = TEXTO[ESTADO_LANZAMIENTO]
 
 /**
- * Destino del botón de acción. Es el mismo en los tres estados: la página de
- * descarga muestra el aviso con el formulario de lista o los instaladores
- * según `descarga` (Etapa 7).
+ * Destino por estado (A9): el blog existe durante el desarrollo. Los estados
+ * posteriores conservan la ruta de descarga reservada para la Etapa 7.
  */
-export const DESTINO_ACCION = '/descarga/'
+export const DESTINOS = {
+  proximamente: '/blog/',
+  beta: '/descarga/',
+  disponible: '/descarga/',
+} as const satisfies Record<EstadoLanzamiento, string>
+export const DESTINO_ACCION = DESTINOS[ESTADO_LANZAMIENTO]
