@@ -23,16 +23,20 @@ Base de trabajo: Ley Federal de Protección de Datos Personales en Posesión de 
 
 Pendiente de decisión del titular: identidad y domicilio. La marca CalcInst y un correo no sustituyen estos datos.
 
+El 2026-10-28 el usuario confirma que todavía no ha definido al responsable ni el domicilio. Ambos campos permanecen sin completar.
+
 ## Datos y finalidades
 
 La página de Contacto propone un enlace de correo, no un formulario. Antes de aprobar el aviso, documentar qué datos llegan al correo, para qué se utilizan, quién accede y durante cuánto tiempo se conservan. Separar la atención de consultas de una eventual suscripción; esta última pertenece a otra etapa y no está activa.
+
+Confirmación del usuario, 2026-10-28: `instcalc@gmail.com`, correo de contacto confirmado. Reenvíos y plazo de conservación siguen pendientes. No interpretar esta respuesta como autorización para suscripciones o marketing.
 
 No afirmar que el único dato tratado es el correo sin revisar el contenido de los mensajes y los datos técnicos del alojamiento. No afirmar ausencia de cookies, registros o transferencias sin evidencia.
 
 ## Inventario técnico comprobado para la redacción (2026-10-28)
 
 - Preferencia de apariencia: `ConmutadorTema.astro` guarda `tema` con valor `claro` u `oscuro` en `localStorage`; `ScriptTema.astro` lo lee al cargar. Ese código no transmite la preferencia a un servidor ni fija una caducidad. Se puede eliminar desde los datos del sitio del navegador.
-- Contacto: el enlace `mailto:` abre el cliente de correo. El sitio no contiene un formulario de envío. El mensaje que el visitante decida enviar puede incluir dirección, nombre, contenido y adjuntos; acceso, reenvíos, finalidades y conservación requieren confirmación del responsable.
+- Contacto: el enlace `mailto:` abre el cliente de correo. El sitio no contiene un formulario de envío. El mensaje que el visitante decida enviar puede incluir dirección, nombre, contenido y adjuntos. Correo de contacto confirmado; reenvíos, finalidades detalladas y conservación siguen pendientes.
 - Recursos: `LayoutBase.astro` carga las fuentes desde `/fuentes/`, en el mismo sitio. La búsqueda en `src/`, `public/` y `wrangler.jsonc` no encontró integración de analítica, Buttondown ni escritura de `document.cookie`. Esta revisión de código no acredita por sí sola ausencia de cookies o registros añadidos por el alojamiento.
 - Alojamiento: Workers sirve activos estáticos. Falta comprobar la configuración efectiva y las condiciones de los registros técnicos del proveedor. No se han inspeccionado el buzón ni las opciones privadas del dashboard.
 

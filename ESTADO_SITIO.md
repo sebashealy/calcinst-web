@@ -5114,3 +5114,22 @@ markdown.smartypants ya documentado. Primer intento restringido interrumpido
 sin resultados; la ejecución con permisos ampliados produjo el resultado anterior.
 git diff --check pasó. No se repitió la auditoría visual: el cambio de contenido
 permanece en un borrador no publicable y no modifica las páginas aprobadas.
+
+### E6-h — Respuestas sobre responsable y buzón (2026-10-28)
+
+El usuario todavía no define responsable/domicilio. Por indicación expresa,
+solo se registra sobre instcalc@gmail.com: «correo de contacto confirmado».
+Se incorpora esa redacción al borrador src/content/legal/privacidad.mdx.
+Reenvíos y conservación siguen pendientes; no se asumen inexistentes ni se fija
+un plazo.
+
+Responsable/domicilio continúan pendientes, así como Person, revisión de
+proveedores y textos legales completos. Se conservan publicado: false y
+revisionHumana: false. No se considera aprobada una política de marketing ni
+se cierra H2. La aprobación visual de E6-g sigue vigente. PR #18 sin fusionar.
+
+Continuidad: completar la investigación de proveedores y preparar la redacción
+que no dependa de datos personales; solicitar los datos pendientes cuando el
+usuario los haya definido. No iniciar Etapa 7 ni cerrar Etapa 6 por inferencia.
+Este bloque solo registra respuestas: no cambia código ejecutable ni frontmatter.
+Validación: git diff --check pasó. Solo se modificó documentación; no se repitieron pruebas de ejecución.
