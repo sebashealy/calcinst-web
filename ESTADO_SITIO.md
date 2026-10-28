@@ -7,8 +7,10 @@
 Etapa 5: criterios técnicos y aprobación humana registrados en E5-n, integración
 confirmada en E5-o. PR #16 y #17 fusionados a main. LCP 1,20–1,22 s, CLS 0 en los
 perfiles medidos; 134 pruebas y auditoría en 12 variantes pasan. Esto no certifica
-los cálculos del motor. Próximo trabajo: Etapa 6, plan en E5-n y arranque documental
-E6-a. Identidad personal y textos legales pendientes; no se publican por inferencia.
+los cálculos del motor. Etapa 6: primer bloque implementado en PR #18; 150 pruebas
+y auditoría en 30 variantes pasan. CI y vista previa comprobados en E6-f.
+Pendientes: revisión humana, identidad/responsable, Person y textos legales
+definitivos. No se publican datos por inferencia ni se declara cerrada la etapa.
 
 ## Etapa 5 — Inicio y Producto (2026-10-27 a 2026-10-28)
 
@@ -5030,3 +5032,47 @@ Las rutas legales actuales solo muestran aviso de revisión. No fusionar esta
 etapa a main sin nueva autorización; la autorización de fusión previa fue #16/#17.
 
 Paquete: 1143345 bytes; SHA-256 `24a52e24e91f272da2d1f9c63e9b79540e38450ad95b6bfa4ac9a8e1ce6c3899`.
+
+### E6-f — Verificación remota y continuidad (2026-10-28)
+
+Revisión comprobada: `f8c6564df593fd3bafa25ffb297547403fd23b60`, PR #18,
+rama `etapa6/preparacion-contenido`. Los checks `verificar` y
+`Workers Builds: calcinst-web` terminaron `success` para esta revisión.
+CI: https://github.com/sebashealy/calcinst-web/actions/runs/40744266815 .
+Workers build: `c92d4a3a-af39-4ccc-aeaa-b206e605cf59`;
+versión: `d1015c6d-5526-47c4-9f25-de5445aed881`.
+
+Vista previa comprobada: https://d1015c6d-calcinst-web.instcalc.workers.dev .
+Se ejecutó `Invoke-WebRequest -SkipHttpErrorCheck` para cada ruta y se inspeccionó
+StatusCode y Content. Resultados reales:
+
+| Ruta | HTTP | Aviso legal pendiente | Cuerpo de borrador expuesto |
+| --- | --- | --- | --- |
+| /quienes-somos/ | 200 | No | No |
+| /contacto/ | 200 | No | No |
+| /terminos/ | 200 | Sí | No |
+| /privacidad/ | 200 | Sí | No |
+| /ruta-inexistente-etapa6/ | 404 | No | No |
+| /normativa/ref-no-existe/ | 404 | No | No |
+
+Las seis respuestas contienen enlace al blog; Contacto y ambos avisos contienen
+instcalc@gmail.com. Se buscó el marcador `Borrador interno: no publicar` en las
+seis respuestas y no apareció. La exclusión completa en dist se documenta en E6-d.
+Esto resuelve el pendiente de comprobación remota del 404 de E6-d/E6-e; no
+implementa rutas normativas. Las evidencias CI citadas corresponden al commit
+anterior, no acreditan automáticamente commits documentales posteriores.
+
+Siguiente paso: revisión humana de Quiénes somos, Contacto y 404 en esta preview.
+Mantener la presentación como CalcInst mientras el usuario decide si publica su
+nombre. Después, resolver responsable/domicilio y tratamientos/proveedores de H2,
+completar y aprobar los textos legales antes de activar su publicación. Person
+sigue pendiente de identidad confirmada. No completar datos ni aprobación legal
+por inferencia. PR #18 continúa en borrador; su fusión requiere autorización
+expresa. Etapa 6 sigue en curso; no se modifica producción en este bloque.
+
+Traspaso: leer el último corte, E6-b a E6-f, DECISIONES_SITIO.md,
+HIPOTESIS_SITIO.md y el apartado Etapa 6 de PLAN_SITIO_WEB.md. Código relevante:
+src/pages/{quienes-somos,contacto,404,terminos,privacidad}.astro,
+src/layouts/LayoutContenido.astro, src/components/DocumentoLegal.astro,
+src/lib/legal.ts, src/content/legal/ y tests/legal.test.ts. Evidencia visual:
+evidencia/etapa-6-evidencia.zip. No se añaden dependencias ni se modifica CalcInst.
