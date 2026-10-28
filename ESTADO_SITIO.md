@@ -5133,3 +5133,41 @@ que no dependa de datos personales; solicitar los datos pendientes cuando el
 usuario los haya definido. No iniciar Etapa 7 ni cerrar Etapa 6 por inferencia.
 Este bloque solo registra respuestas: no cambia código ejecutable ni frontmatter.
 Validación: git diff --check pasó. Solo se modificó documentación; no se repitieron pruebas de ejecución.
+
+### E6-i — Proveedores y propuesta ARCO (2026-10-28)
+
+Se amplía src/content/legal/privacidad.mdx con fuentes oficiales y una propuesta
+operativa para revisión. Se mantienen publicado/revisionHumana en false y los
+campos de identidad/fecha sin definir. Sobre el buzón solo consta «correo de
+contacto confirmado», conforme a la instrucción del usuario.
+
+Fuentes consultadas:
+- https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf : artículos 2.VIII,
+  7, 28, 30 y 31 para solicitud, acreditación, rectificación y plazos; el borrador
+  separa ARCO de revocación y limitación de uso. No hay aprobación operativa aún.
+- https://www.cloudflare.com/privacypolicy/ : apartados End Users y tratamiento;
+  la política general no acredita los registros habilitados en esta cuenta.
+- https://policies.google.com/privacy?hl=es : versión vigente desde 16-10-2026;
+  no se presume Google Workspace ni residencia exclusiva de datos en México.
+
+La redacción distingue hechos del código, declaraciones del proveedor y
+propuestas pendientes. No se inspeccionaron cuentas privadas ni se alteraron
+configuraciones. No se convierte a Buttondown en proveedor activo. Tampoco se
+fijan plazos de conservación ni se clasifica jurídicamente cada comunicación
+sin cotejar condiciones aplicables. H2 continúa abierta: fuentes revisadas no
+significa aviso completo aprobado.
+
+Pendientes concretos para continuar: responsable/domicilio; condiciones efectivas
+de proveedores y conservación; aprobación de cómo se atenderán solicitudes y
+acreditará identidad; titular/derechos del contenido en Términos; revisión final
+de ambos textos. Las páginas informativas ya tienen aprobación visual (E6-g).
+No se inicia Etapa 7, no se fusiona PR #18 ni se declara cerrada Etapa 6.
+
+Validación ejecutada: npm run build, exit 0, 24 páginas en 9,75 s según Astro.
+Persistió la advertencia conocida markdown.smartypants. Comprobación PowerShell:
+Get-ChildItem dist -Recurse -File, filtro HTML/JS/JSON y Select-String -SimpleMatch
+para «Borrador interno: no publicar», «Procedimiento propuesto para revisión» y
+«Fuentes revisadas el 2026-10-28»: ninguna coincidencia. Términos y Privacidad
+mantienen data-legal-pendiente. Resultado: «OK: marcadores del borrador ausentes en
+HTML/JS/JSON y ambas rutas legales muestran aviso pendiente». git diff --check pasó.
+No se repiten las 150 pruebas históricas ni se atribuye un nuevo resultado a ellas.
