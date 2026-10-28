@@ -4377,3 +4377,10 @@ humana siguen pendientes. El push puede activar previews existentes de la rama;
 no se cambia la configuración de Cloudflare ni se fusiona a producción.
 
 SHA-256 del paquete de evidencia: e9fc1eb22dcc20df3c1ce8d2fa401248eda8ab41a7e5b475ca84df42319438c3.
+
+Confirmación de publicación del bloque: commit `ac0691a` subido a
+`origin/etapa5/inicio-producto`; PR #17 en borrador:
+https://github.com/sebashealy/calcinst-web/pull/17 . Base: rama del PR #16.
+El paquete de evidencia y los 18 archivos del bloque están incluidos en ese commit.
+CI remoto pendiente de resultado en este corte; consultar Checks del PR #17.
+Para continuar, usar esa rama; no main. No hay fusión ni cierre de etapa.
