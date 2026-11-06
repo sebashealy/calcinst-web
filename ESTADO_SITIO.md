@@ -5171,3 +5171,35 @@ para «Borrador interno: no publicar», «Procedimiento propuesto para revisión
 mantienen data-legal-pendiente. Resultado: «OK: marcadores del borrador ausentes en
 HTML/JS/JSON y ambas rutas legales muestran aviso pendiente». git diff --check pasó.
 No se repiten las 150 pruebas históricas ni se atribuye un nuevo resultado a ellas.
+
+### E6-j — Decisiones del titular para preparar los legales (2026-11-06)
+
+El usuario indica que la futura S.A.S. está en constitución, que el domicilio ya
+está resuelto (sin aportar aquí su dirección) y que todavía no recibirá consultas.
+La empresa es la responsable prevista, no una entidad cuya constitución o
+asunción efectiva del tratamiento se haya verificado. Falta denominación legal.
+Finalidad confirmada del correo: consultas y contacto. Se conserva únicamente
+«correo de contacto confirmado» como información pública del buzón.
+
+Aprueba la propuesta de conservación: consultas durante su atención y seis meses
+tras el cierre; adjuntos necesarios durante la atención y eliminación dentro de
+los 30 días posteriores al cierre; adjuntos innecesarios o recibidos por error,
+al detectarlos. Excepciones por obligación de conservación o controversia se
+documentarán por caso. Son reglas para contacto ordinario, no para facturación,
+ventas o soporte contractual. Falta preparar su operación antes de recibir datos.
+
+Aprueba la política de contenidos: compartir enlaces; citar fragmentos breves con
+atribución y enlace sin alterar sentido; autorización previa para republicar
+artículos completos o reutilizar diagramas/capturas en publicaciones, cursos o
+materiales comerciales; no autorizar atribución falsa ni respaldo oficial aparente.
+Su redacción respetará excepciones legales y licencias de terceros. No constituye
+una licencia del programa, ni acredita titularidad de derechos sobre los materiales.
+
+El usuario solicita recomendación sobre titularidad por su modelo de venta de
+licencias. Sigue pendiente decidir y formalizar la relación entre creadores y
+empresa; no se registra una cesión ni licencia a la S.A.S. por inferencia.
+Estos acuerdos no autorizan publicar los legales ni cerrar la etapa. Las páginas
+actuales incluyen contacto mailto: la intención de no recibir consultas todavía
+no equivale a un bloqueo técnico del canal ni se ha cambiado su interfaz.
+
+Cambio documental únicamente; no se ejecutan nuevas pruebas del sitio.
