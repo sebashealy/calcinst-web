@@ -9,8 +9,9 @@ confirmada en E5-o. PR #16 y #17 fusionados a main. LCP 1,20–1,22 s, CLS 0 en 
 perfiles medidos; 134 pruebas y auditoría en 12 variantes pasan. Esto no certifica
 los cálculos del motor. Etapa 6: primer bloque implementado en PR #18; 150 pruebas
 y auditoría en 30 variantes pasan. CI y vista previa comprobados en E6-f.
-Pendientes: revisión humana, identidad/responsable, Person y textos legales
-definitivos. No se publican datos por inferencia ni se declara cerrada la etapa.
+Avance al 2026-11-11: políticas aprobadas incorporadas a borradores; contacto
+en preparación. Ver E6-k a E6-n para operación, licencias y verificaciones.
+Pendientes: identidad/responsable, Person, revisión legal final y hallazgo RFN. No se publican datos por inferencia ni se declara cerrada la etapa.
 
 ## Etapa 5 — Inicio y Producto (2026-10-27 a 2026-10-28)
 
@@ -5203,3 +5204,288 @@ actuales incluyen contacto mailto: la intención de no recibir consultas todaví
 no equivale a un bloqueo técnico del canal ni se ha cambiado su interfaz.
 
 Cambio documental únicamente; no se ejecutan nuevas pruebas del sitio.
+
+### E6-m — Verificacion local del bloque independiente (2026-11-11)
+
+Salidas completas, sin filtrar. Se usa npm 11.13.0 local con las dependencias ya instaladas.
+
+```text
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+12:07:15 [content] Syncing content
+12:07:15 [content] Synced content
+12:07:15 [types] Generated 756ms
+12:07:15 [check] Getting diagnostics for Astro files in C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web...
+Result (66 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+EXIT=0
+```
+
+```text
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web
+
+
+ Test Files  7 passed (7)
+      Tests  150 passed (150)
+   Start at  12:07:32
+   Duration  4.96s (import 73%, transform 18%, tests 6%, worker 2%)
+
+EXIT=0
+```
+
+```text
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT=0
+```
+
+```text
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0
+```
+
+```text
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[FALLA] I7 — el estado de lanzamiento vive solo en src/config/
+  - src/pages/contacto.astro:11 — contiene «proximamente»
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 1 fallo(s)
+EXIT=1
+```
+
+```text
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+12:08:00 [WARN] [content] data store cleared (force)
+12:08:01 [content] Syncing content
+12:08:01 [content] Synced content
+12:08:01 [types] Generated 471ms
+12:08:01 [build] output: "static"
+12:08:01 [build] mode: "static"
+12:08:01 [build] directory: C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\dist\
+12:08:01 [build] Collecting build info...
+12:08:01 [build] ✓ Completed in 526ms.
+12:08:01 [build] Building static entrypoints...
+12:08:02 [vite] ✓ built in 1.04s
+12:08:02 [vite] ✓ built in 26ms
+12:08:02 [build] Rearranging server assets...
+
+ generating static routes
+12:08:03   ├─ /404.html (+24ms)
+12:08:03   ├─ /blog/categoria/conductores/index.html (+5ms)
+12:08:03   ├─ /blog/categoria/motores/index.html (+2ms)
+12:08:03   ├─ /blog/categoria/canalizaciones/index.html (+2ms)
+12:08:03   ├─ /blog/categoria/puesta-a-tierra/index.html (+2ms)
+12:08:03   ├─ /blog/categoria/practica-profesional/index.html (+3ms)
+12:08:03   ├─ /blog/etiqueta/110-14c/index.html (+4ms)
+12:08:03   ├─ /blog/etiqueta/ampacidad/index.html (+3ms)
+12:08:03   ├─ /blog/etiqueta/dof/index.html (+4ms)
+12:08:03   ├─ /blog/etiqueta/nom-001-sede/index.html (+7ms)
+12:08:03   ├─ /blog/etiqueta/temperatura/index.html (+6ms)
+12:08:03   ├─ /blog/etiqueta/terminales/index.html (+3ms)
+12:08:03   ├─ /blog/etiqueta/verificacion/index.html (+3ms)
+12:08:03   ├─ /blog/etiqueta/vigencia/index.html (+4ms)
+12:08:03   ├─ /blog/rss.xml (+774ms)
+12:08:04   ├─ /blog/110-14c-decide-la-columna-no-el-conductor/index.html (+6ms)
+12:08:04   ├─ /blog/que-version-de-la-nom-001-sede-esta-vigente/index.html (+4ms)
+12:08:04   ├─ /blog/index.html (+3ms)
+12:08:04   ├─ /contacto/index.html (+4ms)
+12:08:04   ├─ /diseno/index.html (+133ms)
+12:08:04   ├─ /privacidad/index.html (+8ms)
+12:08:04   ├─ /producto/index.html (+6ms)
+12:08:04   ├─ /quienes-somos/index.html (+3ms)
+12:08:04   ├─ /terminos/index.html (+4ms)
+12:08:04   ├─ /index.html (+5ms)
+12:08:04 ✓ Completed in 2.51s.
+
+12:08:04 [build] ✓ Completed in 3.63s.
+12:08:04 [build] 24 page(s) built in 4.17s
+12:08:04 [build] Complete!
+EXIT=0
+```
+
+```text
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+
+### E6-k — Preparación independiente de la S.A.S. (2026-11-11)
+
+Autorización: «Okay terminemos todo lo independiente de la etapa 6, continua».
+Se incorpora a los MDX la conservación y política de usos aprobadas en E6-j.
+Se actualiza el responsable previsto sin inventar denominación ni dirección.
+Ambos documentos siguen no publicables. No se añade licencia del programa.
+
+Para reflejar que todavía no se reciben consultas, SITIO.contactoDisponible=false
+controla Contacto y la invitación de DocumentoLegal. Contacto muestra disponibilidad
+próxima con enlaces a Blog/Producto; Quiénes somos y 404 dejan de invitar a escribir.
+La dirección elegida se conserva en configuración. No bloquea el buzón ni borra
+versiones previas: es un cambio de interfaz de la rama, no de producción.
+Para habilitarlo: completar aviso, preparar atención, autorizar apertura y cambiar
+la bandera; comprobar mailto y ausencia de formularios, conservando las pruebas.
+
+Procedimiento operativo preparado para aprobación antes de abrir el canal:
+1. Registrar cada consulta con identificador, recepción, estado y cierre; mantener
+   el registro operativo fuera del repositorio y no copiar mensajes de personas a GitHub.
+2. Marcar cierre al resolverla o comunicar que no requiere más atención; una consulta
+   sin respuesta no se considera cerrada automáticamente. Revisar pendientes mensualmente.
+3. Al cerrar, programar vencimiento de adjuntos a 30 días y conversación a seis meses.
+   Revisar adjuntos con frecuencia suficiente para no superar los 30 días; una revisión
+   mensual sirve para conversaciones, no garantiza por sí sola cada plazo de adjuntos.
+4. Eliminar copias descargadas y gestionar también el mensaje que contiene el adjunto.
+   Si el cliente no permite separarlo, conservar solo una síntesis necesaria y eliminar
+   el original; no prometer borrado de copias internas del proveedor.
+5. Documentar excepciones por controversias/obligaciones con motivo y próxima revisión;
+   restringir su uso al motivo de conservación, sin marketing.
+6. Para ARCO, registrar recepción/derecho, verificar identidad por un medio proporcional
+   antes de entregar datos, resolver y registrar ejecución. Aprobar el canal seguro y
+   designar responsable antes de apertura; no pedir identificaciones en consultas ordinarias.
+
+### E6-l — Inventario de recursos y proveedores (2026-11-11)
+
+Revisión local: package.json + package-lock.json + metadatos instalados, sin instalar
+ni actualizar. Directas de producción: Astro 7.3.1, MDX 8.0.0 y RSS 4.0.19, MIT.
+Herramientas: mayoría MIT; LHCI/Puppeteer/TypeScript Apache-2.0; axe MPL-2.0;
+subset-font BSD-3-Clause; IBM Sans/Mono OFL-1.1. No se confunde herramientas de
+compilación/auditoría con código distribuido al navegador.
+
+El lockfile contiene 890 entradas de paquetes; su campo license incluye 710 MIT,
+49 ISC, 56 Apache-2.0, 2 OFL, 14 variantes LGPL o combinadas de sharp/libvips,
+15 BSD-3-Clause, 1 Python-2.0, 13 MPL-2.0, 4 BlueOak-1.0.0, 19 BSD-2-Clause,
+2 CC0, 1 MIT AND Zlib, 2 0BSD y 2 sin ese campo. Estos últimos se inspeccionaron:
+format 0.2.2 declara MIT en licenses/cabecera; parse-cache-control 1.0.1 incluye
+LICENSE BSD de tres cláusulas. El conteo refleja variantes de plataforma del lock,
+no paquetes necesariamente instalados ni un dictamen de compatibilidad.
+
+Recursos publicados: cuatro WOFF2 y LICENSE-IBM-Plex-OFL.txt; captura auténtica
+calcinst-demo.png con procedencia y reproducción en scripts/generar-capturas.md;
+SVG/componentes locales. La procedencia técnica de captura/código no acredita
+por sí misma una cesión de derechos a la empresa. Titularidad pendiente humana.
+
+Hallazgo de fuentes: LICENSE reserva «Plex» y generar-fuentes.mjs crea subconjuntos
+con subset-font sin un renombrado explícito. La guía oficial
+https://openfontlicense.org/webfonts-and-reserved-font-names/ trata los subconjuntos
+precalculados como modificación sujeta a RFN. Falta verificar los nombres internos
+y resolver mediante permiso aplicable o renombrado reproducible conservando diseño,
+glifos y licencia. No se altera una decisión tipográfica ni se declara conformidad
+completa por la sola presencia de OFL. fontTools no está instalado en el Python local;
+no se instala. Este hallazgo es independiente de la S.A.S. y permanece abierto.
+
+Proveedores: no hay conector Cloudflare disponible. wrangler.jsonc sirve activos,
+sin código de Worker ni bindings de almacenamiento declarados. El DPA público
+https://www.cloudflare.com/cloudflare-customer-dpa/ contempla registros del cliente;
+no demuestra los ajustes de esta cuenta. Falta cotejar plan, observabilidad/logs,
+Logpush/destinos, Web Analytics y condiciones aceptadas en el dashboard. No se
+accedió a registros de visitantes ni se modificó configuración.
+
+Google: https://policies.google.com/terms?hl=es devolvió versión de Estados Unidos;
+la variante solicitada con gl=mx no fue accesible en la herramienta. No se declara
+verificado el contrato regional de la cuenta. Falta confirmar región/condiciones,
+reenvíos o integraciones y posibilidades de eliminación. No se consultan mensajes
+privados ni se registran datos de acceso. Buttondown continúa inactivo.
+
+Check remoto de base c53f46e: verificar y Workers success; CI
+https://github.com/sebashealy/calcinst-web/actions/runs/42275238461 .
+La evidencia no acredita commits posteriores. Una solicitud HTTP a Contacto de
+esa preview permite observar solo esa respuesta, no certificar ausencia global
+de cookies ni determinar conservación en los servidores.
+
+### E6-n — Resultado, límites y siguiente bloque (2026-11-11)
+
+Batería E6-m: check 66 archivos/0 errores, 150 tests/7 archivos, lint y formato
+correctos, salida sin notación prohibida y portabilidad 2/2. El primer I7 falló
+por el título «próximamente»; se cambió a «Contacto en preparación» sin relajar
+el verificador. Reejecución: 7 invariantes/0 fallos; build 24 páginas/exit 0.
+verificar-producto.mjs también pasó para Inicio y Producto. Se retiraron únicamente
+espacios finales de las salidas registradas, sin cambiar mensajes ni resultados.
+
+Auditoría --etapa6: exit 0, 30 combinaciones; cero violaciones axe, errores JS y
+desbordamientos, foco/skip/Escape/reduced-motion correctos. Captura Contacto claro
+360 inspeccionada: título legible y enlaces disponibles. Paquete de esta sesión:
+evidencia/etapa-6-independiente-2026-11-11.zip (se conserva el paquete anterior).
+Inspección de HTML/JS/JSON en dist: ningún mailto ni marcador de borrador; las dos
+rutas legales mantienen data-legal-pendiente. No se infiere cierre legal.
+
+Respuesta pública observada de la preview base: HTTP 200, Server cloudflare,
+X-Robots-Tag noindex, sin Set-Cookie en esa respuesta. No acredita configuración
+privada ni ausencia de cookies para todos los visitantes.
+
+Se verificó la tabla name de los cuatro WOFF2 convirtiéndolos en memoria con
+fontverter transitivo existente (sin modificar archivos). Nombres 1/4/6 conservan
+IBM Plex Sans/Mono y variantes. Se confirma el hallazgo RFN. Propuesta concreta:
+declarar fontverter 2.0.0 como dependencia directa de desarrollo para renombrar
+reproduciblemente los subconjuntos, preservando glifos, diseño, copyright y OFL;
+probar regeneración/cobertura antes de sustituir recursos. Se solicitó autorización
+por la regla del usuario sobre dependencias nuevas. No se instala ni cambia aún.
+
+Estado: preparación de contenido y operación completada hasta donde permiten
+los datos confirmados; auditoría de licencias ejecutada, con RFN pendiente de
+resolución. La revisión de proveedores tiene pendientes de cuenta concretos en
+E6-l. No se declara «todo independiente cerrado» mientras RFN siga pendiente.
+La S.A.S., su denominación/domicilio, la titularidad de materiales, Person y revisión
+final de legales siguen pendientes humanos. No se adelanta Etapa 7 ni se fusiona.
+
+Para retomar: rama etapa6/preparacion-contenido, PR #18, E6-j/n; resolver aprobación
+de fontverter y ajuste de nombres; cotejar configuración de proveedores con acceso
+adecuado. Después revisar los MDX completos y apertura de contacto. No publicar
+borradores ni afirmar que el trámite de la empresa ya terminó.

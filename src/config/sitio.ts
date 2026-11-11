@@ -18,5 +18,7 @@ export const SITIO = {
    * Contacto lo utilizará en la Etapa 6; no activa formularios de la Etapa 8.
    */
   correoContacto: 'instcalc@gmail.com' as string | null,
+  /** E6-k: habilitar tras preparar el aviso y la atención de consultas. */
+  contactoDisponible: false,
   redes: [] as Red[],
 } as const

@@ -35,7 +35,7 @@ const Content = contenido?.Content
           Este documento aún no está publicado. Puedes consultar el{' '}
           <a href="/producto/">alcance del producto</a> o volver a <a href="/">Inicio</a>.
         </p>
-        {SITIO.correoContacto && (
+        {SITIO.contactoDisponible && SITIO.correoContacto && (
           <p>
             Para consultas: <a href={`mailto:${SITIO.correoContacto}`}>{SITIO.correoContacto}</a>.
           </p>

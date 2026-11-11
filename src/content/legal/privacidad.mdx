@@ -23,20 +23,20 @@ Base de trabajo: Ley Federal de Protección de Datos Personales en Posesión de 
 
 Pendiente de decisión del titular: identidad y domicilio. La marca CalcInst y un correo no sustituyen estos datos.
 
-El 2026-10-28 el usuario confirma que todavía no ha definido al responsable ni el domicilio. Ambos campos permanecen sin completar.
+Actualización 2026-11-06: la responsable prevista es una S.A.S. en constitución; el usuario indica que resolvió el domicilio, pero aún no se incorpora su dirección. Faltan denominación legal y confirmación de constitución y operación efectiva. No se presenta a la futura sociedad como responsable actual.
 
 ## Datos y finalidades
 
-La página de Contacto propone un enlace de correo, no un formulario. Antes de aprobar el aviso, documentar qué datos llegan al correo, para qué se utilizan, quién accede y durante cuánto tiempo se conservan. Separar la atención de consultas de una eventual suscripción; esta última pertenece a otra etapa y no está activa.
+Finalidad aprobada: atender consultas y solicitudes de contacto relacionadas con CalcInst y dar seguimiento a esas comunicaciones. No incluye suscripción ni marketing. El canal está temporalmente deshabilitado en la interfaz; el código preparado utiliza mailto, sin formulario. Este borrador describe la atención futura, no afirma que ya esté operativa.
 
-Confirmación del usuario, 2026-10-28: `instcalc@gmail.com`, correo de contacto confirmado. Reenvíos y plazo de conservación siguen pendientes. No interpretar esta respuesta como autorización para suscripciones o marketing.
+Confirmación del usuario, 2026-10-28: `instcalc@gmail.com`, correo de contacto confirmado. Reenvíos siguen pendientes de confirmar; la conservación fue aprobada el 2026-11-06. No interpretar esta respuesta como autorización para suscripciones o marketing.
 
 No afirmar que el único dato tratado es el correo sin revisar el contenido de los mensajes y los datos técnicos del alojamiento. No afirmar ausencia de cookies, registros o transferencias sin evidencia.
 
 ## Inventario técnico comprobado para la redacción (2026-10-28)
 
 - Preferencia de apariencia: `ConmutadorTema.astro` guarda `tema` con valor `claro` u `oscuro` en `localStorage`; `ScriptTema.astro` lo lee al cargar. Ese código no transmite la preferencia a un servidor ni fija una caducidad. Se puede eliminar desde los datos del sitio del navegador.
-- Contacto: el enlace `mailto:` abre el cliente de correo. El sitio no contiene un formulario de envío. El mensaje que el visitante decida enviar puede incluir dirección, nombre, contenido y adjuntos. Correo de contacto confirmado; reenvíos, finalidades detalladas y conservación siguen pendientes.
+- Contacto: el enlace `mailto:` abre el cliente de correo. El sitio no contiene un formulario de envío. El mensaje que el visitante decida enviar puede incluir dirección, nombre, contenido y adjuntos. Correo de contacto confirmado; reenvíos pendientes. Finalidad y conservación aprobadas el 2026-11-06. Desde el bloque E6-k el enlace no se muestra mientras contactoDisponible sea false.
 - Recursos: `LayoutBase.astro` carga las fuentes desde `/fuentes/`, en el mismo sitio. La búsqueda en `src/`, `public/` y `wrangler.jsonc` no encontró integración de analítica, Buttondown ni escritura de `document.cookie`. Esta revisión de código no acredita por sí sola ausencia de cookies o registros añadidos por el alojamiento.
 - Alojamiento: Workers sirve activos estáticos. Falta comprobar la configuración efectiva y las condiciones de los registros técnicos del proveedor. No se han inspeccionado el buzón ni las opciones privadas del dashboard.
 
@@ -52,6 +52,12 @@ Revisar Cloudflare y el proveedor del buzón, distinguir sus funciones y documen
 - [Política de Google](https://policies.google.com/privacy?hl=es), versión con vigencia del 16 de octubre de 2026: contempla tratamiento en servidores fuera del país de residencia y retrasos entre eliminar contenido y retirar todas sus copias. No prometer almacenamiento exclusivo en México ni borrado instantáneo. La dirección de Gmail no acredita un contrato de Google Workspace; no atribuirle sus condiciones empresariales.
 
 Pendiente para ambos proveedores: cotejar condiciones del servicio contratado, funciones de cada participante y conservación efectiva. Distinguir el tratamiento por cuenta del responsable de una transferencia a terceros; no etiquetar automáticamente a todos los proveedores como destinatarios de transferencias. Sus políticas no sustituyen el aviso de CalcInst.
+
+## Conservación aprobada para contacto ordinario
+
+Las consultas se conservan mientras se atienden y seis meses después de su cierre. Los adjuntos necesarios se eliminan dentro de los 30 días posteriores al cierre; los innecesarios o recibidos por error, al detectarlos. Si existe una obligación de conservación o una controversia, se documentará la excepción y su duración conforme al caso.
+
+Estas reglas comprenden mensajes y copias descargadas bajo control del responsable. No prometen eliminación instantánea de copias internas del proveedor. No se aplican automáticamente a compras, facturación ni soporte contractual. La operación de estas reglas debe estar preparada antes de abrir el canal.
 
 ## Derechos y preferencias
 
