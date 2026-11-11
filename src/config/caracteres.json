@@ -85,15 +85,15 @@
   ],
   "fuentes": {
     "texto": {
-      "familia": "IBM Plex Sans",
-      "caras": ["ibm-plex-sans-400", "ibm-plex-sans-600"],
+      "familia": "CalcInst Sans",
+      "caras": ["calcinst-sans-400", "calcinst-sans-600"],
       "respaldo": []
     },
     "mono": {
-      "familia": "IBM Plex Mono",
-      "caras": ["ibm-plex-mono-400", "ibm-plex-mono-500"],
-      "respaldo": ["ibm-plex-sans-400", "ibm-plex-sans-600"],
-      "nota": "IBM Plex Mono no tiene griego ni en su versión completa. La pila --fuente-mono de tokens.css pone IBM Plex Sans como respaldo, así que esos glifos salen de la misma familia de diseño en vez de una fuente del sistema. La comprobación de glifos lo lista de forma explícita."
+      "familia": "CalcInst Mono",
+      "caras": ["calcinst-mono-400", "calcinst-mono-500"],
+      "respaldo": ["calcinst-sans-400", "calcinst-sans-600"],
+      "nota": "IBM Plex Mono no tiene griego ni en su versión completa. La pila --fuente-mono de tokens.css pone CalcInst Sans como respaldo, así que esos glifos salen de la misma familia de diseño en vez de una fuente del sistema. La comprobación de glifos lo lista de forma explícita."
     }
   }
 }

@@ -2,7 +2,7 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
-## Último corte — Etapa 5 cerrada; Etapa 6 en curso (2026-10-28)
+## Último corte — Etapa 5 cerrada; Etapa 6 en curso (2026-11-11)
 
 Etapa 5: criterios técnicos y aprobación humana registrados en E5-n, integración
 confirmada en E5-o. PR #16 y #17 fusionados a main. LCP 1,20–1,22 s, CLS 0 en los
@@ -11,7 +11,8 @@ los cálculos del motor. Etapa 6: primer bloque implementado en PR #18; 150 prue
 y auditoría en 30 variantes pasan. CI y vista previa comprobados en E6-f.
 Avance al 2026-11-11: políticas aprobadas incorporadas a borradores; contacto
 en preparación. Ver E6-k a E6-n para operación, licencias y verificaciones.
-Pendientes: identidad/responsable, Person, revisión legal final y hallazgo RFN. No se publican datos por inferencia ni se declara cerrada la etapa.
+RFN resuelto con renombrado autorizado y evidencia en E6-o. Pendientes:
+identidad/responsable, Person, configuración de proveedores y revisión legal final. No se publican datos por inferencia ni se declara cerrada la etapa.
 
 ## Etapa 5 — Inicio y Producto (2026-10-27 a 2026-10-28)
 
@@ -5489,3 +5490,60 @@ Para retomar: rama etapa6/preparacion-contenido, PR #18, E6-j/n; resolver aproba
 de fontverter y ajuste de nombres; cotejar configuración de proveedores con acceso
 adecuado. Después revisar los MDX completos y apertura de contacto. No publicar
 borradores ni afirmar que el trámite de la empresa ya terminó.
+
+### E6-o — Nombres de fuentes corregidos con autorización (2026-11-11)
+
+Autorización expresa: «Autorizar fontverter 2.0.0 y el ajuste de nombres».
+Se declara fontverter 2.0.0 en devDependencies y en la raíz del lockfile; ninguna
+versión transitiva cambia. El intento offline no encontró metadatos (ENOTCACHED);
+se ejecutó install --save-dev --save-exact fontverter@2.0.0 --package-lock-only
+--ignore-scripts --no-audit --no-fund, exit 0. Sin scripts de instalación ni
+actualización del motor CalcInst.
+
+scripts/lib/nombres-fuentes.mjs transforma exclusivamente identidad en name;
+conserva los registros de copyright, licencia y atribución. Reconstruye offsets,
+alineación y checksums SFNT, incluido checkSumAdjustment; rechaza formatos no
+admitidos en vez de degradar. fontverter descomprime/recomprime WOFF2. Generador
+preserva avisos y renombra tras subconjuntar. Referencias técnicas consultadas:
+https://learn.microsoft.com/en-us/typography/opentype/spec/name y
+https://learn.microsoft.com/en-us/typography/opentype/spec/otff .
+
+Los cuatro archivos ibm-plex-*.woff2 se sustituyen por calcinst-*.woff2. Familias
+CSS CalcInst Sans/Mono, preloads de LayoutBase, caracteres.json y prueba de
+cobertura apuntan a los recursos nuevos. La guía de diseño identifica el origen.
+Se conserva LICENSE-IBM-Plex-OFL.txt; NOTICE-CalcInst.txt explica modificación,
+procedencia y OFL. No se afirma autoría del diseño original ni respaldo de IBM.
+La decisión tipográfica previa se conserva; cambia la identidad del subconjunto
+para resolver RFN de E6-l/n, no el diseño ni la cobertura.
+
+Evidencia de generación: npm run fuentes (ejecutado como node scripts/generar-fuentes.mjs):
+calcinst-sans-400 15796 B; sans-600 16928 B; mono-400 12784 B; mono-500 13032 B.
+Total 58540 B < 60000. 134 caracteres declarados sobreviven en su rol; Omega y
+Delta siguen tomando el respaldo Sans en Mono, como antes.
+
+Pruebas nuevas: tests/nombres-fuentes.test.ts, siete casos. Para las cuatro caras,
+comparan bytes de todas las tablas antes/después salvo name y el checksum de head;
+validan checksum total, ausencia de Plex en identidad, preservación de avisos,
+regeneración idéntica al archivo versionado y determinismo. Tres casos negativos
+rechazan formato no TrueType, name desconocida y registro truncado.
+
+Incidencias de validación: los imports TS iniciales carecían de declaraciones;
+un intento mjs quedó fuera del patrón del proyecto (solo 150 pruebas). Se conserva
+el test en .test.ts con tipos explícitos de las APIs CommonJS, sin paquetes de tipos
+adicionales. Resultado final: check 68 archivos/0 errores/0 warnings/0 hints;
+157 pruebas/8 archivos, lint y formato correctos. Invariantes 7/0, build 24 páginas,
+salida sin notación prohibida, portabilidad 2/2 y HTML Inicio/Producto correctos.
+Persiste solo el aviso de obsolescencia smartypants ya registrado.
+
+Auditoría --etapa6: exit 0, 30 variantes sin errores JS, violaciones axe ni overflow;
+controles de foco, skip, Escape y reduced-motion correctos. Comparación byte a byte
+con las 30 capturas del paquete E6-n: 30/30 idénticas. Nuevo paquete conservado en
+evidencia/etapa-6-fuentes-2026-11-11.zip. El aumento de bytes corresponde a avisos y
+metadatos preservados, sin cambio visual en esas capturas.
+
+Hallazgo RFN resuelto para las fuentes generadas actuales. Pendientes de Etapa 6:
+configuración/condiciones efectivas de proveedores (E6-l), datos de la S.A.S.,
+titularidad de contenidos y revisión legal/operativa final. No abrir contacto,
+activar publicado/revisionHumana, fusionar PR #18 ni iniciar Etapa 7 por inferencia.
+Para retomar: npm run fuentes y npm test verifican regeneración; ESTADO E6-j/o,
+los dos MDX legales y SITIO.contactoDisponible son las fuentes de continuidad.

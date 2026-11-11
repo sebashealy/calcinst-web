@@ -154,7 +154,10 @@ const codigoDemo = [
 
     <section aria-labelledby="s-tipo">
       <h2 id="s-tipo">Tipografía</h2>
-      <p class="guia">Texto en IBM Plex Sans; datos y referencias en IBM Plex Mono.</p>
+      <p class="guia">
+        Texto en CalcInst Sans; datos y referencias en CalcInst Mono, subconjuntos derivados de IBM
+        Plex.
+      </p>
       <ul class="escala">
         {
           escala.map(([token, px]) => (
@@ -230,7 +233,7 @@ const codigoDemo = [
       <h3>Griego en texto monoespaciado</h3>
       <p class="guia">
         IBM Plex Mono no tiene ninguna letra griega, ni en su versión completa. La pila
-        <code>--fuente-mono</code> pone IBM Plex Sans como respaldo, así que Ω y Δ salen de la misma familia
+        <code>--fuente-mono</code> pone CalcInst Sans como respaldo, así que Ω y Δ salen de la misma familia
         en vez de una fuente del sistema; en texto monoespaciado esos dos glifos son proporcionales. Micro
         no está en esa lista: se escribe U+00B5, que Plex Mono sí cubre (AD9).
       </p>
