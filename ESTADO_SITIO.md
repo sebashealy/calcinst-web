@@ -2,7 +2,7 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
-## Último corte — Etapa 5 cerrada; Etapa 6 en curso (2026-11-11)
+## Último corte — Etapa 5 cerrada; Etapa 6 en curso (2026-11-13)
 
 Etapa 5: criterios técnicos y aprobación humana registrados en E5-n, integración
 confirmada en E5-o. PR #16 y #17 fusionados a main. LCP 1,20–1,22 s, CLS 0 en los
@@ -12,7 +12,10 @@ y auditoría en 30 variantes pasan. CI y vista previa comprobados en E6-f.
 Avance al 2026-11-11: políticas aprobadas incorporadas a borradores; contacto
 en preparación. Ver E6-k a E6-n para operación, licencias y verificaciones.
 RFN resuelto con renombrado autorizado y evidencia en E6-o. Pendientes:
-identidad/responsable, Person, configuración de proveedores y revisión legal final. No se publican datos por inferencia ni se declara cerrada la etapa.
+identidad/responsable, Person, condiciones de proveedores y revisión legal final.
+E6-p incorpora evidencia del dashboard aportada por el usuario: Web Analytics
+automático activo con exclusión UE; no confundirlo con los registros de Workers.
+No se publican datos por inferencia ni se declara cerrada la etapa.
 
 ## Etapa 5 — Inicio y Producto (2026-10-27 a 2026-10-28)
 
@@ -5547,3 +5550,63 @@ titularidad de contenidos y revisión legal/operativa final. No abrir contacto,
 activar publicado/revisionHumana, fusionar PR #18 ni iniciar Etapa 7 por inferencia.
 Para retomar: npm run fuentes y npm test verifican regeneración; ESTADO E6-j/o,
 los dos MDX legales y SITIO.contactoDisponible son las fuentes de continuidad.
+
+### E6-p — Configuración de proveedores aportada por el usuario (2026-11-13)
+
+Alcance autorizado: continuar el inventario de privacidad en modo lectura y
+documentar los hallazgos. El control de Chrome se detuvo porque la herramienta
+no pudo identificar con certeza la URL. La evidencia posterior son capturas
+aportadas por Sebastián, no una inspección directa automatizada del dashboard.
+No se cambió configuración de Cloudflare ni se accedió al buzón.
+
+Hechos visibles: Producción sirve activos estáticos; registros y trazas de Workers
+deshabilitados; Logpush y Tail Workers no disponibles para ese Worker. Web Analytics
+incluye calcinst.mx con configuración automática y actividad reciente. En Administrar
+sitio aparece seleccionada la exclusión de visitantes de la UE; Opciones avanzadas
+no muestra reglas adicionales y ofrece un plan superior para usarlas. No se deduce
+de ello el plan contractual completo ni ausencia de registros internos del proveedor.
+
+Referencias de las capturas aportadas (no se copian al repositorio los paneles
+completos ni sus cifras de tráfico): información general 4986bb98; configuración
+0fb27e67; listado Web Analytics fa20713a; selección RUM 974b1cec; opciones avanzadas
+b5bdb2d5 (prefijos de los archivos codex-clipboard de esta sesión). Este registro
+conserva los hechos necesarios para retomar; los originales siguen siendo adjuntos
+del usuario, no evidencia binaria versionada. No afirmar que la configuración se
+mantendrá sin cambios posteriores ni que se capturó el tráfico de un visitante.
+
+Se complementa E6-l: buscar analítica solo en el repositorio no detecta la inserción
+automática del proveedor. D7 ya contempla Cloudflare Web Analytics; no se cambia
+esa decisión ni se crea un addendum. src/content/legal/privacidad.mdx incorpora
+el inventario actualizado y los límites de evidencia, conservando publicado=false,
+revisionHumana=false y los pendientes. Contacto sigue cerrado.
+
+Fuentes oficiales consultadas el 2026-11-13:
+- https://developers.cloudflare.com/web-analytics/about/
+- https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/
+- https://developers.cloudflare.com/web-analytics/faq/
+
+Síntesis: mediciones de rendimiento y visitas mediante un beacon. La FAQ distingue
+siete días de datos sin muestreo, agregación posterior para almacenamiento prolongado
+y seis meses consultables; esta última ventana no demuestra borrado total ni cubre
+todos los registros de Cloudflare. La declaración del proveedor sobre no recoger
+datos personales en Web Analytics no se extiende a todo el alojamiento ni sustituye
+la revisión jurídica. El borrador enlaza las fuentes y describe destinos documentados,
+sin presentarlos como una prueba de red ejecutada sobre CalcInst.
+
+Correo: el usuario ratifica instcalc@gmail.com y describe Gmail común sin aplicaciones
+conectadas. Se conserva «correo de contacto confirmado», sin datos sobre acceso.
+No se infiere ausencia de reenvíos automáticos ni contrato empresarial de Workspace.
+
+Validación local de este bloque documental: prettier --check
+src/content/legal/privacidad.mdx correcto; vitest run tests/legal.test.ts: 16/16,
+un archivo; git diff --check sin errores. Se usaron los ejecutables locales mediante
+Node, sin instalar dependencias. Persiste el aviso smartypants ya documentado.
+No se reejecutó la auditoría visual ni se atribuye a este bloque un nuevo resultado
+de build, CI o producción. No hay cambios funcionales, de dependencias o de fuentes.
+
+Transferencia: retomar rama etapa6/preparacion-contenido, PR #18, E6-o/p y el MDX
+de privacidad. Pendiente contrastar la respuesta y tráfico de producción con esta
+configuración, precisar condiciones efectivas de proveedores y revisión completa
+del aviso; siguen pendientes S.A.S./identidad/domicilio, titularidad, Person y
+aprobación operativa/legal. H2/H4 siguen abiertas. No fusionar PR #18, abrir contacto
+ni pasar a Etapa 7 sin las autorizaciones correspondientes.

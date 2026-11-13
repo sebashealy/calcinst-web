@@ -38,7 +38,23 @@ No afirmar que el único dato tratado es el correo sin revisar el contenido de l
 - Preferencia de apariencia: `ConmutadorTema.astro` guarda `tema` con valor `claro` u `oscuro` en `localStorage`; `ScriptTema.astro` lo lee al cargar. Ese código no transmite la preferencia a un servidor ni fija una caducidad. Se puede eliminar desde los datos del sitio del navegador.
 - Contacto: el enlace `mailto:` abre el cliente de correo. El sitio no contiene un formulario de envío. El mensaje que el visitante decida enviar puede incluir dirección, nombre, contenido y adjuntos. Correo de contacto confirmado; reenvíos pendientes. Finalidad y conservación aprobadas el 2026-11-06. Desde el bloque E6-k el enlace no se muestra mientras contactoDisponible sea false.
 - Recursos: `LayoutBase.astro` carga las fuentes desde `/fuentes/`, en el mismo sitio. La búsqueda en `src/`, `public/` y `wrangler.jsonc` no encontró integración de analítica, Buttondown ni escritura de `document.cookie`. Esta revisión de código no acredita por sí sola ausencia de cookies o registros añadidos por el alojamiento.
-- Alojamiento: Workers sirve activos estáticos. Falta comprobar la configuración efectiva y las condiciones de los registros técnicos del proveedor. No se han inspeccionado el buzón ni las opciones privadas del dashboard.
+- Alojamiento: Workers sirve activos estáticos. La comprobación inicial no incluía el dashboard; se complementa con las capturas aportadas por el usuario descritas abajo. El buzón no se ha inspeccionado.
+
+### Actualización del inventario — 2026-11-13
+
+Evidencia aportada por el usuario, no inspección directa ni prueba de tráfico: las capturas de Producción muestran registros y trazas de Workers deshabilitados; Logpush y Tail Workers no disponibles para ese Worker de activos estáticos. No acredita ausencia de registros internos de Cloudflare ni de otros servicios del dominio.
+
+Web Analytics sí está configurado para calcinst.mx: inserción automática con la opción de excluir visitantes de la UE. El panel muestra actividad reciente; las opciones avanzadas no muestran reglas adicionales y ofrecen un plan superior para utilizarlas. La ausencia de integración en el repositorio no demuestra ausencia de analítica añadida por Cloudflare. No se modificó esta configuración ni se verificó en esta sesión la transmisión desde un navegador visitante.
+
+Según la [descripción oficial](https://developers.cloudflare.com/web-analytics/about/), el servicio mide visitas y rendimiento mediante la API Performance. Cloudflare declara que Web Analytics no recoge ni utiliza datos personales de los visitantes; se atribuye esta afirmación al proveedor, sin extenderla al alojamiento completo ni convertirla en un dictamen jurídico.
+
+La [documentación de recogida](https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/) identifica un script externo en static.cloudflareinsights.com y el envío de mediciones a /cdn-cgi/rum en sitios con proxy o a cloudflareinsights.com en los demás. Son mecanismos documentados, no destinos capturados en una prueba de red de CalcInst.
+
+La [FAQ oficial](https://developers.cloudflare.com/web-analytics/faq/), consultada el 2026-11-13, indica acceso a seis meses de datos, conservación sin muestreo durante siete días y agregación posterior de aproximadamente el 10 % para almacenamiento prolongado. También indica que no registra cadenas de consulta. La ventana consultable no acredita borrado total a los seis meses ni fija el plazo de todos los registros del proveedor. No se aplica aquí el plazo aprobado para consultas por correo.
+
+El usuario confirma Gmail común sin aplicaciones conectadas y ratifica instcalc@gmail.com. Esta declaración no verifica por sí sola reenvíos automáticos, condiciones regionales ni eliminación interna del proveedor. Se conserva la anotación pública «correo de contacto confirmado», sin datos de acceso.
+
+Pendiente: revisar el tratamiento de analítica en el aviso completo, contrastar el comportamiento servido en producción y las condiciones efectivas de conservación del proveedor. Este inventario no autoriza cambios en Cloudflare ni la publicación del aviso.
 
 Estos hallazgos son evidencia para preparar el aviso, no un texto legal aprobado. La identidad y domicilio se mantienen pendientes: el artículo 15, fracción I, de la fuente oficial citada los incluye en el contenido mínimo del aviso.
 
