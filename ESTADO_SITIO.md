@@ -2,7 +2,7 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
-## Último corte — Etapa 5 cerrada; Etapa 6 en curso (2026-11-13)
+## Último corte — Etapa 5 cerrada; Etapa 6 en curso (2026-11-14)
 
 Etapa 5: criterios técnicos y aprobación humana registrados en E5-n, integración
 confirmada en E5-o. PR #16 y #17 fusionados a main. LCP 1,20–1,22 s, CLS 0 en los
@@ -15,6 +15,7 @@ RFN resuelto con renombrado autorizado y evidencia en E6-o. Pendientes:
 identidad/responsable, Person, condiciones de proveedores y revisión legal final.
 E6-p incorpora evidencia del dashboard aportada por el usuario: Web Analytics
 automático activo con exclusión UE; no confundirlo con los registros de Workers.
+E6-q confirma carga del beacon y envío de mediciones en Inicio y Producto públicos.
 No se publican datos por inferencia ni se declara cerrada la etapa.
 
 ## Etapa 5 — Inicio y Producto (2026-10-27 a 2026-10-28)
@@ -5610,3 +5611,53 @@ configuración, precisar condiciones efectivas de proveedores y revisión comple
 del aviso; siguen pendientes S.A.S./identidad/domicilio, titularidad, Person y
 aprobación operativa/legal. H2/H4 siguen abiertas. No fusionar PR #18, abrir contacto
 ni pasar a Etapa 7 sin las autorizaciones correspondientes.
+
+### E6-q — Comprobación de analítica en producción (2026-11-14)
+
+Objetivo: contrastar E6-p con el comportamiento del sitio servido, sin cambiar
+Cloudflare. Se añade scripts/inspeccionar-analitica.mjs usando puppeteer-core ya
+instalado y Chrome local, sin nuevas dependencias. Ejecutar desde la raíz:
+`node scripts/inspeccionar-analitica.mjs`. CHROME_PATH permite indicar otro ejecutable.
+Usa un contexto aislado por ruta, espera networkidle0, recoge nombres de scripts,
+solicitudes/respuestas de analítica y nombres de almacenamiento/cookies, y navega
+a about:blank antes de cerrar. No usa perfiles personales ni sesiones autenticadas.
+No conserva cuerpos de mediciones, valores de cookies, tokens ni query strings.
+Cada ejecución genera visitas de prueba reales y puede afectar las métricas del sitio.
+
+Primera ejecución restringida: timeout de 30 segundos al arrancar el navegador;
+no se considera una prueba de ausencia de analítica. Reejecución con permiso de
+ejecución: exit 0, informe UTC 2026-11-14T18:19:48.300Z (12:19 hora de México).
+
+| Comprobación | Inicio `/` | Producto `/producto/` |
+|---|---|---|
+| Documento | HTTP 200 | HTTP 200 |
+| Script static.cloudflareinsights.com/beacon.min.js con sufijo de versión | HTTP 200 | HTTP 200 |
+| POST https://calcinst.mx/cdn-cgi/rum | HTTP 204 | HTTP 204 |
+| Solicitudes de analítica fallidas | 0 | 0 |
+| Cookies observadas antes de salir | 0 | 0 |
+| Claves localStorage / sessionStorage sin interacción de tema | 0 / 0 | 0 / 0 |
+
+Campos superiores observados en ambos POST: bi, eventType, firstContentfulPaint,
+firstPaint, location, memory, nt, pageloadId, siteToken, st, startTime, timingsV2,
+versions. Se conservan exclusivamente nombres, no sus valores. Los identificadores
+no se interpretan automáticamente como seguimiento persistente o identidad personal.
+La respuesta 204 acredita respuesta al envío observado, no persistencia posterior,
+agregación, eliminación ni clasificación jurídica de los datos.
+
+Límites: dos rutas, navegador headless local, contextos nuevos, sin interacción de
+tema ni simulación regional; no acredita exclusión UE, todos los navegadores/rutas,
+ausencia global de cookies ni almacenamiento posterior a cerrar. No contradice que
+el selector de tema guarde una preferencia cuando se utiliza. Se verifica producción,
+no la preview del PR #18. No se inspecciona el buzón ni se modifica Cloudflare.
+
+Archivos modificados: este estado, el borrador src/content/legal/privacidad.mdx y
+el nuevo script de inspección. El borrador incorpora la prueba y mantiene sus
+puertas de publicación cerradas. D7 se conserva; no requiere addendum.
+Validación del script: Prettier --check y ESLint, ambos exit 0; prueba real exit 0.
+No se declara una nueva batería completa, CI ni auditoría visual por estos cambios.
+
+Transferencia: continuar en etapa6/preparacion-contenido, PR #18, E6-p/q. El cotejo
+de carga/envío queda comprobado en el alcance descrito. Pendientes: condiciones
+efectivas/conservación de proveedores y revisión jurídica/operativa; responsable,
+denominación/domicilio de la S.A.S., titularidad y Person siguen pendientes humanos.
+No se abre contacto ni se publica el aviso ni se fusiona PR #18. No se inicia Etapa 7.

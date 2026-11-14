@@ -54,7 +54,9 @@ La [FAQ oficial](https://developers.cloudflare.com/web-analytics/faq/), consulta
 
 El usuario confirma Gmail común sin aplicaciones conectadas y ratifica instcalc@gmail.com. Esta declaración no verifica por sí sola reenvíos automáticos, condiciones regionales ni eliminación interna del proveedor. Se conserva la anotación pública «correo de contacto confirmado», sin datos de acceso.
 
-Pendiente: revisar el tratamiento de analítica en el aviso completo, contrastar el comportamiento servido en producción y las condiciones efectivas de conservación del proveedor. Este inventario no autoriza cambios en Cloudflare ni la publicación del aviso.
+Actualización 2026-11-14: la prueba reproducible `node scripts/inspeccionar-analitica.mjs` confirmó en Inicio y Producto públicos (HTTP 200) la carga del beacon externo (200) y un POST por visita a `https://calcinst.mx/cdn-cgi/rum` con respuesta 204. Se observaron nombres de campos de rendimiento, ubicación de página e identificadores, sin conservar sus valores. No se observaron cookies ni claves de localStorage/sessionStorage en esos contextos limpios, sin cambiar el tema. No demuestra ausencia global de almacenamiento ni prueba la exclusión geográfica UE. Ver ESTADO_SITIO.md E6-q para alcance y reproducción.
+
+Pendiente: revisar el tratamiento de analítica en el aviso completo y las condiciones efectivas de conservación del proveedor. Este inventario no autoriza cambios en Cloudflare ni la publicación del aviso.
 
 Estos hallazgos son evidencia para preparar el aviso, no un texto legal aprobado. La identidad y domicilio se mantienen pendientes: el artículo 15, fracción I, de la fuente oficial citada los incluye en el contenido mínimo del aviso.
 
