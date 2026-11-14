@@ -246,7 +246,7 @@ describe('GLIFOS — nada declarado se pierde al subconjuntar (P2, bloqueante)',
     const { fallos, deRespaldo } = await verificarGlifos({ raiz: RAIZ_REAL })
     expect(fallos).toEqual([])
     // El respaldo no es silencioso: Mono declara qué toma de Plex Sans.
-    expect(deRespaldo['ibm-plex-mono-400']).toEqual(['Ω U+03A9', 'Δ U+0394'])
+    expect(deRespaldo['calcinst-mono-400']).toEqual(['Ω U+03A9', 'Δ U+0394'])
   })
 
   it('falla, sin callar, si se declara un carácter que ninguna cara tiene', async () => {

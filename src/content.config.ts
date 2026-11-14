@@ -5,10 +5,16 @@
 import { defineCollection } from 'astro:content'
 import { glob } from 'astro/loaders'
 import { esquemaPost } from './lib/blog'
+import { esquemaLegal } from './lib/legal'
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/blog' }),
   schema: esquemaPost,
 })
 
-export const collections = { blog }
+const legal = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/legal' }),
+  schema: esquemaLegal,
+})
+
+export const collections = { blog, legal }

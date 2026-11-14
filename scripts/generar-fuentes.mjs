@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import subsetFont from 'subset-font'
 import { kib, leerConjunto, verificarGlifos } from './lib/fuentes.mjs'
+import { renombrarWoff2 } from './lib/nombres-fuentes.mjs'
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DESTINO = path.join(RAIZ, 'public', 'fuentes')
@@ -31,19 +32,19 @@ const PRESUPUESTO_BYTES = 60_000
 /** Las cuatro caras de §3.3, con su archivo de origen dentro del paquete de IBM. */
 const CARAS = [
   {
-    id: 'ibm-plex-sans-400',
+    id: 'calcinst-sans-400',
     origen: '@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-Regular.woff2',
   },
   {
-    id: 'ibm-plex-sans-600',
+    id: 'calcinst-sans-600',
     origen: '@ibm/plex-sans/fonts/complete/woff2/IBMPlexSans-SemiBold.woff2',
   },
   {
-    id: 'ibm-plex-mono-400',
+    id: 'calcinst-mono-400',
     origen: '@ibm/plex-mono/fonts/complete/woff2/IBMPlexMono-Regular.woff2',
   },
   {
-    id: 'ibm-plex-mono-500',
+    id: 'calcinst-mono-500',
     origen: '@ibm/plex-mono/fonts/complete/woff2/IBMPlexMono-Medium.woff2',
   },
 ]
@@ -63,7 +64,12 @@ async function main() {
   let total = 0
   for (const { id, origen } of CARAS) {
     const fuente = readFileSync(requerir.resolve(origen))
-    const recortada = await subsetFont(fuente, texto, { targetFormat: 'woff2' })
+    const recortada = await renombrarWoff2(
+      await subsetFont(fuente, texto, {
+        targetFormat: 'woff2',
+        preserveNameIds: [0, 7, 8, 9, 11, 13, 14],
+      }),
+    )
     writeFileSync(path.join(DESTINO, `${id}.woff2`), recortada)
     total += recortada.length
     console.log(
@@ -85,7 +91,7 @@ async function main() {
 
   const { fallos, deRespaldo } = await verificarGlifos({ raiz: RAIZ })
   for (const [cara, caracteres] of Object.entries(deRespaldo)) {
-    console.log(`${cara} toma de su respaldo (IBM Plex Sans): ${caracteres.join(', ')}`)
+    console.log(`${cara} toma de su respaldo (CalcInst Sans): ${caracteres.join(', ')}`)
   }
   if (fallos.length > 0) {
     console.error('\nCARACTERES DECLARADOS QUE NO SOBREVIVEN AL SUBCONJUNTADO:')

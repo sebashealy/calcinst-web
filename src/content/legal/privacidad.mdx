@@ -1,0 +1,98 @@
+---
+titulo: Aviso de privacidad
+tipo: privacidad
+version: 0.1.0
+fechaVigencia: null
+publicado: false
+revisionHumana: false
+responsable: null
+domicilio: null
+pendientes:
+  - Identidad y domicilio del responsable
+  - Inventario de datos de contacto y datos técnicos del alojamiento
+  - Proveedores, funciones, conservación y posibles transferencias
+  - Aprobación operativa del procedimiento ARCO y revocación propuesto
+  - Revisión humana del aviso completo
+---
+
+## Borrador interno: no publicar
+
+Base de trabajo: Ley Federal de Protección de Datos Personales en Posesión de los Particulares, publicada el 20 de marzo de 2025, texto consultado con reforma del 14 de noviembre de 2025. Fuente: https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf
+
+## Responsable
+
+Pendiente de decisión del titular: identidad y domicilio. La marca CalcInst y un correo no sustituyen estos datos.
+
+Actualización 2026-11-06: la responsable prevista es una S.A.S. en constitución; el usuario indica que resolvió el domicilio, pero aún no se incorpora su dirección. Faltan denominación legal y confirmación de constitución y operación efectiva. No se presenta a la futura sociedad como responsable actual.
+
+## Datos y finalidades
+
+Finalidad aprobada: atender consultas y solicitudes de contacto relacionadas con CalcInst y dar seguimiento a esas comunicaciones. No incluye suscripción ni marketing. El canal está temporalmente deshabilitado en la interfaz; el código preparado utiliza mailto, sin formulario. Este borrador describe la atención futura, no afirma que ya esté operativa.
+
+Confirmación del usuario, 2026-10-28: `instcalc@gmail.com`, correo de contacto confirmado. Reenvíos siguen pendientes de confirmar; la conservación fue aprobada el 2026-11-06. No interpretar esta respuesta como autorización para suscripciones o marketing.
+
+No afirmar que el único dato tratado es el correo sin revisar el contenido de los mensajes y los datos técnicos del alojamiento. No afirmar ausencia de cookies, registros o transferencias sin evidencia.
+
+## Inventario técnico comprobado para la redacción (2026-10-28)
+
+- Preferencia de apariencia: `ConmutadorTema.astro` guarda `tema` con valor `claro` u `oscuro` en `localStorage`; `ScriptTema.astro` lo lee al cargar. Ese código no transmite la preferencia a un servidor ni fija una caducidad. Se puede eliminar desde los datos del sitio del navegador.
+- Contacto: el enlace `mailto:` abre el cliente de correo. El sitio no contiene un formulario de envío. El mensaje que el visitante decida enviar puede incluir dirección, nombre, contenido y adjuntos. Correo de contacto confirmado; reenvíos pendientes. Finalidad y conservación aprobadas el 2026-11-06. Desde el bloque E6-k el enlace no se muestra mientras contactoDisponible sea false.
+- Recursos: `LayoutBase.astro` carga las fuentes desde `/fuentes/`, en el mismo sitio. La búsqueda en `src/`, `public/` y `wrangler.jsonc` no encontró integración de analítica, Buttondown ni escritura de `document.cookie`. Esta revisión de código no acredita por sí sola ausencia de cookies o registros añadidos por el alojamiento.
+- Alojamiento: Workers sirve activos estáticos. La comprobación inicial no incluía el dashboard; se complementa con las capturas aportadas por el usuario descritas abajo. El buzón no se ha inspeccionado.
+
+### Actualización del inventario — 2026-11-13
+
+Evidencia aportada por el usuario, no inspección directa ni prueba de tráfico: las capturas de Producción muestran registros y trazas de Workers deshabilitados; Logpush y Tail Workers no disponibles para ese Worker de activos estáticos. No acredita ausencia de registros internos de Cloudflare ni de otros servicios del dominio.
+
+Web Analytics sí está configurado para calcinst.mx: inserción automática con la opción de excluir visitantes de la UE. El panel muestra actividad reciente; las opciones avanzadas no muestran reglas adicionales y ofrecen un plan superior para utilizarlas. La ausencia de integración en el repositorio no demuestra ausencia de analítica añadida por Cloudflare. No se modificó esta configuración ni se verificó en esta sesión la transmisión desde un navegador visitante.
+
+Según la [descripción oficial](https://developers.cloudflare.com/web-analytics/about/), el servicio mide visitas y rendimiento mediante la API Performance. Cloudflare declara que Web Analytics no recoge ni utiliza datos personales de los visitantes; se atribuye esta afirmación al proveedor, sin extenderla al alojamiento completo ni convertirla en un dictamen jurídico.
+
+La [documentación de recogida](https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/) identifica un script externo en static.cloudflareinsights.com y el envío de mediciones a /cdn-cgi/rum en sitios con proxy o a cloudflareinsights.com en los demás. Son mecanismos documentados, no destinos capturados en una prueba de red de CalcInst.
+
+La [FAQ oficial](https://developers.cloudflare.com/web-analytics/faq/), consultada el 2026-11-13, indica acceso a seis meses de datos, conservación sin muestreo durante siete días y agregación posterior de aproximadamente el 10 % para almacenamiento prolongado. También indica que no registra cadenas de consulta. La ventana consultable no acredita borrado total a los seis meses ni fija el plazo de todos los registros del proveedor. No se aplica aquí el plazo aprobado para consultas por correo.
+
+El usuario confirma Gmail común sin aplicaciones conectadas y ratifica instcalc@gmail.com. Esta declaración no verifica por sí sola reenvíos automáticos, condiciones regionales ni eliminación interna del proveedor. Se conserva la anotación pública «correo de contacto confirmado», sin datos de acceso.
+
+Actualización 2026-11-14: la prueba reproducible `node scripts/inspeccionar-analitica.mjs` confirmó en Inicio y Producto públicos (HTTP 200) la carga del beacon externo (200) y un POST por visita a `https://calcinst.mx/cdn-cgi/rum` con respuesta 204. Se observaron nombres de campos de rendimiento, ubicación de página e identificadores, sin conservar sus valores. No se observaron cookies ni claves de localStorage/sessionStorage en esos contextos limpios, sin cambiar el tema. No demuestra ausencia global de almacenamiento ni prueba la exclusión geográfica UE. Ver ESTADO_SITIO.md E6-q para alcance y reproducción.
+
+Pendiente: revisar el tratamiento de analítica en el aviso completo y las condiciones efectivas de conservación del proveedor. Este inventario no autoriza cambios en Cloudflare ni la publicación del aviso.
+
+Estos hallazgos son evidencia para preparar el aviso, no un texto legal aprobado. La identidad y domicilio se mantienen pendientes: el artículo 15, fracción I, de la fuente oficial citada los incluye en el contenido mínimo del aviso.
+
+## Proveedores y comunicaciones
+
+Revisar Cloudflare y el proveedor del buzón, distinguir sus funciones y documentar ubicaciones, condiciones y conservación aplicables. Buttondown no está integrado: no describirlo como un tratamiento activo ni como una transferencia ya efectuada.
+
+### Fuentes revisadas el 2026-10-28
+
+- [Política de Cloudflare](https://www.cloudflare.com/privacypolicy/), secciones de usuarios finales y tratamiento: contempla direcciones IP, enrutamiento y datos de tráfico. Los datos disponibles para clientes mediante sus interfaces se distinguen como registros del cliente. Esta política general no demuestra qué registros están habilitados para CalcInst ni durante cuánto tiempo se conservan. No aplicar al alojamiento los plazos del servicio DNS 1.1.1.1.
+- [Política de Google](https://policies.google.com/privacy?hl=es), versión con vigencia del 16 de octubre de 2026: contempla tratamiento en servidores fuera del país de residencia y retrasos entre eliminar contenido y retirar todas sus copias. No prometer almacenamiento exclusivo en México ni borrado instantáneo. La dirección de Gmail no acredita un contrato de Google Workspace; no atribuirle sus condiciones empresariales.
+
+Pendiente para ambos proveedores: cotejar condiciones del servicio contratado, funciones de cada participante y conservación efectiva. Distinguir el tratamiento por cuenta del responsable de una transferencia a terceros; no etiquetar automáticamente a todos los proveedores como destinatarios de transferencias. Sus políticas no sustituyen el aviso de CalcInst.
+
+## Conservación aprobada para contacto ordinario
+
+Las consultas se conservan mientras se atienden y seis meses después de su cierre. Los adjuntos necesarios se eliminan dentro de los 30 días posteriores al cierre; los innecesarios o recibidos por error, al detectarlos. Si existe una obligación de conservación o una controversia, se documentará la excepción y su duración conforme al caso.
+
+Estas reglas comprenden mensajes y copias descargadas bajo control del responsable. No prometen eliminación instantánea de copias internas del proveedor. No se aplican automáticamente a compras, facturación ni soporte contractual. La operación de estas reglas debe estar preparada antes de abrir el canal.
+
+## Derechos y preferencias
+
+Canal propuesto: instcalc@gmail.com. Completar el procedimiento de acceso, rectificación, cancelación y oposición, acreditación de identidad, plazos aplicables, revocación del consentimiento y limitación de uso antes de aprobar el texto.
+
+### Procedimiento propuesto para revisión
+
+Enviar la solicitud a `instcalc@gmail.com`, indicando nombre, medio de respuesta, derecho solicitado y datos o elementos para localizarlos. Para acceso no se exige describir previamente los datos. Acreditar identidad o representación; para rectificación, indicar la corrección y documentación de soporte. Referencias: artículos 28 y 30.
+
+La determinación se comunica en hasta 20 días hábiles desde la recepción; si procede, se ejecuta en los 15 siguientes a la respuesta. Ambos plazos pueden ampliarse una vez por igual periodo cuando se justifique. Referencias: artículos 2.VIII y 31.
+
+Propuesta operativa: el mismo correo recibe solicitudes de revocación y limitación de uso. Debe aprobarse el procedimiento concreto antes de publicarlo; no atribuir automáticamente los plazos ARCO a esas solicitudes. La revocación no tiene efectos retroactivos (artículo 7).
+
+Pendientes operativos: designar responsable de atención, forma segura y proporcional de acreditar identidad, entrega de datos, registro de solicitudes y reglas de conservación. No solicitar documentos de identidad en el contacto ordinario ni comprometer eliminación inmediata de todas las copias.
+
+## Cambios al aviso
+
+Definir cómo se comunicarán los cambios y fijar fecha de vigencia. El documento permanece excluido de la salida pública hasta resolver sus pendientes y obtener revisión humana.
+
+Propuesta para aprobación: publicar la versión vigente en `/privacidad/` con fecha y versión; evaluar comunicación adicional y nuevo consentimiento cuando corresponda antes de cambiar finalidades. La fecha seguirá sin definir hasta la aprobación del documento completo.

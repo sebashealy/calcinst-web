@@ -1,0 +1,13 @@
+CalcInst Sans / CalcInst Mono
+
+Subconjuntos para este sitio derivados de IBM Plex Sans y IBM Plex Mono.
+Los nombres internos se cambiaron para respetar el nombre reservado "Plex".
+El renombrado no modifica los dibujos, las métricas ni las reglas de composición
+del subconjunto. No implica autoría del diseño original ni respaldo de IBM.
+
+Copyright original y licencia: LICENSE-IBM-Plex-OFL.txt (SIL OFL 1.1).
+Estas fuentes modificadas se distribuyen bajo la misma SIL OFL 1.1.
+
+Procedimiento reproducible: npm run fuentes.
+Fuentes originales: @ibm/plex-sans 1.1.0 y @ibm/plex-mono 2.5.0.
+Generador: scripts/generar-fuentes.mjs y scripts/lib/nombres-fuentes.mjs.

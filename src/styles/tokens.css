@@ -11,32 +11,32 @@
 /* ---------- Fuentes autoalojadas y subconjuntadas (scripts/generar-fuentes.mjs) ---------- */
 
 @font-face {
-  font-family: 'IBM Plex Sans';
+  font-family: 'CalcInst Sans';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fuentes/ibm-plex-sans-400.woff2') format('woff2');
+  src: url('/fuentes/calcinst-sans-400.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'IBM Plex Sans';
+  font-family: 'CalcInst Sans';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('/fuentes/ibm-plex-sans-600.woff2') format('woff2');
+  src: url('/fuentes/calcinst-sans-600.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'IBM Plex Mono';
+  font-family: 'CalcInst Mono';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fuentes/ibm-plex-mono-400.woff2') format('woff2');
+  src: url('/fuentes/calcinst-mono-400.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'IBM Plex Mono';
+  font-family: 'CalcInst Mono';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('/fuentes/ibm-plex-mono-500.woff2') format('woff2');
+  src: url('/fuentes/calcinst-mono-500.woff2') format('woff2');
 }
 
 /* ---------- Tema oscuro (por defecto) ---------- */
@@ -119,13 +119,13 @@
 /* ---------- Tipografía, espaciado, radios (§3.3, §3.4) ---------- */
 
 :root {
-  --fuente-texto: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
-  /* IBM Plex Sans va segunda en la pila mono a propósito: IBM Plex Mono no tiene
+  --fuente-texto: 'CalcInst Sans', ui-sans-serif, system-ui, sans-serif;
+  /* CalcInst Sans va segunda en la pila mono: el original IBM Plex Mono no tiene
    * griego (Ω, Δ) ni en su versión completa, y sin este respaldo el navegador
    * tomaría esos glifos de una fuente del sistema. Así salen de la misma familia
    * de diseño. La comprobación GLIFOS lo verifica y lo lista (AD4). Micro no entra
    * en el respaldo: se escribe U+00B5, que Plex Mono sí cubre (AD9). */
-  --fuente-mono: 'IBM Plex Mono', 'IBM Plex Sans', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+  --fuente-mono: 'CalcInst Mono', 'CalcInst Sans', ui-monospace, 'Cascadia Mono', Menlo, monospace;
 
   /* Escala 1.25 sobre base 16 px. */
   --text-xs: 0.75rem; /* 12 */

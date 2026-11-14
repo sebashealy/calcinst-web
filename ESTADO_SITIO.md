@@ -2,13 +2,23 @@
 
 > Creado en la Etapa 0 (2026-09-05) conforme a `PLAN_SITIO_WEB.md` v1.0.
 
-## Etapa 5 — Inicio y Producto: aprobación humana recibida (2026-10-28)
+## Último corte — Etapa 5 cerrada; Etapa 6 en curso (2026-11-14)
 
-**Último corte:** criterios técnicos satisfechos (E5-j–E5-l), revisión de la vista
-previa aprobada por Sebastián y fusión de PR #16/#17 expresamente autorizada
-(E5-n). Integración en curso, condicionada al CI. No confundir la aprobación del
-sitio con certificación normativa del motor. Próxima etapa: 6, preparada en E5-n;
-identidad personal pendiente de decisión y textos legales sin aprobar.
+Etapa 5: criterios técnicos y aprobación humana registrados en E5-n, integración
+confirmada en E5-o. PR #16 y #17 fusionados a main. LCP 1,20–1,22 s, CLS 0 en los
+perfiles medidos; 134 pruebas y auditoría en 12 variantes pasan. Esto no certifica
+los cálculos del motor. Etapa 6: primer bloque implementado en PR #18; 150 pruebas
+y auditoría en 30 variantes pasan. CI y vista previa comprobados en E6-f.
+Avance al 2026-11-11: políticas aprobadas incorporadas a borradores; contacto
+en preparación. Ver E6-k a E6-n para operación, licencias y verificaciones.
+RFN resuelto con renombrado autorizado y evidencia en E6-o. Pendientes:
+identidad/responsable, Person, condiciones de proveedores y revisión legal final.
+E6-p incorpora evidencia del dashboard aportada por el usuario: Web Analytics
+automático activo con exclusión UE; no confundirlo con los registros de Workers.
+E6-q confirma carga del beacon y envío de mediciones en Inicio y Producto públicos.
+No se publican datos por inferencia ni se declara cerrada la etapa.
+
+## Etapa 5 — Inicio y Producto (2026-10-27 a 2026-10-28)
 
 ### E5-a — Autorización, base y fuente del producto
 
@@ -4727,3 +4737,927 @@ Para retomar: completar integración #17 y comprobar despliegue; continuar el pl
 anterior en rama de Etapa 6. Mantener identidad como pendiente. La configuración
 actual todavía conserva correoContacto=null; el valor elegido se aplicará en esa
 etapa. Plan original, decisiones aprobadas y restricciones de etapas futuras intactos.
+
+### E5-o — Integración confirmada y cierre (2026-10-28)
+
+CI del último head `2e31f26999884ec84290d1842f4006c73b65917a` completado con
+success: https://github.com/sebashealy/calcinst-web/actions/runs/40741550475 .
+Tras ese resultado se ejecuta la autorización expresa de Sebastián:
+
+- PR #16 fusionado: `f64448720799dc7af5f9eaddf64411a34e076d9a`.
+- PR #17, retarget a main, fusionado: `22a129d7b132139cd1a961fc08ef8e4169edd243`.
+- `git fetch origin`, `git switch main`, `git merge --ff-only origin/main`:
+  main local y origin/main idénticos en `22a129d`, árbol limpio.
+
+Etapa 5 cerrada por criterios E5-n + aprobación humana + integración. No se
+reclasifica ninguna capacidad del motor. El push a main activa el despliegue
+existente; la fusión por sí sola no acredita que Cloudflare haya terminado.
+No se cambia su configuración. Conservar PR y CI como referencias de integración.
+Las menciones anteriores de integración pendiente son cortes históricos.
+
+### E6-a — Preparación de contenido, identidad pendiente (2026-10-28)
+
+Rama `etapa6/preparacion-contenido` desde main `22a129d`. Se registra el cierre
+anterior y se aplica en `src/config/sitio.ts` el correo elegido expresamente por
+Sebastián: `instcalc@gmail.com`. El tipo nullable se conserva por compatibilidad.
+No se envía correo ni se añade formulario. No hay todavía páginas de Etapa 6.
+
+Ante la solicitud de nombre público, Sebastián responde: «No se si usar mi nombre».
+La identidad continúa sin decisión: no usar nombre supuesto ni JSON-LD Person
+con datos ficticios. Propuesta de presentación: CalcInst como marca, descripción
+del proyecto y sus límites. Esto no sustituye la identidad legal del responsable.
+El artículo 15 I del texto oficial consultado exige identidad y domicilio del
+responsable en el aviso; resolverlo antes de aprobar su publicación. Fuente y
+versión consultada en E5-n; H2 sigue abierta para la revisión del aviso concreto.
+
+Plan de implementación E5-n vigente: Quiénes somos, Contacto y 404 primero;
+colección y páginas legales como borradores después, con publicación condicionada
+a revisión humana. Datos personales, domicilio y figura del responsable no se
+inventan. Person y el cierre de Etapa 6 dependen de esa decisión. No adelantar
+suscripciones, descargas, normativa ni comercio. Preparación en PR separado;
+no implica autorización de fusión de la futura Etapa 6 ni aprobación de sus legales.
+
+Verificación de preparación: Prettier de sitio.ts correcto, 7 invariantes/0 fallos
+y git diff --check sin errores. No se atribuye una batería nueva de 134 pruebas
+a este cambio de configuración; esa evidencia corresponde a la Etapa 5.
+
+Confirmación posterior de producción (2026-10-28): solicitudes HTTP reales a
+https://calcinst.mx/ y https://calcinst.mx/producto/ devolvieron 200; ambas
+respuestas contienen inventario verificado, «En desarrollo» y la captura real.
+Esto confirma la entrega de las páginas tras la integración, no una nueva
+medición de Lighthouse en producción.
+
+Preparación guardada en PR #18 (borrador):
+https://github.com/sebashealy/calcinst-web/pull/18 . Continuar en
+`etapa6/preparacion-contenido`. CI del PR pendiente al registrar esta entrada.
+
+### E6-b — Implementación autorizada de páginas y puerta legal (2026-10-28)
+
+Sebastián autoriza: «Pasemos a la etapa 6». Se continúa en la rama y PR #18,
+árbol limpio al comenzar. Identidad personal sigue pendiente; correo elegido
+instcalc@gmail.com. No se atribuyen nombre, equipo, credenciales ni empresa.
+
+Se crea LayoutContenido sobre LayoutBase para las páginas informativas, con
+medida de lectura y tokens existentes. Quiénes somos presenta CalcInst y sus
+límites; Contacto usa mailto sin formulario; 404 lista solo posts de publicables()
+y ofrece Inicio/Blog. Se crean Términos/Privacidad con un aviso de documento en
+revisión, sin servir el cuerpo de sus borradores.
+
+Colección legal en src/content.config.ts y src/lib/legal.ts: versión, fecha real,
+publicado, revisión humana, pendientes, responsable y domicilio. Publicar exige
+revisión, fecha y pendientes vacíos; privacidad exige responsable/domicilio.
+legalPublicable también rechaza fechas futuras con día civil de Ciudad de México.
+La publicación es estática: cambiar fecha o aprobación requiere reconstrucción.
+Una bandera no demuestra la revisión: su autorización real debe registrarse aquí.
+
+Los dos MDX son borradores internos versionados, no documentos legales terminados:
+contienen el texto propuesto y tareas de comprobación. No se publica su cuerpo ni
+se expone en una ruta de descarga. El repositorio GitHub puede contenerlos como
+fuente de trabajo; la exclusión de publicación se refiere al sitio servido.
+No se afirma que solo se trate correo ni se inventa el tratamiento del hosting.
+La consulta legal preparatoria de E5-n no cierra H2 ni sustituye revisión humana.
+Person queda pendiente porque no hay identidad aprobada; no crear datos ficticios.
+
+Pruebas nuevas: publicación hoy/pasado/futuro, borradores, revisión ausente,
+pendientes, identidad/domicilio, fechas inexistentes y datos inválidos. Se conserva
+la arquitectura y dependencias; no se cambia Cloudflare ni se crean formularios.
+Comprobación inicial: Astro check, 0 errores/avisos/hints; invariantes 7/0.
+Siguiente: batería completa, inspección de HTML para asegurar que no se filtran
+los borradores y auditoría visual/accesibilidad de las cinco rutas.
+
+### E6-c — Batería local de contenido y legales (2026-10-28)
+
+Salidas completas, sin filtrar. Se usa npm 11.13.0 local con las dependencias ya instaladas.
+
+```text
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+12:16:58 [content] Syncing content
+12:16:58 [content] Synced content
+12:16:58 [types] Generated 599ms
+12:16:58 [check] Getting diagnostics for Astro files in C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web...
+Result (66 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+EXIT=0
+```
+
+```text
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web
+
+
+ Test Files  7 passed (7)
+      Tests  150 passed (150)
+   Start at  12:17:08
+   Duration  7.19s (import 74%, transform 18%, tests 5%, worker 3%)
+
+EXIT=0
+```
+
+```text
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT=0
+```
+
+```text
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0
+```
+
+```text
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[OK] I7 — el estado de lanzamiento vive solo en src/config/
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+12:17:49 [WARN] [content] data store cleared (force)
+12:17:50 [content] Syncing content
+12:17:50 [content] Synced content
+12:17:50 [types] Generated 666ms
+12:17:50 [build] output: "static"
+12:17:50 [build] mode: "static"
+12:17:50 [build] directory: C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\dist\
+12:17:50 [build] Collecting build info...
+12:17:50 [build] ✓ Completed in 744ms.
+12:17:50 [build] Building static entrypoints...
+12:17:52 [vite] ✓ built in 1.54s
+12:17:52 [vite] ✓ built in 32ms
+12:17:52 [build] Rearranging server assets...
+
+ generating static routes
+12:17:55   ├─ /404.html (+48ms)
+12:17:55   ├─ /blog/categoria/conductores/index.html (+9ms)
+12:17:55   ├─ /blog/categoria/motores/index.html (+6ms)
+12:17:55   ├─ /blog/categoria/canalizaciones/index.html (+5ms)
+12:17:55   ├─ /blog/categoria/puesta-a-tierra/index.html (+41ms)
+12:17:55   ├─ /blog/categoria/practica-profesional/index.html (+4ms)
+12:17:55   ├─ /blog/etiqueta/110-14c/index.html (+5ms)
+12:17:55   ├─ /blog/etiqueta/ampacidad/index.html (+4ms)
+12:17:55   ├─ /blog/etiqueta/dof/index.html (+5ms)
+12:17:55   ├─ /blog/etiqueta/nom-001-sede/index.html (+33ms)
+12:17:55   ├─ /blog/etiqueta/temperatura/index.html (+4ms)
+12:17:55   ├─ /blog/etiqueta/terminales/index.html (+4ms)
+12:17:55   ├─ /blog/etiqueta/verificacion/index.html (+3ms)
+12:17:55   ├─ /blog/etiqueta/vigencia/index.html (+4ms)
+12:17:55   ├─ /blog/rss.xml (+1.39s)
+12:17:57   ├─ /blog/110-14c-decide-la-columna-no-el-conductor/index.html (+7ms)
+12:17:57   ├─ /blog/que-version-de-la-nom-001-sede-esta-vigente/index.html (+5ms)
+12:17:57   ├─ /blog/index.html (+3ms)
+12:17:57   ├─ /contacto/index.html (+4ms)
+12:17:57   ├─ /diseno/index.html (+172ms)
+12:17:57   ├─ /privacidad/index.html (+11ms)
+12:17:57   ├─ /producto/index.html (+6ms)
+12:17:57   ├─ /quienes-somos/index.html (+4ms)
+12:17:57   ├─ /terminos/index.html (+5ms)
+12:17:57   ├─ /index.html (+6ms)
+12:17:57 ✓ Completed in 5.32s.
+
+12:17:57 [build] ✓ Completed in 6.98s.
+12:17:57 [build] 24 page(s) built in 7.74s
+12:17:57 [build] Complete!
+EXIT=0
+```
+
+```text
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+
+### E6-d — Salida pública y 404 (2026-10-28)
+
+La batería E6-c termina exit 0 en los ocho comandos: 150 pruebas/7 archivos,
+check sin errores, lint/formato correctos, 7 invariantes/0 fallos, 24 páginas y
+portabilidad 2/2. La puerta de HTML de Inicio/Producto también pasa; no se reabren
+ni se alteran sus capacidades.
+
+Inspección de dist: Términos/Privacidad contienen data-legal-pendiente y el correo,
+sin formularios ni cuerpo del borrador. Búsqueda en todos los HTML/JS/JSON de dist
+sin «Borrador interno: no publicar». 404.html existe y enlaza ambos posts publicados.
+No se interpreta una ruta de aviso como un aviso de privacidad válido.
+
+El código de la página 404 no basta para Workers: su valor predeterminado de
+assets.not_found_handling es none. Se añade `404-page` en wrangler.jsonc para
+que las rutas inexistentes sirvan 404.html conservando HTTP 404. Fuente oficial
+consultada el 2026-10-28:
+https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/ .
+Es la configuración de entrega requerida por la página de esta etapa, no una
+migración ni un cambio de dominio, rutas, Workers code o dashboard. Las rutas
+normativas reservadas siguen inexistentes y con HTTP 404. La frase «no se cambia
+Cloudflare» de E6-b describe el primer bloque; este ajuste posterior se identifica
+expresamente aquí. Falta confirmar su comportamiento en la preview desplegada.
+
+Se reutiliza scripts/auditar-producto.mjs con --etapa6: cinco rutas, ambos temas,
+360/768/1280. El servidor local emula 404.html con HTTP 404 para la ruta de prueba;
+esto prueba la interfaz y no acredita por sí mismo la configuración remota.
+Lint del auditor y formato del auditor/Wrangler pasaron después del ajuste.
+
+### E6-e — Auditoría y transferencia del primer bloque (2026-10-28)
+
+`node scripts/auditar-producto.mjs --etapa6`: exit 0, 30 combinaciones de cinco
+páginas × oscuro/claro × 360/768/1280. Axe sin violaciones, sin errores JS ni
+scroll horizontal de página; skip link, foco visible, Escape y reduced-motion
+correctos. Pesos sin compresión: Quiénes somos 74049 B; Contacto 73743 B;
+avisos legales 73196 B cada uno; 404 73531 B. Se inspeccionaron visualmente las
+cinco capturas a 360 px: títulos y enlaces legibles, correo completo, sin recortes.
+El JSON y treinta capturas quedan conservados en evidencia/etapa-6-evidencia.zip.
+
+Archivos: LayoutContenido, DocumentoLegal, cinco páginas, dos MDX borradores,
+lib/legal.ts, tests/legal.test.ts, colección legal, opción 404 de Wrangler y
+extensión reutilizable del auditor. No se cambian capacidades ni lanzamiento.
+
+Etapa 6 en curso, no cerrada. Implementado y probado: páginas informativas,
+mailto, 404 local, colección y exclusión de borradores. Pendiente: comprobación
+remota del 404, revisión visual humana, identidad/domicilio, Person, aviso y términos
+completos aprobados, confirmación de tratamientos/proveedores (H2). El build
+correcto y las banderas de metadatos no equivalen a aprobación legal.
+
+Para retomar: PR #18 y rama etapa6/preparacion-contenido, leer este corte y E6-b/d.
+No cambiar publicado/revisionHumana ni completar nombre/domicilio por inferencia.
+Revisar los borradores en src/content/legal y cerrar pendientes antes de publicar.
+Las rutas legales actuales solo muestran aviso de revisión. No fusionar esta
+etapa a main sin nueva autorización; la autorización de fusión previa fue #16/#17.
+
+Paquete: 1143345 bytes; SHA-256 `24a52e24e91f272da2d1f9c63e9b79540e38450ad95b6bfa4ac9a8e1ce6c3899`.
+
+### E6-f — Verificación remota y continuidad (2026-10-28)
+
+Revisión comprobada: `f8c6564df593fd3bafa25ffb297547403fd23b60`, PR #18,
+rama `etapa6/preparacion-contenido`. Los checks `verificar` y
+`Workers Builds: calcinst-web` terminaron `success` para esta revisión.
+CI: https://github.com/sebashealy/calcinst-web/actions/runs/40744266815 .
+Workers build: `c92d4a3a-af39-4ccc-aeaa-b206e605cf59`;
+versión: `d1015c6d-5526-47c4-9f25-de5445aed881`.
+
+Vista previa comprobada: https://d1015c6d-calcinst-web.instcalc.workers.dev .
+Se ejecutó `Invoke-WebRequest -SkipHttpErrorCheck` para cada ruta y se inspeccionó
+StatusCode y Content. Resultados reales:
+
+| Ruta | HTTP | Aviso legal pendiente | Cuerpo de borrador expuesto |
+| --- | --- | --- | --- |
+| /quienes-somos/ | 200 | No | No |
+| /contacto/ | 200 | No | No |
+| /terminos/ | 200 | Sí | No |
+| /privacidad/ | 200 | Sí | No |
+| /ruta-inexistente-etapa6/ | 404 | No | No |
+| /normativa/ref-no-existe/ | 404 | No | No |
+
+Las seis respuestas contienen enlace al blog; Contacto y ambos avisos contienen
+instcalc@gmail.com. Se buscó el marcador `Borrador interno: no publicar` en las
+seis respuestas y no apareció. La exclusión completa en dist se documenta en E6-d.
+Esto resuelve el pendiente de comprobación remota del 404 de E6-d/E6-e; no
+implementa rutas normativas. Las evidencias CI citadas corresponden al commit
+anterior, no acreditan automáticamente commits documentales posteriores.
+
+Siguiente paso: revisión humana de Quiénes somos, Contacto y 404 en esta preview.
+Mantener la presentación como CalcInst mientras el usuario decide si publica su
+nombre. Después, resolver responsable/domicilio y tratamientos/proveedores de H2,
+completar y aprobar los textos legales antes de activar su publicación. Person
+sigue pendiente de identidad confirmada. No completar datos ni aprobación legal
+por inferencia. PR #18 continúa en borrador; su fusión requiere autorización
+expresa. Etapa 6 sigue en curso; no se modifica producción en este bloque.
+
+Traspaso: leer el último corte, E6-b a E6-f, DECISIONES_SITIO.md,
+HIPOTESIS_SITIO.md y el apartado Etapa 6 de PLAN_SITIO_WEB.md. Código relevante:
+src/pages/{quienes-somos,contacto,404,terminos,privacidad}.astro,
+src/layouts/LayoutContenido.astro, src/components/DocumentoLegal.astro,
+src/lib/legal.ts, src/content/legal/ y tests/legal.test.ts. Evidencia visual:
+evidencia/etapa-6-evidencia.zip. No se añaden dependencias ni se modifica CalcInst.
+
+### E6-g — Aprobación visual e inventario para el aviso (2026-10-28)
+
+El usuario responde «Excelente apruebo, continuemos con lo que sigue» tras la
+entrega de las páginas de E6-f. Se registra la aprobación de las páginas
+informativas y 404 presentadas. Los borradores legales no fueron mostrados como
+textos definitivos: esta aprobación no activa publicado/revisionHumana, no cierra
+la etapa ni se interpreta como orden de fusionar el PR #18.
+
+Se amplía exclusivamente el borrador privado src/content/legal/privacidad.mdx
+con evidencia del código: localStorage/tema (claro u oscuro, sin vencimiento
+programado ni transmisión en esos componentes), contacto mediante mailto y
+fuentes locales. Búsqueda ejecutada con rg en src/, public/ y wrangler.jsonc de
+localStorage, sessionStorage, document.cookie, analytics, beacon, fetch, form y
+buttondown: solo coincidieron la lectura y escritura de tema. Se leyeron
+LayoutBase, ScriptTema, ConmutadorTema y Wrangler para contextualizar el resultado.
+No se deduce ausencia global de registros o cookies del proveedor. No se accedió
+al buzón ni al dashboard. La finalidad del cambio es redactar sobre el tratamiento
+real y no copiar «solo correo» o Buttondown activo del plan histórico.
+
+Se consultó de nuevo https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf :
+texto vigente con reforma DOF 14-11-2025, artículo 15.I identidad y domicilio;
+artículo 2.XV identifica a la Secretaría Anticorrupción y Buen Gobierno.
+H2 permanece abierta hasta completar y revisar el aviso aplicable al proyecto.
+
+Se solicitaron al usuario dos datos: definición del responsable/domicilio y
+operación del buzón (accesos, finalidad, reenvíos y conservación). Pendientes de
+respuesta; no inferir información personal ni publicar datos recibidos sin dejar
+claro su destino. Próximo paso: incorporar respuestas, revisar proveedores y
+preparar textos completos para aprobación humana. Person y propiedad intelectual
+también requieren titular confirmado. Mantener PR #18 en borrador.
+
+Validación de este bloque: npm run check terminó exit 0, 66 archivos,
+0 errores/advertencias/hints. Persiste el aviso de configuración obsoleta
+markdown.smartypants ya documentado. Primer intento restringido interrumpido
+sin resultados; la ejecución con permisos ampliados produjo el resultado anterior.
+git diff --check pasó. No se repitió la auditoría visual: el cambio de contenido
+permanece en un borrador no publicable y no modifica las páginas aprobadas.
+
+### E6-h — Respuestas sobre responsable y buzón (2026-10-28)
+
+El usuario todavía no define responsable/domicilio. Por indicación expresa,
+solo se registra sobre instcalc@gmail.com: «correo de contacto confirmado».
+Se incorpora esa redacción al borrador src/content/legal/privacidad.mdx.
+Reenvíos y conservación siguen pendientes; no se asumen inexistentes ni se fija
+un plazo.
+
+Responsable/domicilio continúan pendientes, así como Person, revisión de
+proveedores y textos legales completos. Se conservan publicado: false y
+revisionHumana: false. No se considera aprobada una política de marketing ni
+se cierra H2. La aprobación visual de E6-g sigue vigente. PR #18 sin fusionar.
+
+Continuidad: completar la investigación de proveedores y preparar la redacción
+que no dependa de datos personales; solicitar los datos pendientes cuando el
+usuario los haya definido. No iniciar Etapa 7 ni cerrar Etapa 6 por inferencia.
+Este bloque solo registra respuestas: no cambia código ejecutable ni frontmatter.
+Validación: git diff --check pasó. Solo se modificó documentación; no se repitieron pruebas de ejecución.
+
+### E6-i — Proveedores y propuesta ARCO (2026-10-28)
+
+Se amplía src/content/legal/privacidad.mdx con fuentes oficiales y una propuesta
+operativa para revisión. Se mantienen publicado/revisionHumana en false y los
+campos de identidad/fecha sin definir. Sobre el buzón solo consta «correo de
+contacto confirmado», conforme a la instrucción del usuario.
+
+Fuentes consultadas:
+- https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf : artículos 2.VIII,
+  7, 28, 30 y 31 para solicitud, acreditación, rectificación y plazos; el borrador
+  separa ARCO de revocación y limitación de uso. No hay aprobación operativa aún.
+- https://www.cloudflare.com/privacypolicy/ : apartados End Users y tratamiento;
+  la política general no acredita los registros habilitados en esta cuenta.
+- https://policies.google.com/privacy?hl=es : versión vigente desde 16-10-2026;
+  no se presume Google Workspace ni residencia exclusiva de datos en México.
+
+La redacción distingue hechos del código, declaraciones del proveedor y
+propuestas pendientes. No se inspeccionaron cuentas privadas ni se alteraron
+configuraciones. No se convierte a Buttondown en proveedor activo. Tampoco se
+fijan plazos de conservación ni se clasifica jurídicamente cada comunicación
+sin cotejar condiciones aplicables. H2 continúa abierta: fuentes revisadas no
+significa aviso completo aprobado.
+
+Pendientes concretos para continuar: responsable/domicilio; condiciones efectivas
+de proveedores y conservación; aprobación de cómo se atenderán solicitudes y
+acreditará identidad; titular/derechos del contenido en Términos; revisión final
+de ambos textos. Las páginas informativas ya tienen aprobación visual (E6-g).
+No se inicia Etapa 7, no se fusiona PR #18 ni se declara cerrada Etapa 6.
+
+Validación ejecutada: npm run build, exit 0, 24 páginas en 9,75 s según Astro.
+Persistió la advertencia conocida markdown.smartypants. Comprobación PowerShell:
+Get-ChildItem dist -Recurse -File, filtro HTML/JS/JSON y Select-String -SimpleMatch
+para «Borrador interno: no publicar», «Procedimiento propuesto para revisión» y
+«Fuentes revisadas el 2026-10-28»: ninguna coincidencia. Términos y Privacidad
+mantienen data-legal-pendiente. Resultado: «OK: marcadores del borrador ausentes en
+HTML/JS/JSON y ambas rutas legales muestran aviso pendiente». git diff --check pasó.
+No se repiten las 150 pruebas históricas ni se atribuye un nuevo resultado a ellas.
+
+### E6-j — Decisiones del titular para preparar los legales (2026-11-06)
+
+El usuario indica que la futura S.A.S. está en constitución, que el domicilio ya
+está resuelto (sin aportar aquí su dirección) y que todavía no recibirá consultas.
+La empresa es la responsable prevista, no una entidad cuya constitución o
+asunción efectiva del tratamiento se haya verificado. Falta denominación legal.
+Finalidad confirmada del correo: consultas y contacto. Se conserva únicamente
+«correo de contacto confirmado» como información pública del buzón.
+
+Aprueba la propuesta de conservación: consultas durante su atención y seis meses
+tras el cierre; adjuntos necesarios durante la atención y eliminación dentro de
+los 30 días posteriores al cierre; adjuntos innecesarios o recibidos por error,
+al detectarlos. Excepciones por obligación de conservación o controversia se
+documentarán por caso. Son reglas para contacto ordinario, no para facturación,
+ventas o soporte contractual. Falta preparar su operación antes de recibir datos.
+
+Aprueba la política de contenidos: compartir enlaces; citar fragmentos breves con
+atribución y enlace sin alterar sentido; autorización previa para republicar
+artículos completos o reutilizar diagramas/capturas en publicaciones, cursos o
+materiales comerciales; no autorizar atribución falsa ni respaldo oficial aparente.
+Su redacción respetará excepciones legales y licencias de terceros. No constituye
+una licencia del programa, ni acredita titularidad de derechos sobre los materiales.
+
+El usuario solicita recomendación sobre titularidad por su modelo de venta de
+licencias. Sigue pendiente decidir y formalizar la relación entre creadores y
+empresa; no se registra una cesión ni licencia a la S.A.S. por inferencia.
+Estos acuerdos no autorizan publicar los legales ni cerrar la etapa. Las páginas
+actuales incluyen contacto mailto: la intención de no recibir consultas todavía
+no equivale a un bloqueo técnico del canal ni se ha cambiado su interfaz.
+
+Cambio documental únicamente; no se ejecutan nuevas pruebas del sitio.
+
+### E6-m — Verificacion local del bloque independiente (2026-11-11)
+
+Salidas completas, sin filtrar. Se usa npm 11.13.0 local con las dependencias ya instaladas.
+
+```text
+> npm run check
+
+> calcinst-web@0.0.1 check
+> astro check
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+12:07:15 [content] Syncing content
+12:07:15 [content] Synced content
+12:07:15 [types] Generated 756ms
+12:07:15 [check] Getting diagnostics for Astro files in C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web...
+Result (66 files):
+- 0 errors
+- 0 warnings
+- 0 hints
+
+npm notice
+npm notice New major version of npm available! 11.13.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
+EXIT=0
+```
+
+```text
+> npm test
+
+> calcinst-web@0.0.1 test
+> vitest run
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+
+ RUN  v5.0.0 C:/Users/Sebastian/Documents/ChatGPT/Calc Inst/calcinst-web
+
+
+ Test Files  7 passed (7)
+      Tests  150 passed (150)
+   Start at  12:07:32
+   Duration  4.96s (import 73%, transform 18%, tests 6%, worker 2%)
+
+EXIT=0
+```
+
+```text
+> npm run lint
+
+> calcinst-web@0.0.1 lint
+> eslint .
+
+EXIT=0
+```
+
+```text
+> npm run format:check
+
+> calcinst-web@0.0.1 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+EXIT=0
+```
+
+```text
+> npm run verificar
+
+> calcinst-web@0.0.1 verificar
+> node scripts/verificar-invariantes.mjs
+
+[FALLA] I7 — el estado de lanzamiento vive solo en src/config/
+  - src/pages/contacto.astro:11 — contiene «proximamente»
+[OK] TOKENS — el color se define solo en src/styles/tokens.css
+[OK] NOTACION — ningún punto de código prohibido por caracteres.json
+[OK] CARACTERES — el contenido .md/.mdx solo usa caracteres declarados
+[OK] REFNORMA — ninguna ref cita una tabla del Capítulo 9 (las tablas son el Capítulo 10)
+[OK] I3c — ningún término de credencial profesional fuera de contextos negativos
+[OK] GLIFOS — ningún carácter declarado se pierde al subconjuntar las fuentes
+verificar-invariantes: 7 verificacion(es) activas, 1 fallo(s)
+EXIT=1
+```
+
+```text
+> npm run build
+
+> calcinst-web@0.0.1 build
+> astro build --force
+
+[astro] `markdown.smartypants` is deprecated. Move it onto your processor instead (e.g. `satteri({ features: { gfm: false, smartPunctuation: false } })`, or `unified({ gfm: false, smartypants: false })` from `@astrojs/markdown-remark`). Will be removed in a future major.
+12:08:00 [WARN] [content] data store cleared (force)
+12:08:01 [content] Syncing content
+12:08:01 [content] Synced content
+12:08:01 [types] Generated 471ms
+12:08:01 [build] output: "static"
+12:08:01 [build] mode: "static"
+12:08:01 [build] directory: C:\Users\Sebastian\Documents\ChatGPT\Calc Inst\calcinst-web\dist\
+12:08:01 [build] Collecting build info...
+12:08:01 [build] ✓ Completed in 526ms.
+12:08:01 [build] Building static entrypoints...
+12:08:02 [vite] ✓ built in 1.04s
+12:08:02 [vite] ✓ built in 26ms
+12:08:02 [build] Rearranging server assets...
+
+ generating static routes
+12:08:03   ├─ /404.html (+24ms)
+12:08:03   ├─ /blog/categoria/conductores/index.html (+5ms)
+12:08:03   ├─ /blog/categoria/motores/index.html (+2ms)
+12:08:03   ├─ /blog/categoria/canalizaciones/index.html (+2ms)
+12:08:03   ├─ /blog/categoria/puesta-a-tierra/index.html (+2ms)
+12:08:03   ├─ /blog/categoria/practica-profesional/index.html (+3ms)
+12:08:03   ├─ /blog/etiqueta/110-14c/index.html (+4ms)
+12:08:03   ├─ /blog/etiqueta/ampacidad/index.html (+3ms)
+12:08:03   ├─ /blog/etiqueta/dof/index.html (+4ms)
+12:08:03   ├─ /blog/etiqueta/nom-001-sede/index.html (+7ms)
+12:08:03   ├─ /blog/etiqueta/temperatura/index.html (+6ms)
+12:08:03   ├─ /blog/etiqueta/terminales/index.html (+3ms)
+12:08:03   ├─ /blog/etiqueta/verificacion/index.html (+3ms)
+12:08:03   ├─ /blog/etiqueta/vigencia/index.html (+4ms)
+12:08:03   ├─ /blog/rss.xml (+774ms)
+12:08:04   ├─ /blog/110-14c-decide-la-columna-no-el-conductor/index.html (+6ms)
+12:08:04   ├─ /blog/que-version-de-la-nom-001-sede-esta-vigente/index.html (+4ms)
+12:08:04   ├─ /blog/index.html (+3ms)
+12:08:04   ├─ /contacto/index.html (+4ms)
+12:08:04   ├─ /diseno/index.html (+133ms)
+12:08:04   ├─ /privacidad/index.html (+8ms)
+12:08:04   ├─ /producto/index.html (+6ms)
+12:08:04   ├─ /quienes-somos/index.html (+3ms)
+12:08:04   ├─ /terminos/index.html (+4ms)
+12:08:04   ├─ /index.html (+5ms)
+12:08:04 ✓ Completed in 2.51s.
+
+12:08:04 [build] ✓ Completed in 3.63s.
+12:08:04 [build] 24 page(s) built in 4.17s
+12:08:04 [build] Complete!
+EXIT=0
+```
+
+```text
+> npm run verificar:salida
+
+> calcinst-web@0.0.1 verificar:salida
+> node scripts/verificar-salida.mjs
+
+[OK] NOTACION-SALIDA — ningún punto de código prohibido en dist/
+verificar-salida: 0 fallo(s)
+EXIT=0
+```
+
+```text
+> npm run portabilidad
+
+> calcinst-web@0.0.1 portabilidad
+> node scripts/verificar-portabilidad.mjs
+
+[OK] 110-14c-decide-la-columna-no-el-conductor.mdx
+[OK] que-version-de-la-nom-001-sede-esta-vigente.mdx
+verificar-portabilidad: 2 post(s), 2 comparado(s) con su página, 0 fallo(s)
+EXIT=0
+```
+
+
+### E6-k — Preparación independiente de la S.A.S. (2026-11-11)
+
+Autorización: «Okay terminemos todo lo independiente de la etapa 6, continua».
+Se incorpora a los MDX la conservación y política de usos aprobadas en E6-j.
+Se actualiza el responsable previsto sin inventar denominación ni dirección.
+Ambos documentos siguen no publicables. No se añade licencia del programa.
+
+Para reflejar que todavía no se reciben consultas, SITIO.contactoDisponible=false
+controla Contacto y la invitación de DocumentoLegal. Contacto muestra disponibilidad
+próxima con enlaces a Blog/Producto; Quiénes somos y 404 dejan de invitar a escribir.
+La dirección elegida se conserva en configuración. No bloquea el buzón ni borra
+versiones previas: es un cambio de interfaz de la rama, no de producción.
+Para habilitarlo: completar aviso, preparar atención, autorizar apertura y cambiar
+la bandera; comprobar mailto y ausencia de formularios, conservando las pruebas.
+
+Procedimiento operativo preparado para aprobación antes de abrir el canal:
+1. Registrar cada consulta con identificador, recepción, estado y cierre; mantener
+   el registro operativo fuera del repositorio y no copiar mensajes de personas a GitHub.
+2. Marcar cierre al resolverla o comunicar que no requiere más atención; una consulta
+   sin respuesta no se considera cerrada automáticamente. Revisar pendientes mensualmente.
+3. Al cerrar, programar vencimiento de adjuntos a 30 días y conversación a seis meses.
+   Revisar adjuntos con frecuencia suficiente para no superar los 30 días; una revisión
+   mensual sirve para conversaciones, no garantiza por sí sola cada plazo de adjuntos.
+4. Eliminar copias descargadas y gestionar también el mensaje que contiene el adjunto.
+   Si el cliente no permite separarlo, conservar solo una síntesis necesaria y eliminar
+   el original; no prometer borrado de copias internas del proveedor.
+5. Documentar excepciones por controversias/obligaciones con motivo y próxima revisión;
+   restringir su uso al motivo de conservación, sin marketing.
+6. Para ARCO, registrar recepción/derecho, verificar identidad por un medio proporcional
+   antes de entregar datos, resolver y registrar ejecución. Aprobar el canal seguro y
+   designar responsable antes de apertura; no pedir identificaciones en consultas ordinarias.
+
+### E6-l — Inventario de recursos y proveedores (2026-11-11)
+
+Revisión local: package.json + package-lock.json + metadatos instalados, sin instalar
+ni actualizar. Directas de producción: Astro 7.3.1, MDX 8.0.0 y RSS 4.0.19, MIT.
+Herramientas: mayoría MIT; LHCI/Puppeteer/TypeScript Apache-2.0; axe MPL-2.0;
+subset-font BSD-3-Clause; IBM Sans/Mono OFL-1.1. No se confunde herramientas de
+compilación/auditoría con código distribuido al navegador.
+
+El lockfile contiene 890 entradas de paquetes; su campo license incluye 710 MIT,
+49 ISC, 56 Apache-2.0, 2 OFL, 14 variantes LGPL o combinadas de sharp/libvips,
+15 BSD-3-Clause, 1 Python-2.0, 13 MPL-2.0, 4 BlueOak-1.0.0, 19 BSD-2-Clause,
+2 CC0, 1 MIT AND Zlib, 2 0BSD y 2 sin ese campo. Estos últimos se inspeccionaron:
+format 0.2.2 declara MIT en licenses/cabecera; parse-cache-control 1.0.1 incluye
+LICENSE BSD de tres cláusulas. El conteo refleja variantes de plataforma del lock,
+no paquetes necesariamente instalados ni un dictamen de compatibilidad.
+
+Recursos publicados: cuatro WOFF2 y LICENSE-IBM-Plex-OFL.txt; captura auténtica
+calcinst-demo.png con procedencia y reproducción en scripts/generar-capturas.md;
+SVG/componentes locales. La procedencia técnica de captura/código no acredita
+por sí misma una cesión de derechos a la empresa. Titularidad pendiente humana.
+
+Hallazgo de fuentes: LICENSE reserva «Plex» y generar-fuentes.mjs crea subconjuntos
+con subset-font sin un renombrado explícito. La guía oficial
+https://openfontlicense.org/webfonts-and-reserved-font-names/ trata los subconjuntos
+precalculados como modificación sujeta a RFN. Falta verificar los nombres internos
+y resolver mediante permiso aplicable o renombrado reproducible conservando diseño,
+glifos y licencia. No se altera una decisión tipográfica ni se declara conformidad
+completa por la sola presencia de OFL. fontTools no está instalado en el Python local;
+no se instala. Este hallazgo es independiente de la S.A.S. y permanece abierto.
+
+Proveedores: no hay conector Cloudflare disponible. wrangler.jsonc sirve activos,
+sin código de Worker ni bindings de almacenamiento declarados. El DPA público
+https://www.cloudflare.com/cloudflare-customer-dpa/ contempla registros del cliente;
+no demuestra los ajustes de esta cuenta. Falta cotejar plan, observabilidad/logs,
+Logpush/destinos, Web Analytics y condiciones aceptadas en el dashboard. No se
+accedió a registros de visitantes ni se modificó configuración.
+
+Google: https://policies.google.com/terms?hl=es devolvió versión de Estados Unidos;
+la variante solicitada con gl=mx no fue accesible en la herramienta. No se declara
+verificado el contrato regional de la cuenta. Falta confirmar región/condiciones,
+reenvíos o integraciones y posibilidades de eliminación. No se consultan mensajes
+privados ni se registran datos de acceso. Buttondown continúa inactivo.
+
+Check remoto de base c53f46e: verificar y Workers success; CI
+https://github.com/sebashealy/calcinst-web/actions/runs/42275238461 .
+La evidencia no acredita commits posteriores. Una solicitud HTTP a Contacto de
+esa preview permite observar solo esa respuesta, no certificar ausencia global
+de cookies ni determinar conservación en los servidores.
+
+### E6-n — Resultado, límites y siguiente bloque (2026-11-11)
+
+Batería E6-m: check 66 archivos/0 errores, 150 tests/7 archivos, lint y formato
+correctos, salida sin notación prohibida y portabilidad 2/2. El primer I7 falló
+por el título «próximamente»; se cambió a «Contacto en preparación» sin relajar
+el verificador. Reejecución: 7 invariantes/0 fallos; build 24 páginas/exit 0.
+verificar-producto.mjs también pasó para Inicio y Producto. Se retiraron únicamente
+espacios finales de las salidas registradas, sin cambiar mensajes ni resultados.
+
+Auditoría --etapa6: exit 0, 30 combinaciones; cero violaciones axe, errores JS y
+desbordamientos, foco/skip/Escape/reduced-motion correctos. Captura Contacto claro
+360 inspeccionada: título legible y enlaces disponibles. Paquete de esta sesión:
+evidencia/etapa-6-independiente-2026-11-11.zip (se conserva el paquete anterior).
+Inspección de HTML/JS/JSON en dist: ningún mailto ni marcador de borrador; las dos
+rutas legales mantienen data-legal-pendiente. No se infiere cierre legal.
+
+Respuesta pública observada de la preview base: HTTP 200, Server cloudflare,
+X-Robots-Tag noindex, sin Set-Cookie en esa respuesta. No acredita configuración
+privada ni ausencia de cookies para todos los visitantes.
+
+Se verificó la tabla name de los cuatro WOFF2 convirtiéndolos en memoria con
+fontverter transitivo existente (sin modificar archivos). Nombres 1/4/6 conservan
+IBM Plex Sans/Mono y variantes. Se confirma el hallazgo RFN. Propuesta concreta:
+declarar fontverter 2.0.0 como dependencia directa de desarrollo para renombrar
+reproduciblemente los subconjuntos, preservando glifos, diseño, copyright y OFL;
+probar regeneración/cobertura antes de sustituir recursos. Se solicitó autorización
+por la regla del usuario sobre dependencias nuevas. No se instala ni cambia aún.
+
+Estado: preparación de contenido y operación completada hasta donde permiten
+los datos confirmados; auditoría de licencias ejecutada, con RFN pendiente de
+resolución. La revisión de proveedores tiene pendientes de cuenta concretos en
+E6-l. No se declara «todo independiente cerrado» mientras RFN siga pendiente.
+La S.A.S., su denominación/domicilio, la titularidad de materiales, Person y revisión
+final de legales siguen pendientes humanos. No se adelanta Etapa 7 ni se fusiona.
+
+Para retomar: rama etapa6/preparacion-contenido, PR #18, E6-j/n; resolver aprobación
+de fontverter y ajuste de nombres; cotejar configuración de proveedores con acceso
+adecuado. Después revisar los MDX completos y apertura de contacto. No publicar
+borradores ni afirmar que el trámite de la empresa ya terminó.
+
+### E6-o — Nombres de fuentes corregidos con autorización (2026-11-11)
+
+Autorización expresa: «Autorizar fontverter 2.0.0 y el ajuste de nombres».
+Se declara fontverter 2.0.0 en devDependencies y en la raíz del lockfile; ninguna
+versión transitiva cambia. El intento offline no encontró metadatos (ENOTCACHED);
+se ejecutó install --save-dev --save-exact fontverter@2.0.0 --package-lock-only
+--ignore-scripts --no-audit --no-fund, exit 0. Sin scripts de instalación ni
+actualización del motor CalcInst.
+
+scripts/lib/nombres-fuentes.mjs transforma exclusivamente identidad en name;
+conserva los registros de copyright, licencia y atribución. Reconstruye offsets,
+alineación y checksums SFNT, incluido checkSumAdjustment; rechaza formatos no
+admitidos en vez de degradar. fontverter descomprime/recomprime WOFF2. Generador
+preserva avisos y renombra tras subconjuntar. Referencias técnicas consultadas:
+https://learn.microsoft.com/en-us/typography/opentype/spec/name y
+https://learn.microsoft.com/en-us/typography/opentype/spec/otff .
+
+Los cuatro archivos ibm-plex-*.woff2 se sustituyen por calcinst-*.woff2. Familias
+CSS CalcInst Sans/Mono, preloads de LayoutBase, caracteres.json y prueba de
+cobertura apuntan a los recursos nuevos. La guía de diseño identifica el origen.
+Se conserva LICENSE-IBM-Plex-OFL.txt; NOTICE-CalcInst.txt explica modificación,
+procedencia y OFL. No se afirma autoría del diseño original ni respaldo de IBM.
+La decisión tipográfica previa se conserva; cambia la identidad del subconjunto
+para resolver RFN de E6-l/n, no el diseño ni la cobertura.
+
+Evidencia de generación: npm run fuentes (ejecutado como node scripts/generar-fuentes.mjs):
+calcinst-sans-400 15796 B; sans-600 16928 B; mono-400 12784 B; mono-500 13032 B.
+Total 58540 B < 60000. 134 caracteres declarados sobreviven en su rol; Omega y
+Delta siguen tomando el respaldo Sans en Mono, como antes.
+
+Pruebas nuevas: tests/nombres-fuentes.test.ts, siete casos. Para las cuatro caras,
+comparan bytes de todas las tablas antes/después salvo name y el checksum de head;
+validan checksum total, ausencia de Plex en identidad, preservación de avisos,
+regeneración idéntica al archivo versionado y determinismo. Tres casos negativos
+rechazan formato no TrueType, name desconocida y registro truncado.
+
+Incidencias de validación: los imports TS iniciales carecían de declaraciones;
+un intento mjs quedó fuera del patrón del proyecto (solo 150 pruebas). Se conserva
+el test en .test.ts con tipos explícitos de las APIs CommonJS, sin paquetes de tipos
+adicionales. Resultado final: check 68 archivos/0 errores/0 warnings/0 hints;
+157 pruebas/8 archivos, lint y formato correctos. Invariantes 7/0, build 24 páginas,
+salida sin notación prohibida, portabilidad 2/2 y HTML Inicio/Producto correctos.
+Persiste solo el aviso de obsolescencia smartypants ya registrado.
+
+Auditoría --etapa6: exit 0, 30 variantes sin errores JS, violaciones axe ni overflow;
+controles de foco, skip, Escape y reduced-motion correctos. Comparación byte a byte
+con las 30 capturas del paquete E6-n: 30/30 idénticas. Nuevo paquete conservado en
+evidencia/etapa-6-fuentes-2026-11-11.zip. El aumento de bytes corresponde a avisos y
+metadatos preservados, sin cambio visual en esas capturas.
+
+Hallazgo RFN resuelto para las fuentes generadas actuales. Pendientes de Etapa 6:
+configuración/condiciones efectivas de proveedores (E6-l), datos de la S.A.S.,
+titularidad de contenidos y revisión legal/operativa final. No abrir contacto,
+activar publicado/revisionHumana, fusionar PR #18 ni iniciar Etapa 7 por inferencia.
+Para retomar: npm run fuentes y npm test verifican regeneración; ESTADO E6-j/o,
+los dos MDX legales y SITIO.contactoDisponible son las fuentes de continuidad.
+
+### E6-p — Configuración de proveedores aportada por el usuario (2026-11-13)
+
+Alcance autorizado: continuar el inventario de privacidad en modo lectura y
+documentar los hallazgos. El control de Chrome se detuvo porque la herramienta
+no pudo identificar con certeza la URL. La evidencia posterior son capturas
+aportadas por Sebastián, no una inspección directa automatizada del dashboard.
+No se cambió configuración de Cloudflare ni se accedió al buzón.
+
+Hechos visibles: Producción sirve activos estáticos; registros y trazas de Workers
+deshabilitados; Logpush y Tail Workers no disponibles para ese Worker. Web Analytics
+incluye calcinst.mx con configuración automática y actividad reciente. En Administrar
+sitio aparece seleccionada la exclusión de visitantes de la UE; Opciones avanzadas
+no muestra reglas adicionales y ofrece un plan superior para usarlas. No se deduce
+de ello el plan contractual completo ni ausencia de registros internos del proveedor.
+
+Referencias de las capturas aportadas (no se copian al repositorio los paneles
+completos ni sus cifras de tráfico): información general 4986bb98; configuración
+0fb27e67; listado Web Analytics fa20713a; selección RUM 974b1cec; opciones avanzadas
+b5bdb2d5 (prefijos de los archivos codex-clipboard de esta sesión). Este registro
+conserva los hechos necesarios para retomar; los originales siguen siendo adjuntos
+del usuario, no evidencia binaria versionada. No afirmar que la configuración se
+mantendrá sin cambios posteriores ni que se capturó el tráfico de un visitante.
+
+Se complementa E6-l: buscar analítica solo en el repositorio no detecta la inserción
+automática del proveedor. D7 ya contempla Cloudflare Web Analytics; no se cambia
+esa decisión ni se crea un addendum. src/content/legal/privacidad.mdx incorpora
+el inventario actualizado y los límites de evidencia, conservando publicado=false,
+revisionHumana=false y los pendientes. Contacto sigue cerrado.
+
+Fuentes oficiales consultadas el 2026-11-13:
+- https://developers.cloudflare.com/web-analytics/about/
+- https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/
+- https://developers.cloudflare.com/web-analytics/faq/
+
+Síntesis: mediciones de rendimiento y visitas mediante un beacon. La FAQ distingue
+siete días de datos sin muestreo, agregación posterior para almacenamiento prolongado
+y seis meses consultables; esta última ventana no demuestra borrado total ni cubre
+todos los registros de Cloudflare. La declaración del proveedor sobre no recoger
+datos personales en Web Analytics no se extiende a todo el alojamiento ni sustituye
+la revisión jurídica. El borrador enlaza las fuentes y describe destinos documentados,
+sin presentarlos como una prueba de red ejecutada sobre CalcInst.
+
+Correo: el usuario ratifica instcalc@gmail.com y describe Gmail común sin aplicaciones
+conectadas. Se conserva «correo de contacto confirmado», sin datos sobre acceso.
+No se infiere ausencia de reenvíos automáticos ni contrato empresarial de Workspace.
+
+Validación local de este bloque documental: prettier --check
+src/content/legal/privacidad.mdx correcto; vitest run tests/legal.test.ts: 16/16,
+un archivo; git diff --check sin errores. Se usaron los ejecutables locales mediante
+Node, sin instalar dependencias. Persiste el aviso smartypants ya documentado.
+No se reejecutó la auditoría visual ni se atribuye a este bloque un nuevo resultado
+de build, CI o producción. No hay cambios funcionales, de dependencias o de fuentes.
+
+Transferencia: retomar rama etapa6/preparacion-contenido, PR #18, E6-o/p y el MDX
+de privacidad. Pendiente contrastar la respuesta y tráfico de producción con esta
+configuración, precisar condiciones efectivas de proveedores y revisión completa
+del aviso; siguen pendientes S.A.S./identidad/domicilio, titularidad, Person y
+aprobación operativa/legal. H2/H4 siguen abiertas. No fusionar PR #18, abrir contacto
+ni pasar a Etapa 7 sin las autorizaciones correspondientes.
+
+### E6-q — Comprobación de analítica en producción (2026-11-14)
+
+Objetivo: contrastar E6-p con el comportamiento del sitio servido, sin cambiar
+Cloudflare. Se añade scripts/inspeccionar-analitica.mjs usando puppeteer-core ya
+instalado y Chrome local, sin nuevas dependencias. Ejecutar desde la raíz:
+`node scripts/inspeccionar-analitica.mjs`. CHROME_PATH permite indicar otro ejecutable.
+Usa un contexto aislado por ruta, espera networkidle0, recoge nombres de scripts,
+solicitudes/respuestas de analítica y nombres de almacenamiento/cookies, y navega
+a about:blank antes de cerrar. No usa perfiles personales ni sesiones autenticadas.
+No conserva cuerpos de mediciones, valores de cookies, tokens ni query strings.
+Cada ejecución genera visitas de prueba reales y puede afectar las métricas del sitio.
+
+Primera ejecución restringida: timeout de 30 segundos al arrancar el navegador;
+no se considera una prueba de ausencia de analítica. Reejecución con permiso de
+ejecución: exit 0, informe UTC 2026-11-14T18:19:48.300Z (12:19 hora de México).
+
+| Comprobación | Inicio `/` | Producto `/producto/` |
+|---|---|---|
+| Documento | HTTP 200 | HTTP 200 |
+| Script static.cloudflareinsights.com/beacon.min.js con sufijo de versión | HTTP 200 | HTTP 200 |
+| POST https://calcinst.mx/cdn-cgi/rum | HTTP 204 | HTTP 204 |
+| Solicitudes de analítica fallidas | 0 | 0 |
+| Cookies observadas antes de salir | 0 | 0 |
+| Claves localStorage / sessionStorage sin interacción de tema | 0 / 0 | 0 / 0 |
+
+Campos superiores observados en ambos POST: bi, eventType, firstContentfulPaint,
+firstPaint, location, memory, nt, pageloadId, siteToken, st, startTime, timingsV2,
+versions. Se conservan exclusivamente nombres, no sus valores. Los identificadores
+no se interpretan automáticamente como seguimiento persistente o identidad personal.
+La respuesta 204 acredita respuesta al envío observado, no persistencia posterior,
+agregación, eliminación ni clasificación jurídica de los datos.
+
+Límites: dos rutas, navegador headless local, contextos nuevos, sin interacción de
+tema ni simulación regional; no acredita exclusión UE, todos los navegadores/rutas,
+ausencia global de cookies ni almacenamiento posterior a cerrar. No contradice que
+el selector de tema guarde una preferencia cuando se utiliza. Se verifica producción,
+no la preview del PR #18. No se inspecciona el buzón ni se modifica Cloudflare.
+
+Archivos modificados: este estado, el borrador src/content/legal/privacidad.mdx y
+el nuevo script de inspección. El borrador incorpora la prueba y mantiene sus
+puertas de publicación cerradas. D7 se conserva; no requiere addendum.
+Validación del script: Prettier --check y ESLint, ambos exit 0; prueba real exit 0.
+No se declara una nueva batería completa, CI ni auditoría visual por estos cambios.
+
+Transferencia: continuar en etapa6/preparacion-contenido, PR #18, E6-p/q. El cotejo
+de carga/envío queda comprobado en el alcance descrito. Pendientes: condiciones
+efectivas/conservación de proveedores y revisión jurídica/operativa; responsable,
+denominación/domicilio de la S.A.S., titularidad y Person siguen pendientes humanos.
+No se abre contacto ni se publica el aviso ni se fusiona PR #18. No se inicia Etapa 7.
